@@ -94,16 +94,16 @@ export async function leaveInternship(enrollmentId: string, studentId: string): 
   const supabase = createClient();
   if (!supabase) return { success: false, error: 'Verilənlər bazası əlçatan deyil.' };
   try {
-    const { data, error } = await supabase
-      .from('enrollments')
-      .update({ status: 'cancelled', updated_at: new Date().toISOString() })
-      .eq('id', enrollmentId)
-      .eq('student_id', studentId)
-      .eq('status', 'active')
-      .select('id')
-      .maybeSingle();
+    // The database RPC verifies auth.uid() ownership and updates both enrollment
+    // and accepted application atomically, bypassing student-denied table UPDATE policies safely.
+    const { data, error } = await supabase.rpc('student_leave_internship', {
+      p_enrollment_id: enrollmentId,
+    });
     if (error) return { success: false, error: error.message };
-    if (!data) return { success: false, error: 'Aktiv qeydiyyat tapılmadı və ya onu ləğv etmək icazəniz yoxdur.' };
+    const result = typeof data === 'string' ? JSON.parse(data) : data;
+    if (!result?.success) {
+      return { success: false, error: result?.error || 'Təcrübədən çıxmaq mümkün olmadı.' };
+    }
     return { success: true };
   } catch (err: unknown) {
     return { success: false, error: err instanceof Error ? err.message : 'Təcrübədən çıxmaq mümkün olmadı.' };
