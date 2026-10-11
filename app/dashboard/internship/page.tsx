@@ -40,6 +40,7 @@ import {
   Sparkles,
   ChevronRight,
   TrendingUp,
+  Loader2,
 } from 'lucide-react';
 
 export default function StudentMyInternshipPage() {
