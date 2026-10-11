@@ -86,6 +86,30 @@ export async function getStudentActiveEnrollment(studentId: string): Promise<Enr
   return active || null;
 }
 
+// Student voluntarily leaves an active internship. Completed enrollments cannot be cancelled.
+export async function leaveInternship(enrollmentId: string, studentId: string): Promise<{ success: boolean; error?: string }> {
+  if (!enrollmentId || !studentId || !isSupabaseConfigured()) {
+    return { success: false, error: 'Qeydiyyat məlumatları tapılmadı.' };
+  }
+  const supabase = createClient();
+  if (!supabase) return { success: false, error: 'Verilənlər bazası əlçatan deyil.' };
+  try {
+    const { data, error } = await supabase
+      .from('enrollments')
+      .update({ status: 'cancelled', updated_at: new Date().toISOString() })
+      .eq('id', enrollmentId)
+      .eq('student_id', studentId)
+      .eq('status', 'active')
+      .select('id')
+      .maybeSingle();
+    if (error) return { success: false, error: error.message };
+    if (!data) return { success: false, error: 'Aktiv qeydiyyat tapılmadı və ya onu ləğv etmək icazəniz yoxdur.' };
+    return { success: true };
+  } catch (err: unknown) {
+    return { success: false, error: err instanceof Error ? err.message : 'Təcrübədən çıxmaq mümkün olmadı.' };
+  }
+}
+
 // Count active enrollments for an internship
 export async function getInternshipActiveEnrollmentsCount(internshipId: string): Promise<number> {
   if (!internshipId || !isSupabaseConfigured()) return 0;
