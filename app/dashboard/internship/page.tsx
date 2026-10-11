@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth/auth-context';
 import { useLanguage } from '@/lib/i18n/language-context';
-import { getStudentActiveEnrollment, leaveInternship } from '@/lib/enrollments/service';
+import { getStudentEnrollments, leaveInternship } from '@/lib/enrollments/service';
 import { getAllTasksForInternship } from '@/lib/tasks/service';
 import { extractLocalizedTaskText } from '@/lib/tasks/content.mjs';
 import { getStudentSubmissionsForEnrollment } from '@/lib/submissions/service';
@@ -48,6 +48,7 @@ export default function StudentMyInternshipPage() {
   const { language, t } = useLanguage();
   const isAz = language === 'az';
 
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const [tasks, setTasks] = useState<InternshipTask[]>([]);
   const [submissions, setSubmissions] = useState<TaskSubmission[]>([]);
@@ -55,25 +56,47 @@ export default function StudentMyInternshipPage() {
   const [loading, setLoading] = useState(true);
   const [leavingInternship, setLeavingInternship] = useState(false);
 
+  const loadEnrollmentDetails = async (active: Enrollment, studentId: string) => {
+    const [taskList, subList] = await Promise.all([
+      getAllTasksForInternship(active.internship_id, false),
+      getStudentSubmissionsForEnrollment(studentId, active.id),
+    ]);
+    setEnrollment(active);
+    setTasks(taskList);
+    setSubmissions(subList);
+    setProgress(calculateInternshipProgress(taskList, subList));
+  };
+
+  const selectEnrollment = async (active: Enrollment) => {
+    if (!profile?.id) return;
+    setLoading(true);
+    try {
+      await loadEnrollmentDetails(active, profile.id);
+    } catch (err) {
+      console.error('Failed to load selected internship:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     async function load() {
       if (!profile?.id) return;
       setLoading(true);
       try {
-        const active = await getStudentActiveEnrollment(profile.id);
-        setEnrollment(active);
-
-        if (active?.internship_id) {
-          const [taskList, subList] = await Promise.all([
-            getAllTasksForInternship(active.internship_id, false), // only published tasks
-            getStudentSubmissionsForEnrollment(profile.id, active.id),
-          ]);
-          setTasks(taskList);
-          setSubmissions(subList);
-          setProgress(calculateInternshipProgress(taskList, subList));
+        const all = await getStudentEnrollments(profile.id);
+        const activeList = all.filter((e) => e.status === 'active' && e.internship);
+        setEnrollments(activeList);
+        if (activeList.length > 0) {
+          await loadEnrollmentDetails(activeList[0], profile.id);
+        } else {
+          setEnrollment(null);
+          setTasks([]);
+          setSubmissions([]);
+          setProgress(null);
         }
       } catch (err) {
-        console.error('Failed to load active enrollment and tasks:', err);
+        console.error('Failed to load active enrollments and tasks:', err);
       } finally {
         setLoading(false);
       }
@@ -94,10 +117,16 @@ export default function StudentMyInternshipPage() {
         window.alert(result.error || (isAz ? 'Əməliyyat alınmadı.' : 'Could not leave internship.'));
         return;
       }
-      setEnrollment(null);
-      setTasks([]);
-      setSubmissions([]);
-      setProgress(null);
+      const remaining = enrollments.filter((item) => item.id !== enrollment.id);
+      setEnrollments(remaining);
+      if (remaining.length > 0) {
+        await loadEnrollmentDetails(remaining[0], profile.id);
+      } else {
+        setEnrollment(null);
+        setTasks([]);
+        setSubmissions([]);
+        setProgress(null);
+      }
       window.alert(isAz ? 'Təcrübədən çıxış tamamlandı.' : 'You have left the internship.');
     } finally {
       setLeavingInternship(false);
@@ -250,6 +279,23 @@ export default function StudentMyInternshipPage() {
         </div>
       ) : enrollment && enrollment.internship ? (
         <div className="space-y-6">
+          {enrollments.length > 1 && (
+            <section className="rounded-xl border border-slate-200 bg-slate-900/40 p-4 space-y-3">
+              <div>
+                <h3 className="text-sm font-bold text-slate-100">{isAz ? 'Aktiv təcrübələrim' : 'My active internships'}</h3>
+                <p className="text-xs text-slate-400 mt-1">{isAz ? 'Tapşırıqlara baxmaq üçün təcrübə seçin.' : 'Choose an internship to view its tasks.'}</p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {enrollments.map((item) => (
+                  <button key={item.id} type="button" onClick={() => selectEnrollment(item)}
+                    className={`rounded-lg border p-3 text-left transition-colors ${item.id === enrollment.id ? 'border-emerald-500 bg-emerald-950/50' : 'border-slate-700 bg-slate-900/60 hover:border-slate-500'}`}>
+                    <span className={`block text-sm font-semibold ${item.id === enrollment.id ? 'text-emerald-200' : 'text-slate-100'}`}>{item.internship?.title || (isAz ? 'Təcrübə proqramı' : 'Internship')}</span>
+                    <span className="mt-1 block text-xs text-slate-400">{item.internship?.duration_weeks} {t('durationWeeks')}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
           {/* Active Program Header Card */}
           <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-7 shadow-2xs space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
@@ -341,12 +387,12 @@ export default function StudentMyInternshipPage() {
             )}
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50/70 p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-red-500/40 bg-red-950/35 p-4">
             <div>
-              <p className="text-sm font-semibold text-rose-900">{isAz ? 'Təcrübəni dayandırmaq istəyirsiniz?' : 'Want to leave this internship?'}</p>
-              <p className="mt-1 text-xs text-rose-800">{isAz ? 'Bu əməliyyat aktiv qeydiyyatı ləğv edir. Təsdiqdən sonra tapşırıq təqdim edə bilməyəcəksiniz.' : 'This cancels your active enrollment. You will no longer be able to submit tasks.'}</p>
+              <p className="text-sm font-semibold text-red-200">{isAz ? 'Təcrübəni dayandırmaq istəyirsiniz?' : 'Want to leave this internship?'}</p>
+              <p className="mt-1 text-xs text-red-300">{isAz ? 'Bu əməliyyat aktiv qeydiyyatı ləğv edir. Təsdiqdən sonra tapşırıq təqdim edə bilməyəcəksiniz.' : 'This cancels your active enrollment. You will no longer be able to submit tasks.'}</p>
             </div>
-            <Button type="button" variant="outline" disabled={leavingInternship} onClick={handleLeaveInternship} className="shrink-0 border-rose-300 text-rose-700 hover:bg-rose-100">
+            <Button type="button" variant="outline" disabled={leavingInternship} onClick={handleLeaveInternship} className="shrink-0 border-red-400/60 bg-red-950/30 text-red-200 hover:bg-red-900/60 hover:text-white">
               {leavingInternship ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <XCircle className="mr-2 h-4 w-4" />}
               {isAz ? 'Təcrübədən çıx' : 'Leave internship'}
             </Button>
