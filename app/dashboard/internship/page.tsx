@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth/auth-context';
 import { useLanguage } from '@/lib/i18n/language-context';
-import { getStudentActiveEnrollment } from '@/lib/enrollments/service';
+import { getStudentActiveEnrollment, leaveInternship } from '@/lib/enrollments/service';
 import { getAllTasksForInternship } from '@/lib/tasks/service';
 import { extractLocalizedTaskText } from '@/lib/tasks/content.mjs';
 import { getStudentSubmissionsForEnrollment } from '@/lib/submissions/service';
@@ -52,6 +52,7 @@ export default function StudentMyInternshipPage() {
   const [submissions, setSubmissions] = useState<TaskSubmission[]>([]);
   const [progress, setProgress] = useState<ProgressResult | null>(null);
   const [loading, setLoading] = useState(true);
+  const [leavingInternship, setLeavingInternship] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -78,6 +79,29 @@ export default function StudentMyInternshipPage() {
     }
     load();
   }, [profile?.id]);
+
+  const handleLeaveInternship = async () => {
+    if (!profile?.id || !enrollment?.id) return;
+    const confirmed = window.confirm(isAz
+      ? 'Bu təcrübədən çıxmaq istədiyinizə əminsiniz? İrəliləyişiniz saxlanacaq, lakin aktiv tapşırıqları təqdim edə bilməyəcəksiniz.'
+      : 'Are you sure you want to leave this internship? Your progress will be retained, but you will no longer be able to submit tasks.');
+    if (!confirmed) return;
+    setLeavingInternship(true);
+    try {
+      const result = await leaveInternship(enrollment.id, profile.id);
+      if (!result.success) {
+        window.alert(result.error || (isAz ? 'Əməliyyat alınmadı.' : 'Could not leave internship.'));
+        return;
+      }
+      setEnrollment(null);
+      setTasks([]);
+      setSubmissions([]);
+      setProgress(null);
+      window.alert(isAz ? 'Təcrübədən çıxış tamamlandı.' : 'You have left the internship.');
+    } finally {
+      setLeavingInternship(false);
+    }
+  };
 
   const formatDate = (dateStr: string | null) => {
     return dateStr ? formatDisplayDate(dateStr) : null;
@@ -314,6 +338,17 @@ export default function StudentMyInternshipPage() {
                 )}
               </div>
             )}
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50/70 p-4">
+            <div>
+              <p className="text-sm font-semibold text-rose-900">{isAz ? 'Təcrübəni dayandırmaq istəyirsiniz?' : 'Want to leave this internship?'}</p>
+              <p className="mt-1 text-xs text-rose-800">{isAz ? 'Bu əməliyyat aktiv qeydiyyatı ləğv edir. Təsdiqdən sonra tapşırıq təqdim edə bilməyəcəksiniz.' : 'This cancels your active enrollment. You will no longer be able to submit tasks.'}</p>
+            </div>
+            <Button type="button" variant="outline" disabled={leavingInternship} onClick={handleLeaveInternship} className="shrink-0 border-rose-300 text-rose-700 hover:bg-rose-100">
+              {leavingInternship ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <XCircle className="mr-2 h-4 w-4" />}
+              {isAz ? 'Təcrübədən çıx' : 'Leave internship'}
+            </Button>
           </div>
 
           {/* Weekly Tasks Section */}
