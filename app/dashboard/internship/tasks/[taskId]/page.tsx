@@ -155,6 +155,17 @@ export default function StudentTaskDetailPage({
       return;
     }
 
+    // Tasks whose deliverables are visual or UI-based must include evidence.
+    const screenshotRequired = /wireframe|prototype|dashboard|visuali[sz]|diagram|flowchart|user flow|screen|responsive|mobile ux|high-fidelity|landing page|design system|ui component|chart|graph|interface|accessibility review/i.test(
+      `${task.title} ${task.instructions || ''}`
+    );
+    if (screenshotRequired && !file && !submission?.file_path) {
+      setFormError(isAz
+        ? 'Bu tapşırıq üçün ekran görüntüsü və ya nəticə faylı əlavə etmək məcburidir.'
+        : 'A screenshot or evidence file is required for this task.');
+      return;
+    }
+
     // Basic frontend checks based on submission_type
     if ((task.submission_type === 'github' || task.submission_type === 'multiple') && !githubUrl.trim()) {
       setFormError(isAz ? 'Zəhmət olmasa GitHub repozitoriya linkini daxil edin.' : 'Please provide GitHub repository link.');
