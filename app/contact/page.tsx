@@ -69,7 +69,7 @@ export default function ContactPage() {
             <div className="space-y-4">
               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 bg-emerald-50 text-emerald-700 rounded-lg">
+                  <div className="p-2 bg-blue-50 text-blue-700 rounded-lg">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <h3 className="font-bold text-slate-900 text-sm">
@@ -83,7 +83,7 @@ export default function ContactPage() {
 
               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 bg-emerald-50 text-emerald-700 rounded-lg">
+                  <div className="p-2 bg-blue-50 text-blue-700 rounded-lg">
                     <Mail className="w-5 h-5" />
                   </div>
                   <h3 className="font-bold text-slate-900 text-sm">
@@ -91,7 +91,7 @@ export default function ContactPage() {
                   </h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed pl-11">
-                  <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-emerald-700 transition-colors">
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-blue-700 transition-colors">
                     {CONTACT_EMAIL}
                   </a>
                 </p>
@@ -99,7 +99,7 @@ export default function ContactPage() {
 
               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 bg-emerald-50 text-emerald-700 rounded-lg">
+                  <div className="p-2 bg-blue-50 text-blue-700 rounded-lg">
                     <Phone className="w-5 h-5" />
                   </div>
                   <h3 className="font-bold text-slate-900 text-sm">
@@ -107,7 +107,7 @@ export default function ContactPage() {
                   </h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed pl-11">
-                  <a href="tel:+994706449222" className="hover:text-emerald-700 transition-colors">
+                  <a href="tel:+994706449222" className="hover:text-blue-700 transition-colors">
                     +994 70 644 92 22
                   </a>
                 </p>
@@ -123,7 +123,7 @@ export default function ContactPage() {
               )}
               {submitted ? (
                 <div className="py-12 text-center space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
+                  <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto">
                     <CheckCircle2 className="w-6 h-6" />
                   </div>
                   <h3 className="text-lg font-bold text-slate-900">
