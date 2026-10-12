@@ -124,7 +124,7 @@ export default function InternshipsPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="max-w-3xl mb-10">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200/60 mb-3">
               <Sparkles className="w-3.5 h-3.5" />
               <span>{isAz ? 'Açıq Vakansiyalar' : 'Open Cohorts'}</span>
             </div>
@@ -178,7 +178,7 @@ export default function InternshipsPage() {
                 onClick={() => setSelectedCategory('all')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
                   selectedCategory === 'all'
-                    ? 'bg-emerald-600 text-white shadow-2xs'
+                    ? 'bg-blue-600 text-white shadow-2xs'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
@@ -191,7 +191,7 @@ export default function InternshipsPage() {
                   onClick={() => setSelectedCategory(cat)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
                     selectedCategory === cat
-                      ? 'bg-emerald-600 text-white shadow-2xs'
+                      ? 'bg-blue-600 text-white shadow-2xs'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
@@ -241,7 +241,7 @@ export default function InternshipsPage() {
                           variant="outline"
                           className={`text-2xs font-medium ${
                             internship.difficulty === 'beginner'
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              ? 'bg-blue-50 text-blue-700 border-blue-200'
                               : internship.difficulty === 'intermediate'
                               ? 'bg-blue-50 text-blue-700 border-blue-200'
                               : 'bg-purple-50 text-purple-700 border-purple-200'
@@ -256,7 +256,7 @@ export default function InternshipsPage() {
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-xl font-bold text-slate-900 group-hover:text-emerald-600 transition-colors line-clamp-1 mb-2">
+                      <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1 mb-2">
                         {internship.title}
                       </h3>
 
