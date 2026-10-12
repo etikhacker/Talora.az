@@ -24,34 +24,34 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-30 w-full bg-slate-950/60 backdrop-blur-xl border-b border-slate-200/80 shadow-[0_10px_35px_rgba(0,0,0,0.25)]">
+    <header className="sticky top-0 z-30 w-full bg-[#0B1220]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_10px_35px_rgba(2,6,23,0.18)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-slate-950 shadow-[0_0_28px_rgba(52,211,153,0.28)] group-hover:rotate-3 group-hover:scale-105 transition-transform duration-200">
+            <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-slate-950 shadow-[0_0_28px_rgba(52,211,153,0.28)] group-hover:rotate-3 group-hover:scale-105 transition-transform duration-200">
               <GraduationCap className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-xl font-bold tracking-tight text-slate-100 block leading-tight">
-                Intern<span className="text-emerald-400">.az</span>
+              <span className="text-xl font-bold tracking-tight text-white block leading-tight">
+                Intern<span className="text-blue-400">.az</span>
               </span>
-              <span className="text-[10px] tracking-wide text-slate-400 uppercase font-medium">
+              <span className="text-[10px] tracking-[0.16em] text-slate-400 uppercase font-medium">
                 Təcrübə Portalı
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-400">
+          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-300">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`transition-colors hover:text-emerald-600 ${
-                    isActive ? 'text-emerald-300 font-semibold' : ''
+                  className={`transition-colors hover:text-blue-300 ${
+                    isActive ? 'text-blue-300 font-semibold' : ''
                   }`}
                 >
                   {link.label}
@@ -70,7 +70,7 @@ export function Navbar() {
                   onClick={() => setLanguage('az')}
                   className={`px-2 py-1 rounded-md transition-all ${
                     language === 'az'
-                    ? 'bg-emerald-400 text-slate-950 shadow-2xs font-bold'
+                    ? 'bg-blue-400 text-slate-950 shadow-2xs font-bold'
                     : 'hover:text-slate-900'
                 }`}
               >
@@ -81,7 +81,7 @@ export function Navbar() {
                   onClick={() => setLanguage('en')}
                   className={`px-2 py-1 rounded-md transition-all ${
                     language === 'en'
-                    ? 'bg-emerald-400 text-slate-950 shadow-2xs font-bold'
+                    ? 'bg-blue-400 text-slate-950 shadow-2xs font-bold'
                     : 'hover:text-slate-900'
                 }`}
               >
@@ -93,7 +93,7 @@ export function Navbar() {
               <div className="flex items-center gap-3">
                 <Link href="/dashboard">
                   <Button variant="outline" size="sm" className="gap-2">
-                    <User className="w-4 h-4 text-emerald-600" />
+                    <User className="w-4 h-4 text-blue-600" />
                     {t('navDashboard')}
                   </Button>
                 </Link>
@@ -155,7 +155,7 @@ export function Navbar() {
                 type="button"
                 onClick={() => setLanguage('az')}
                 className={`px-2.5 py-1 rounded-md ${
-                  language === 'az' ? 'bg-white text-emerald-700 shadow-2xs font-bold' : ''
+                  language === 'az' ? 'bg-white text-blue-700 shadow-2xs font-bold' : ''
                 }`}
               >
                 AZ
@@ -164,7 +164,7 @@ export function Navbar() {
                 type="button"
                 onClick={() => setLanguage('en')}
                 className={`px-2.5 py-1 rounded-md ${
-                  language === 'en' ? 'bg-white text-emerald-700 shadow-2xs font-bold' : ''
+                  language === 'en' ? 'bg-white text-blue-700 shadow-2xs font-bold' : ''
                 }`}
               >
                 EN
@@ -177,7 +177,7 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-600"
+              className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600"
             >
               {link.label}
             </Link>
@@ -188,7 +188,7 @@ export function Navbar() {
               <>
                 <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                   <Button variant="outline" className="w-full justify-start gap-2">
-                    <User className="w-4 h-4 text-emerald-600" />
+                    <User className="w-4 h-4 text-blue-600" />
                     {t('navDashboard')}
                   </Button>
                 </Link>
