@@ -98,9 +98,9 @@ export default function HowItWorksPage() {
               return (
                 <div
                   key={step.num}
-                  className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-2xs flex flex-col sm:flex-row gap-6 items-start sm:items-center hover:border-emerald-300 transition-colors"
+                  className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-2xs flex flex-col sm:flex-row gap-6 items-start sm:items-center hover:border-blue-300 transition-colors"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 font-extrabold text-xl flex items-center justify-center shrink-0 border border-emerald-100">
+                  <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-700 font-extrabold text-xl flex items-center justify-center shrink-0 border border-blue-100">
                     {step.num}
                   </div>
                   <div className="flex-1">
@@ -114,17 +114,17 @@ export default function HowItWorksPage() {
             })}
           </div>
 
-          <div className="mt-14 p-8 bg-emerald-900 text-white rounded-2xl text-center">
+          <div className="mt-14 p-8 bg-blue-900 text-white rounded-2xl text-center">
             <h2 className="text-2xl font-bold mb-3">
               {isAz ? 'Karyeranızı qurmağa bu gündən başlayın' : 'Start shaping your career today'}
             </h2>
-            <p className="text-emerald-100 text-sm max-w-xl mx-auto mb-6">
+            <p className="text-blue-100 text-sm max-w-xl mx-auto mb-6">
               {isAz
                 ? 'Tələbə kabinetinizi yaradın və ilk təcrübə müraciətinizə hazırlaşın.'
                 : 'Set up your student profile and get ready for the upcoming application cohorts.'}
             </p>
             <Link href="/register">
-              <Button size="lg" className="bg-white text-emerald-950 hover:bg-emerald-50 font-semibold gap-2">
+              <Button size="lg" className="bg-white text-blue-950 hover:bg-blue-50 font-semibold gap-2">
                 {isAz ? 'Qeydiyyatdan Keç' : 'Register Now'}
                 <ArrowRight className="w-4 h-4" />
               </Button>
