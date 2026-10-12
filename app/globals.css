@@ -1193,3 +1193,78 @@ html.light .portfolio-step-row h3 { color: #0f172a !important; }
 html.light .portfolio-step-row p { color: #475569 !important; }
 html.light .portfolio-step-row .text-emerald-300 { color: #047857 !important; }
 
+
+
+/* Intern.az brand refresh — shared presentation layer only */
+:root {
+  --intern-navy: #0b1220;
+  --intern-blue: #2563eb;
+  --intern-blue-hover: #1d4ed8;
+  --intern-canvas: #f8fafc;
+}
+
+/* The public landing page keeps its existing content and interactions,
+   while shifting the visual accent from emerald to Intern.az blue. */
+.portfolio-page .text-emerald-200,
+.portfolio-page .text-emerald-300,
+.portfolio-page .text-emerald-400 { color: #93c5fd !important; }
+.portfolio-page .bg-emerald-300,
+.portfolio-page .bg-emerald-400,
+.portfolio-page .bg-emerald-500,
+.portfolio-page .bg-emerald-600 { background-color: #2563eb !important; }
+.portfolio-page .bg-emerald-300\/10,
+.portfolio-page .bg-emerald-300\/15,
+.portfolio-page .bg-emerald-300\/\[0\.04\],
+.portfolio-page .bg-emerald-300\/\[0\.035\] {
+  background-color: rgb(37 99 235 / 0.12) !important;
+}
+.portfolio-page .border-emerald-300\/15,
+.portfolio-page .border-emerald-300\/20,
+.portfolio-page .border-emerald-300\/25,
+.portfolio-page .border-emerald-300\/30,
+.portfolio-page .border-emerald-300\/40,
+.portfolio-page .border-emerald-500\/30 {
+  border-color: rgb(96 165 250 / 0.28) !important;
+}
+.portfolio-page .portfolio-gradient-text {
+  background-image: linear-gradient(110deg, #93c5fd 0%, #3b82f6 52%, #bfdbfe 100%);
+}
+.portfolio-page .portfolio-primary-button {
+  background: #2563eb !important;
+  color: #fff !important;
+  box-shadow: 0 12px 30px rgb(37 99 235 / 0.25) !important;
+}
+.portfolio-page .portfolio-primary-button:hover { background: #1d4ed8 !important; }
+.portfolio-page .portfolio-outline-button {
+  border-color: rgb(148 163 184 / 0.35) !important;
+  color: #f8fafc !important;
+}
+.portfolio-page .portfolio-outline-button:hover {
+  background: rgb(255 255 255 / 0.08) !important;
+}
+.portfolio-page .portfolio-track-icon {
+  color: #93c5fd;
+  background: rgb(37 99 235 / 0.12);
+  border-color: rgb(96 165 250 / 0.25);
+}
+.portfolio-page .portfolio-cta > div {
+  background: linear-gradient(125deg, #1d4ed8 0%, #2563eb 55%, #0f172a 140%) !important;
+  border-color: rgb(147 197 253 / 0.35) !important;
+  box-shadow: 0 30px 100px rgb(37 99 235 / 0.18) !important;
+}
+.portfolio-page .portfolio-cta > div p,
+.portfolio-page .portfolio-cta > div h2 { color: #fff !important; }
+.portfolio-page .portfolio-cta > div a button {
+  background: #0b1220 !important;
+  color: #fff !important;
+}
+.portfolio-page .portfolio-cta > div a button:hover { background: #1e293b !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
