@@ -24,7 +24,7 @@ export default function DashboardLayout({
     return (
       <div className="flex-1 flex items-center justify-center p-12">
         <div className="flex flex-col items-center gap-3 text-slate-500">
-          <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
           <p className="text-xs font-medium">Verifying student session...</p>
         </div>
       </div>
