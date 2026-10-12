@@ -106,7 +106,7 @@ export default function ApplyInternshipPage({ params }: Props) {
       <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
         <Navbar />
         <main className="flex-1 py-16 flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
         </main>
         <Footer />
       </div>
@@ -234,7 +234,7 @@ export default function ApplyInternshipPage({ params }: Props) {
           {/* Back link */}
           <Link
             href={`/internships/${slug}`}
-            className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-emerald-600 transition-colors mb-6"
+            className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-blue-600 transition-colors mb-6"
           >
             <ArrowLeft className="w-4 h-4" />
             {isAz ? 'Proqramın təfərrüatlarına qayıt' : 'Back to program details'}
@@ -243,7 +243,7 @@ export default function ApplyInternshipPage({ params }: Props) {
           {/* Form Header */}
           <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-7 shadow-2xs mb-8">
             <div className="flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 text-2xs font-semibold uppercase">
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-2xs font-semibold uppercase">
                 {internship.category}
               </Badge>
               <Badge variant="outline" className="bg-slate-50 text-slate-600 border-slate-200 text-2xs">
@@ -305,14 +305,14 @@ export default function ApplyInternshipPage({ params }: Props) {
 
           {/* Success Message */}
           {successMessage && (
-            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 mb-8 text-center space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-8 text-center space-y-3">
+              <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-emerald-900">
+              <h3 className="text-lg font-bold text-blue-900">
                 {t('applicationSuccess')}
               </h3>
-              <p className="text-xs sm:text-sm text-emerald-700 max-w-md mx-auto">
+              <p className="text-xs sm:text-sm text-blue-700 max-w-md mx-auto">
                 {t('applicationSuccessDesc')}
               </p>
             </div>
@@ -324,7 +324,7 @@ export default function ApplyInternshipPage({ params }: Props) {
               {/* Student Info Card (Auto-filled) */}
               <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs">
                 <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <User className="w-4 h-4 text-emerald-600" />
+                  <User className="w-4 h-4 text-blue-600" />
                   {t('studentInfo')}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs bg-slate-50/70 p-4 rounded-xl border border-slate-100">
@@ -463,7 +463,7 @@ export default function ApplyInternshipPage({ params }: Props) {
                   id="submit-application-btn"
                   type="submit"
                   disabled={submitting}
-                  className="w-full sm:w-auto gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
+                  className="w-full sm:w-auto gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-xs"
                 >
                   {submitting ? (
                     <>
