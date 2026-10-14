@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = new URL('../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
 
-const [config, middleware, adminLayout, adminLogin, admin, students, migration, certificates, submissions, tasks, loginPage, registerPage, adminLoginLayout, dashboardLayout, adminSidebar, studentSidebar, globals, internshipsPage, selectComponent] = await Promise.all([
+const [config, middleware, adminLayout, adminLogin, admin, students, migration, certificates, submissions, tasks, loginPage, registerPage, adminLoginLayout, dashboardLayout, adminSidebar, studentSidebar, globals, internshipsPage, selectComponent, providers] = await Promise.all([
   read('lib/supabase/config.ts'),
   read('lib/supabase/middleware.ts'),
   read('app/admin/layout.tsx'),
@@ -27,6 +27,7 @@ const [config, middleware, adminLayout, adminLogin, admin, students, migration, 
   read('app/globals.css'),
   read('app/internships/page.tsx'),
   read('components/ui/select.tsx'),
+  read('components/layout/providers.tsx'),
 ]);
 
 assert.match(config, /process\.env\.SUPABASE_URL/);
@@ -137,6 +138,20 @@ assert.match(
 assert.match(globals, /grid-template-rows: 100dvh;/);
 assert.match(globals, /overflow-x: clip;/);
 
+// The scroll region is only usable if every box above it may shrink below its
+// content height. A flex/grid item defaults to `min-height: auto`
+// (= min-content), so /register's form wrapper grew to ~1035px inside a 732px
+// panel: `.auth-login-scroll` then measured clientHeight == scrollHeight
+// (nothing to scroll), the "Hesab yarat" button sat ~80px below the viewport
+// and the grid's `overflow: hidden` clipped it — the page could not scroll and
+// registration was impossible. Keep `min-height: 0` on the panel and its
+// children.
+assert.match(
+  globals,
+  /\.auth-login-page > \*,[\s\S]{0,120}\.auth-login-panel > \* \{[\s\S]{0,40}min-height: 0;/,
+  'auth panel must allow min-height: 0 so the form region can scroll'
+);
+
 // Exactly one viewport, no magic offset, for both shells.
 for (const [name, shell] of [
   ['admin', code(adminLoginLayout)],
@@ -207,6 +222,60 @@ assert.equal(
 // The theme remap block must stay in globals.css (single source of truth).
 assert.match(globals, /TRANSLUCENT SURFACE VARIANTS/);
 assert.match(globals, /\.bg-slate-50\\\/50 \{ background-color: color-mix/);
+
+/* ---------------------------------------------------------------------------
+ * Accent text shades.
+ *
+ * `--c-<family>-100/200` are translucent tints intended for surfaces and
+ * borders. Pointing `.text-<family>-100/200` at them made the dark theme
+ * render labels in `rgba(16,185,129,.3)` on a near-black page — a measured
+ * 1.65:1 contrast ratio, i.e. invisible. Each family needs an opaque `-text`
+ * twin in BOTH theme blocks, and the text utility must resolve through it.
+ *
+ * `.admin-shell` paints its own dark surfaces and must keep the dark values,
+ * so the shell re-pins the same tokens — otherwise `text-red-200` error boxes
+ * and `text-amber-200` admin chips would go dark-on-dark in the light theme.
+ * ------------------------------------------------------------------------ */
+const ACCENT_TEXT_SHADES = [
+  ['emerald', '100'],
+  ['emerald', '200'],
+  ['blue', '100'],
+  ['purple', '100'],
+  ['amber', '100'],
+  ['amber', '200'],
+  ['rose', '100'],
+  ['red', '100'],
+];
+for (const [family, shade] of ACCENT_TEXT_SHADES) {
+  assert.match(
+    globals,
+    new RegExp(`--c-${family}-${shade}-text:\\s*#`),
+    `missing --c-${family}-${shade}-text token (both theme blocks)`
+  );
+  assert.match(
+    globals,
+    new RegExp(`\\.text-${family}-${shade} \\{ color: var\\(--c-${family}-${shade}-text\\)`),
+    `.text-${family}-${shade} must not resolve to the translucent surface token`
+  );
+}
+// The admin console keeps the light-on-dark values for every pinned token.
+const adminShell = globals.slice(globals.indexOf('.admin-shell {'));
+assert.match(adminShell, /--c-emerald-200-text: #a7f3d0;/, 'admin shell: accent text pin missing');
+assert.match(adminShell, /--c-red-200-text: #fecaca;/, 'admin shell: accent text pin missing');
+assert.match(adminShell, /--c-red-100-text: #fca5a5;/, 'admin shell: accent text pin missing');
+
+// `.text-slate-400` resolves to `--c-slate-400-text`, which used to be the
+// literal #94a3b8 in both themes — 2.5:1 on white. The light block must pin a
+// darker value, and the admin shell (always dark) must keep the light one.
+assert.match(globals, /--c-slate-400-text: #64748b;/);
+assert.match(adminShell, /--c-slate-400-text: #94a3b8;/);
+
+// The saved theme must be applied from the shared provider, not only from
+// ThemeToggle: /login, /register and /admin/login render no toggle, so a
+// visitor who chose the dark theme elsewhere used to land on a light auth
+// screen even though the auth stylesheet is theme-aware.
+assert.match(providers, /intern-az-theme/);
+assert.match(providers, /classList\.add\(theme\)/);
 
 /* ---------------------------------------------------------------------------
  * The dashboard/admin shell must not let the *page* scroll: the sidebar is one

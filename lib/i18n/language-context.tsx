@@ -498,7 +498,7 @@ const translations: Record<Language, Translations> = {
     authUniversity: 'Universitet',
     authUniversityPlaceholder: 'məs. universitetinizin tam adı',
     authTerms: 'İstifadə şərtləri',
-    authPrivacy: 'məxfilik siyasəti',
+    authPrivacy: 'Məxfilik siyasəti',
     authAgreeSuffix: 'ilə razıyam.',
     authRegisterSuccess: 'Qeydiyyat uğurla tamamlandı! Tələbə kabinetinə yönləndirilirsiniz...',
     authRegisterConfirmEmail: 'Hesabınızı aktivləşdirmək üçün e-poçtunuza göndərilən təsdiq linkini açın. Sonra daxil olun.',

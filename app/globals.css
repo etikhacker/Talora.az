@@ -132,6 +132,32 @@ html.dark {
   --c-red-900: #fecaca;
   --c-red-950: #450a0a;
 
+  /* ---- Accent TEXT shades (dark) ---------------------------------------
+   *
+   * The `--c-<family>-50/100/200` tokens above are translucent tints: they are
+   * correct for translucent *surfaces* (`bg-emerald-50`, `border-emerald-200`,
+   * `color-mix(...)`) but they are unreadable as *text*. `rgba(16,185,129,.3)`
+   * on the near-black page measured a 1.65:1 contrast ratio — the affected
+   * labels (badges, "Nə etməlisən?", "Növbəti mərhələ") were effectively
+   * invisible in the dark theme.
+   *
+   * These `-text` twins carry an opaque value per family so `.text-<family>-100
+   * /200` can resolve to something legible while every surface/border utility
+   * keeps its original translucent value. The scheme mirrors the existing
+   * `--c-slate-*-text` convention used for the slate shades above. */
+  --c-emerald-100-text: #6ee7b7;
+  --c-emerald-200-text: #a7f3d0;
+  --c-blue-100-text: #93c5fd;
+  --c-blue-200-text: #bfdbfe;
+  --c-purple-100-text: #d8b4fe;
+  --c-purple-200-text: #e9d5ff;
+  --c-amber-100-text: #fcd34d;
+  --c-amber-200-text: #fde68a;
+  --c-rose-100-text: #fda4af;
+  --c-rose-200-text: #fecdd3;
+  --c-red-100-text: #fca5a5;
+  --c-red-200-text: #fecaca;
+
   /* Brand surfaces */
   --page: #07090d;
   --surface: #0d1118;
@@ -181,6 +207,14 @@ html.light {
   --c-slate-800: #1e293b;
   --c-slate-900: #0f172a;
   --c-slate-950: #020617;
+
+  /* `.text-slate-400` resolves to `--c-slate-400-text`, which was inherited
+   * from the dark block as the literal #94a3b8 — a 2.5:1 ratio on white. Every
+   * light page that used it outside an explicit override (filter labels,
+   * section intros, list meta) rendered as near-invisible grey. The admin
+   * console re-pins this token to the dark value inside `.admin-shell`, so the
+   * dark surfaces there are unaffected. */
+  --c-slate-400-text: #64748b;
 
   /* Brand surfaces (light theme) */
   --page: #f6f8f7;
@@ -266,6 +300,20 @@ html.light {
   --c-red-800: #991b1b;
   --c-red-900: #7f1d1d;
   --c-red-950: #450a0a;
+
+  /* Accent TEXT shades (light) — see the dark block for why these exist. */
+  --c-emerald-100-text: #047857;
+  --c-emerald-200-text: #065f46;
+  --c-blue-100-text: #1d4ed8;
+  --c-blue-200-text: #1e40af;
+  --c-purple-100-text: #7e22ce;
+  --c-purple-200-text: #6b21a8;
+  --c-amber-100-text: #b45309;
+  --c-amber-200-text: #92400e;
+  --c-rose-100-text: #be123c;
+  --c-rose-200-text: #9f1239;
+  --c-red-100-text: #b91c1c;
+  --c-red-200-text: #991b1b;
 }
 
 /* =============================================================================
@@ -415,8 +463,8 @@ html.light {
 .text-slate-900 { color: var(--c-slate-900) !important; }
 .text-slate-950 { color: var(--c-slate-950-bg) !important; }
 
-.text-emerald-100 { color: var(--c-emerald-100) !important; }
-.text-emerald-200 { color: var(--c-emerald-200) !important; }
+.text-emerald-100 { color: var(--c-emerald-100-text) !important; }
+.text-emerald-200 { color: var(--c-emerald-200-text) !important; }
 .text-emerald-300 { color: var(--c-emerald-300) !important; }
 .text-emerald-400 { color: var(--c-emerald-400) !important; }
 .text-emerald-500 { color: var(--c-emerald-500) !important; }
@@ -425,7 +473,7 @@ html.light {
 .text-emerald-800 { color: var(--c-emerald-800) !important; }
 .text-emerald-900 { color: var(--c-emerald-900) !important; }
 
-.text-blue-100 { color: var(--c-blue-100) !important; }
+.text-blue-100 { color: var(--c-blue-100-text) !important; }
 .text-blue-300 { color: var(--c-blue-300) !important; }
 .text-blue-400 { color: var(--c-blue-400) !important; }
 .text-blue-500 { color: var(--c-blue-500) !important; }
@@ -434,7 +482,7 @@ html.light {
 .text-blue-800 { color: var(--c-blue-800) !important; }
 .text-blue-900 { color: var(--c-blue-900) !important; }
 
-.text-purple-100 { color: var(--c-purple-100) !important; }
+.text-purple-100 { color: var(--c-purple-100-text) !important; }
 .text-purple-300 { color: var(--c-purple-300) !important; }
 .text-purple-400 { color: var(--c-purple-400) !important; }
 .text-purple-500 { color: var(--c-purple-500) !important; }
@@ -443,8 +491,8 @@ html.light {
 .text-purple-800 { color: var(--c-purple-800) !important; }
 .text-purple-900 { color: var(--c-purple-900) !important; }
 
-.text-amber-100 { color: var(--c-amber-100) !important; }
-.text-amber-200 { color: var(--c-amber-200) !important; }
+.text-amber-100 { color: var(--c-amber-100-text) !important; }
+.text-amber-200 { color: var(--c-amber-200-text) !important; }
 .text-amber-300 { color: var(--c-amber-300) !important; }
 .text-amber-400 { color: var(--c-amber-400) !important; }
 .text-amber-500 { color: var(--c-amber-500) !important; }
@@ -453,7 +501,7 @@ html.light {
 .text-amber-800 { color: var(--c-amber-800) !important; }
 .text-amber-900 { color: var(--c-amber-900) !important; }
 
-.text-rose-100 { color: var(--c-rose-100) !important; }
+.text-rose-100 { color: var(--c-rose-100-text) !important; }
 .text-rose-300 { color: var(--c-rose-300) !important; }
 .text-rose-400 { color: var(--c-rose-400) !important; }
 .text-rose-500 { color: var(--c-rose-500) !important; }
@@ -462,7 +510,7 @@ html.light {
 .text-rose-800 { color: var(--c-rose-800) !important; }
 .text-rose-900 { color: var(--c-rose-900) !important; }
 
-.text-red-100 { color: var(--c-red-100) !important; }
+.text-red-100 { color: var(--c-red-100-text) !important; }
 .text-red-300 { color: var(--c-red-300) !important; }
 .text-red-400 { color: var(--c-red-400) !important; }
 .text-red-500 { color: var(--c-red-500) !important; }
@@ -596,6 +644,24 @@ html.light {
   --c-slate-400-text: #94a3b8;
   --c-slate-500: #94a3b8;
   --c-slate-600: #c4d0cc;
+
+  /* Accent text shades — the console paints its own dark surfaces
+   * (bg-slate-900, bg-red-950/40, bg-amber-500/10), so `text-red-200` /
+   * `text-amber-200` must stay LIGHT here even when the site is in the light
+   * theme. Without this pin the light-theme values would render dark text on
+   * a dark console. */
+  --c-emerald-100-text: #6ee7b7;
+  --c-emerald-200-text: #a7f3d0;
+  --c-blue-100-text: #93c5fd;
+  --c-blue-200-text: #bfdbfe;
+  --c-purple-100-text: #d8b4fe;
+  --c-purple-200-text: #e9d5ff;
+  --c-amber-100-text: #fcd34d;
+  --c-amber-200-text: #fde68a;
+  --c-rose-100-text: #fda4af;
+  --c-rose-200-text: #fecdd3;
+  --c-red-100-text: #fca5a5;
+  --c-red-200-text: #fecaca;
 }
 
 /* =============================================================================
@@ -668,6 +734,18 @@ html.light button.bg-emerald-600,
 html.light button.bg-emerald-500 {
   box-shadow: 0 10px 24px rgba(5, 150, 105, 0.25);
 }
+
+/* White-on-emerald surfaces in the dark theme.
+ *
+ * `--c-emerald-600` is #10b981 in the dark block (it doubles as the bright
+ * accent), so `bg-emerald-600 text-white` — every primary button and the
+ * selected filter chip — measured 2.5:1. The surface itself is darkened here
+ * rather than the token, because #10b981 is also used as an *accent* on dark
+ * where it must stay bright. `--c-emerald-700` is likewise a light green in
+ * the dark block, which would have made hover lighter than rest; the hover
+ * override keeps the interaction going deeper instead. */
+html.dark .bg-emerald-600 { background-color: #059669 !important; }
+html.dark .hover\:bg-emerald-700:hover { background-color: #047857 !important; }
 
 html.light button.bg-amber-400 {
   box-shadow: 0 10px 24px rgba(217, 119, 6, 0.22);
@@ -850,6 +928,27 @@ input::placeholder, textarea::placeholder { color: var(--muted); }
     max-width: none;
     width: auto;
     height: 100%;
+  }
+
+  /* The scroll region only works if every flex/grid box above it is allowed to
+   * shrink below its content height.
+   *
+   * A flex item's automatic minimum size is `min-content`, so the panel's
+   * `flex-1` wrapper grew to the full form height (≈1035px on /register) inside
+   * a 732px panel. `.auth-login-scroll` therefore measured clientHeight ==
+   * scrollHeight (nothing to scroll) while the submit button sat ~80px below
+   * the viewport, and the grid's `overflow: hidden` clipped it for good: the
+   * page could not scroll and the form could not be submitted. Declaring
+   * `min-height: 0` at each level restores the intended behaviour — the panel
+   * stays one viewport tall and `.auth-login-scroll` becomes the scroll
+   * container. */
+  .auth-login-page > *,
+  .auth-login-panel,
+  .auth-login-panel > * {
+    min-height: 0;
+  }
+  .auth-login-panel {
+    overflow: hidden;
   }
 }
 
@@ -1144,6 +1243,8 @@ html.light footer .text-slate-300 { color: #475569 !important; }
 html.light footer .text-slate-400 { color: #64748b !important; }
 html.light footer .text-slate-500 { color: #64748b !important; }
 html.light footer .text-white { color: #0f172a !important; }
+html.light footer .text-emerald-300 { color: #059669 !important; }
+html.light footer .text-emerald-400 { color: #059669 !important; }
 html.light footer .border-slate-800 { border-color: rgba(15, 23, 42, 0.10) !important; }
 html.light footer .hover\:text-emerald-400:hover { color: #059669 !important; }
 
@@ -1192,4 +1293,32 @@ html.light .portfolio-preview-section .hover\\:text-white:hover { color: #0f172a
 html.light .portfolio-step-row h3 { color: #0f172a !important; }
 html.light .portfolio-step-row p { color: #475569 !important; }
 html.light .portfolio-step-row .text-emerald-300 { color: #047857 !important; }
+
+/* The preview card paints itself with a literal dark gradient
+ * (`from-[#12221f] via-[#0e171c] to-[#0a0e13]`), which the token remap cannot
+ * reach. The rules above then flipped its `text-white` / `text-slate-300`
+ * copy to dark, so in the light theme the card rendered as near-black text on
+ * a near-black gradient — "Layihəni planlaşdır" and "GitHub repo + README"
+ * were effectively invisible. Giving the card a light surface (like
+ * `.portfolio-main-card` and `.portfolio-track-card` already have) makes the
+ * existing copy overrides correct instead of fighting them.
+ *
+ * The process section keeps its dark band on purpose — see the note above —
+ * so this is scoped to the card, not the section. */
+html.light .portfolio-preview-card {
+  background: linear-gradient(145deg, #ffffff, #eef6f2) !important;
+  border-color: rgba(5, 150, 105, 0.24) !important;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.10), inset 0 1px 0 #ffffff !important;
+}
+html.light .portfolio-preview-card .border-emerald-300\/15,
+html.light .portfolio-preview-card .border-emerald-300\/10 { border-color: rgba(5, 150, 105, 0.28) !important; }
+html.light .portfolio-preview-card .bg-emerald-300\/10 { background-color: rgba(5, 150, 105, 0.10) !important; }
+html.light .portfolio-preview-card .text-emerald-300 { color: #047857 !important; }
+
+/* Section intro copy (`text-slate-400` sits directly on the light section
+ * background) resolved to the literal #94a3b8, a 2.3–2.4:1 contrast ratio.
+ * The process band is painted light by the `.portfolio-section + section` rule
+ * above, so its intro needs the same treatment as the rest of the copy. */
+html.light .portfolio-section .text-slate-400 { color: #64748b !important; }
+html.light .portfolio-intro { color: #64748b !important; }
 

@@ -475,7 +475,7 @@ export default function AdminLoginPage() {
             </div>
           </div>
 
-          <div className="border-t border-slate-100 bg-slate-50/50 px-6 py-4 text-center text-[11px] text-slate-400 sm:px-10">
+          <div className="border-t border-slate-100 bg-slate-50/50 px-6 py-4 text-center text-[11px] text-slate-500 sm:px-10">
             © {new Date().getFullYear()} Intern.az · Administrator Console
           </div>
         </div>
