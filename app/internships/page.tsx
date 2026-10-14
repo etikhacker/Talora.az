@@ -23,10 +23,13 @@ import {
   RotateCcw,
 } from 'lucide-react';
 
-function InternshipsContent() {
-  const searchParams = useSearchParams();
-  const initialSearch = searchParams.get('search') || '';
-  const initialCategory = searchParams.get('category') || 'all';
+function InternshipsContent({
+  initialSearch,
+  initialCategory,
+}: {
+  initialSearch: string;
+  initialCategory: string;
+}) {
 
   const { language, t } = useLanguage();
   const isAz = language === 'az';
@@ -65,12 +68,6 @@ function InternshipsContent() {
       isMounted = false;
     };
   }, []);
-
-  // Update from query params when they change
-  useEffect(() => {
-    if (initialSearch) setSearchTerm(initialSearch);
-    if (initialCategory && initialCategory !== 'all') setSelectedCategory(initialCategory);
-  }, [initialSearch, initialCategory]);
 
   // Extract unique categories from actual data
   const categories = useMemo(() => {
@@ -393,6 +390,22 @@ function InternshipsContent() {
   );
 }
 
+function InternshipsPageContent() {
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get('search') || '';
+  const initialCategory = searchParams.get('category') || 'all';
+
+  // Remount the stateful listing when URL filters change. This keeps the URL
+  // as the source of truth without synchronously setting state inside an effect.
+  return (
+    <InternshipsContent
+      key={JSON.stringify([initialSearch, initialCategory])}
+      initialSearch={initialSearch}
+      initialCategory={initialCategory}
+    />
+  );
+}
+
 export default function InternshipsPage() {
   return (
     <Suspense fallback={
@@ -400,7 +413,7 @@ export default function InternshipsPage() {
         <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     }>
-      <InternshipsContent />
+      <InternshipsPageContent />
     </Suspense>
   );
 }
