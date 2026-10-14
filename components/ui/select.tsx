@@ -32,7 +32,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           style={{ colorScheme: 'inherit' }}
           className={cn(
             'flex h-11 w-full appearance-none rounded-lg border border-slate-200 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 transition-all',
-            'focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20',
+            'focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20',
             'disabled:cursor-not-allowed disabled:opacity-50',
             className
           )}

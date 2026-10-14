@@ -87,8 +87,8 @@ export default function HowItWorksPage() {
             </h1>
             <p className="mt-4 text-base text-slate-600 leading-relaxed">
               {isAz
-                ? 'Intern.az tələbələrə nəzəri bilikləri real sənaye təcrübəsinə çevirmək üçün aydın və şəffaf mexanizm təqdim edir.'
-                : 'A structured, transparent pathway helping university students bridge the gap into professional roles.'}
+                ? 'Talora tələbələrə nəzəri bilikləri real sənaye təcrübəsinə çevirmək üçün aydın və şəffaf mexanizm təqdim edir.'
+                : 'A structured, transparent pathway helping students and aspiring professionals bridge the gap into professional roles.'}
             </p>
           </div>
 

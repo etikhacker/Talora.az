@@ -217,16 +217,16 @@ html.light {
   --c-slate-400-text: #64748b;
 
   /* Brand surfaces (light theme) */
-  --page: #f6f8f7;
+  --page: #f8fafc;
   --surface: #ffffff;
   --surface-raised: #ffffff;
   --surface-soft: #f1f5f9;
-  --line: rgba(15, 23, 42, 0.10);
-  --line-strong: rgba(5, 150, 105, 0.22);
-  --ink: #0f172a;
-  --muted: #64748b;
-  --accent: #059669;
-  --accent-bright: #10b981;
+  --line: #e4e7ec;
+  --line-strong: rgba(37, 99, 235, 0.22);
+  --ink: #101828;
+  --muted: #667085;
+  --accent: #2563eb;
+  --accent-bright: #3b82f6;
 
   /* Emerald on light surfaces — keep brand vivid on white */
   --c-emerald-50:  #ecfdf5;

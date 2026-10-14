@@ -3,97 +3,115 @@
 import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/i18n/language-context';
-import { GraduationCap, Mail, MapPin } from 'lucide-react';
+import { Globe, Mail, ArrowUpRight } from 'lucide-react';
 
 export function Footer() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
+  const isAz = language === 'az';
 
   return (
-    <footer className="w-full bg-slate-950/70 text-slate-300 text-sm border-t border-slate-800 shadow-[0_-20px_60px_rgba(0,0,0,0.22)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="w-full border-t border-slate-200 bg-white text-slate-600 transition-colors">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4 lg:gap-12">
+          {/* Brand Info */}
           <div className="md:col-span-2 space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 shadow-[0_0_24px_rgba(52,211,153,0.2)]">
-                <GraduationCap className="w-5 h-5" />
-              </div>
-              <span className="text-lg font-bold text-white tracking-tight">
-                Intern<span className="text-emerald-300">.az</span>
+            <Link href="/" className="inline-block">
+              <span className="text-2xl font-bold tracking-tight text-slate-900">
+                talora<span className="text-blue-600">.</span>
               </span>
-            </div>
-            <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
-              {t('footerDesc')}
+            </Link>
+            <p className="max-w-md text-sm leading-relaxed text-slate-500">
+              {isAz
+                ? 'Tələbələr və gənc mütəxəssislər üçün beynəlxalq təcrübə proqramları, real layihələr və rəsmi sertifikatlaşdırma platforması.'
+                : 'An international platform connecting aspiring professionals with internship opportunities to gain practical experience, develop skills, and shape their careers.'}
             </p>
-            <div className="text-xs text-slate-400 flex items-center gap-2 pt-1">
-              <MapPin className="w-3.5 h-3.5 text-emerald-400" />
-              <span>{t('footerBaku')}</span>
+            <div className="flex items-center gap-2 pt-1 text-xs text-slate-500">
+              <Globe className="h-3.5 w-3.5 text-blue-600" />
+              <span>{isAz ? 'Qlobal Təcrübə Şəbəkəsi' : 'Global Internship Network'}</span>
             </div>
           </div>
 
+          {/* Platform Navigation */}
           <div>
-            <h4 className="font-semibold text-white text-xs uppercase tracking-wider mb-3">
-              {t('footerPlatform')}
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900 mb-3.5">
+              {isAz ? 'Platforma' : 'Platform'}
             </h4>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/internships" className="hover:text-emerald-400 transition-colors">
-                  {t('navInternships')}
+                <Link href="/internships" className="hover:text-blue-600 transition-colors">
+                  {isAz ? 'Təcrübələr' : 'Explore Internships'}
                 </Link>
               </li>
               <li>
-                <Link href="/how-it-works" className="hover:text-emerald-400 transition-colors">
-                  {t('navHowItWorks')}
+                <Link href="/how-it-works" className="hover:text-blue-600 transition-colors">
+                  {isAz ? 'Necə işləyir?' : 'How It Works'}
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-emerald-400 transition-colors">
-                  {t('navAbout')}
+                <Link href="/about" className="hover:text-blue-600 transition-colors">
+                  {isAz ? 'Haqqımızda' : 'About Talora'}
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-emerald-400 transition-colors">
-                  {t('navContact')}
+                <Link href="/contact?type=employer" className="hover:text-blue-600 transition-colors inline-flex items-center gap-1">
+                  <span>{isAz ? 'Şirkətlər üçün' : 'For Companies'}</span>
+                  <ArrowUpRight className="h-3 w-3 text-slate-400" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-blue-600 transition-colors">
+                  {isAz ? 'Əlaqə & Dəstək' : 'Contact & Support'}
                 </Link>
               </li>
             </ul>
           </div>
 
+          {/* Student Access & Portal */}
           <div>
-            <h4 className="font-semibold text-white text-xs uppercase tracking-wider mb-3">
-              Tələbələr üçün
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900 mb-3.5">
+              {isAz ? 'Tələbələr və İştirakçılar' : 'Students & Candidates'}
             </h4>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/register" className="hover:text-emerald-400 transition-colors">
-                  {t('navRegister')}
+                <Link href="/register" className="hover:text-blue-600 transition-colors">
+                  {isAz ? 'Qeydiyyatdan keç' : 'Create Account'}
                 </Link>
               </li>
               <li>
-                <Link href="/login" className="hover:text-emerald-400 transition-colors">
-                  {t('navLogin')}
+                <Link href="/login" className="hover:text-blue-600 transition-colors">
+                  {isAz ? 'Daxil ol' : 'Sign In'}
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard" className="hover:text-emerald-400 transition-colors">
-                  Tələbə Portalı
+                <Link href="/dashboard" className="hover:text-blue-600 transition-colors">
+                  {isAz ? 'Tələbə Portalı' : 'Student Portal'}
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
-                  <Mail className="w-3 h-3 text-emerald-400" />
-                  <span>Dəstək və Əlaqə</span>
+                <Link href="/contact" className="hover:text-blue-600 transition-colors inline-flex items-center gap-1.5">
+                  <Mail className="h-3.5 w-3.5 text-blue-600" />
+                  <span>{isAz ? 'Kömək mərkəzi' : 'Help & Inquiries'}</span>
                 </Link>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-slate-800 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>© {new Date().getFullYear()} Intern.az. {t('footerRights')}</p>
-          <div className="flex items-center gap-4 text-[11px] text-slate-400">
-            <span>{t('privacy')}</span>
-            <span>•</span>
-            <span>{t('terms')}</span>
+        {/* Bottom bar */}
+        <div className="mt-10 border-t border-slate-200 pt-6 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p>© {new Date().getFullYear()} Talora. {isAz ? 'Bütün hüquqlar qorunur.' : 'All rights reserved.'}</p>
+          <div className="flex items-center gap-4 text-xs text-slate-500">
+            <Link href="/about" className="hover:text-slate-900 transition-colors">
+              {t('privacy')}
+            </Link>
+            <span aria-hidden="true">·</span>
+            <Link href="/about" className="hover:text-slate-900 transition-colors">
+              {t('terms')}
+            </Link>
+            <span aria-hidden="true">·</span>
+            <Link href="/admin/login" className="hover:text-slate-900 transition-colors">
+              {isAz ? 'İnzibatçı' : 'Admin'}
+            </Link>
           </div>
         </div>
       </div>

@@ -53,7 +53,7 @@ function BrandPanel() {
           <GraduationCap className="h-6 w-6" aria-hidden="true" />
         </div>
         <div>
-          <p className="text-lg font-bold tracking-tight">Intern.az</p>
+          <p className="text-lg font-bold tracking-tight">Talora</p>
           <p className="text-[10px] uppercase tracking-[0.18em] text-emerald-50/80">
             {t('authPortalSubtitle')}
           </p>
@@ -151,7 +151,7 @@ function MobileBrand() {
           <GraduationCap className="h-5 w-5" aria-hidden="true" />
         </div>
         <div>
-          <p className="text-lg font-bold tracking-tight">Intern.az</p>
+          <p className="text-lg font-bold tracking-tight">Talora</p>
           <p className="text-[9px] uppercase tracking-[0.18em] text-emerald-50/80">
             {t('authPortalSubtitle')}
           </p>
@@ -527,7 +527,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="border-t border-slate-100 bg-slate-50/50 px-6 py-4 text-center text-[11px] text-slate-500 sm:px-10">
-            © {new Date().getFullYear()} Intern.az · {t('authFooter')}
+            © {new Date().getFullYear()} Talora · {t('authFooter')}
           </div>
         </div>
       </div>

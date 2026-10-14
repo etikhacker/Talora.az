@@ -4,191 +4,164 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth/auth-context';
-import { useLanguage, Language } from '@/lib/i18n/language-context';
+import { useLanguage } from '@/lib/i18n/language-context';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
-import { GraduationCap, Menu, X, ArrowRight, User, Globe, LogOut } from 'lucide-react';
+import { Menu, X, ArrowRight, User, LogOut } from 'lucide-react';
 
 export function Navbar() {
   const pathname = usePathname();
-  const { user, profile, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const { language, setLanguage, t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const isAz = language === 'az';
+
   const navLinks = [
-    { href: '/', label: t('navHome') },
-    { href: '/internships', label: t('navInternships') },
-    { href: '/how-it-works', label: t('navHowItWorks') },
+    { href: '/internships', label: isAz ? 'Təcrübələr' : 'Explore Internships' },
+    { href: '/contact?type=employer', label: isAz ? 'Şirkətlər üçün' : 'For Companies' },
+    { href: '/how-it-works', label: isAz ? 'Necə işləyir?' : 'How It Works' },
     { href: '/about', label: t('navAbout') },
     { href: '/contact', label: t('navContact') },
   ];
 
   return (
-    <header className="sticky top-0 z-30 w-full bg-slate-950/60 backdrop-blur-xl border-b border-slate-200/80 shadow-[0_10px_35px_rgba(0,0,0,0.25)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-slate-950 shadow-[0_0_28px_rgba(52,211,153,0.28)] group-hover:rotate-3 group-hover:scale-105 transition-transform duration-200">
-              <GraduationCap className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="text-xl font-bold tracking-tight text-slate-100 block leading-tight">
-                Intern<span className="text-emerald-400">.az</span>
-              </span>
-              <span className="text-[10px] tracking-wide text-slate-400 uppercase font-medium">
-                Təcrübə Portalı
-              </span>
-            </div>
-          </Link>
+    <header className="sticky top-0 z-30 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md transition-colors">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Talora text-based wordmark */}
+        <Link href="/" className="flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded-md">
+          <span className="text-2xl font-bold tracking-tight text-slate-900">
+            talora<span className="text-blue-600">.</span>
+          </span>
+        </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-400">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`transition-colors hover:text-emerald-600 ${
-                    isActive ? 'text-emerald-300 font-semibold' : ''
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Right Area: Language Switcher & Auth Actions */}
-          <div className="hidden md:flex items-center gap-4">
-            <ThemeToggle />
-            {/* Language Switcher AZ / EN */}
-            <div className="flex items-center bg-slate-100/70 p-0.5 rounded-lg text-xs font-semibold text-slate-400 border border-slate-200/80">
-              <button
-                type="button"
-                  onClick={() => setLanguage('az')}
-                  className={`px-2 py-1 rounded-md transition-all ${
-                    language === 'az'
-                    ? 'bg-emerald-400 text-slate-950 shadow-2xs font-bold'
-                    : 'hover:text-slate-900'
+        {/* Desktop Navigation Links */}
+        <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href.split('?')[0]));
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`transition-colors hover:text-blue-600 ${
+                  isActive ? 'text-blue-600 font-semibold' : ''
                 }`}
               >
-                AZ
-              </button>
-              <button
-                type="button"
-                  onClick={() => setLanguage('en')}
-                  className={`px-2 py-1 rounded-md transition-all ${
-                    language === 'en'
-                    ? 'bg-emerald-400 text-slate-950 shadow-2xs font-bold'
-                    : 'hover:text-slate-900'
-                }`}
-              >
-                EN
-              </button>
-            </div>
+                {link.label}
+              </Link>
+            );
+          })}
+        </nav>
 
-            {user ? (
-              <div className="flex items-center gap-3">
-                <Link href="/dashboard">
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <User className="w-4 h-4 text-emerald-600" />
-                    {t('navDashboard')}
-                  </Button>
-                </Link>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => signOut()}
-                  className="text-slate-500 hover:text-slate-800"
-                >
-                  <LogOut className="w-4 h-4 mr-1" />
-                  {t('navLogout')}
+        {/* Right Area: Language Switcher, Theme & Auth Actions */}
+        <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
+
+          {/* Clean Segmented Language Control */}
+          <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs font-semibold text-slate-600">
+            <button
+              type="button"
+              onClick={() => setLanguage('en')}
+              className={`rounded-md px-2.5 py-1 transition-all ${
+                language === 'en'
+                  ? 'bg-white text-slate-900 shadow-xs font-bold'
+                  : 'text-slate-500 hover:text-slate-900'
+              }`}
+            >
+              EN
+            </button>
+            <button
+              type="button"
+              onClick={() => setLanguage('az')}
+              className={`rounded-md px-2.5 py-1 transition-all ${
+                language === 'az'
+                  ? 'bg-white text-slate-900 shadow-xs font-bold'
+                  : 'text-slate-500 hover:text-slate-900'
+              }`}
+            >
+              AZ
+            </button>
+          </div>
+
+          {user ? (
+            <div className="flex items-center gap-2 pl-1">
+              <Link href="/dashboard">
+                <Button variant="outline" size="sm" className="gap-2 border-slate-200 text-slate-800 hover:bg-slate-50">
+                  <User className="h-4 w-4 text-blue-600" />
+                  {t('navDashboard')}
                 </Button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-3">
-                <Link href="/login">
-                  <Button variant="ghost" size="sm" className="text-slate-700 font-medium">
-                    {t('navLogin')}
-                  </Button>
-                </Link>
-                <Link href="/register">
-                  <Button variant="default" size="sm" className="gap-1.5 shadow-xs">
-                    {t('navRegister')}
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </div>
+              </Link>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => signOut()}
+                className="text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+                aria-label="Sign Out"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 pl-1">
+              <Link href="/login">
+                <Button variant="ghost" size="sm" className="text-slate-700 hover:text-slate-900 font-medium">
+                  {isAz ? 'Daxil ol' : 'Sign In'}
+                </Button>
+              </Link>
+              <Link href="/register">
+                <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5 shadow-xs font-medium">
+                  {isAz ? 'Qeydiyyat' : 'Get Started'}
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
 
-          {/* Mobile menu button */}
-          <div className="flex md:hidden items-center gap-2">
-            <ThemeToggle />
-            {/* Quick Lang Switcher on mobile header */}
-            <button
-              onClick={() => setLanguage(language === 'az' ? 'en' : 'az')}
-              className="text-xs font-bold px-2 py-1 rounded bg-slate-100 border border-slate-200 text-slate-700 uppercase"
-            >
-              {language}
-            </button>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-              aria-label="Toggle navigation"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
+        {/* Mobile menu toggle */}
+        <div className="flex md:hidden items-center gap-2">
+          <ThemeToggle />
+          <button
+            onClick={() => setLanguage(language === 'en' ? 'az' : 'en')}
+            className="text-xs font-bold px-2 py-1 rounded border border-slate-200 bg-slate-50 text-slate-700 uppercase"
+            aria-label="Switch language"
+          >
+            {language}
+          </button>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            aria-label="Toggle navigation"
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
       </div>
 
-      {/* Mobile menu dropdown */}
+      {/* Mobile dropdown menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 bg-white px-4 pt-2 pb-6 space-y-3">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-            <span className="text-xs text-slate-500 font-medium">Dil / Language:</span>
-            <div className="flex items-center bg-slate-100 p-0.5 rounded-lg text-xs font-semibold text-slate-600 border border-slate-200">
-              <button
-                type="button"
-                onClick={() => setLanguage('az')}
-                className={`px-2.5 py-1 rounded-md ${
-                  language === 'az' ? 'bg-white text-emerald-700 shadow-2xs font-bold' : ''
+        <div className="md:hidden border-b border-slate-200 bg-white px-4 pt-3 pb-6 space-y-4">
+          <nav className="flex flex-col space-y-2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`py-2 text-base font-medium transition-colors ${
+                  pathname === link.href ? 'text-blue-600 font-semibold' : 'text-slate-700 hover:text-blue-600'
                 }`}
               >
-                AZ
-              </button>
-              <button
-                type="button"
-                onClick={() => setLanguage('en')}
-                className={`px-2.5 py-1 rounded-md ${
-                  language === 'en' ? 'bg-white text-emerald-700 shadow-2xs font-bold' : ''
-                }`}
-              >
-                EN
-              </button>
-            </div>
-          </div>
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-600"
-            >
-              {link.label}
-            </Link>
-          ))}
-
-          <div className="pt-4 border-t border-slate-100 flex flex-col gap-2">
+          <div className="pt-3 border-t border-slate-100 flex flex-col gap-2.5">
             {user ? (
               <>
                 <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full justify-start gap-2">
-                    <User className="w-4 h-4 text-emerald-600" />
+                  <Button variant="outline" className="w-full justify-center gap-2">
+                    <User className="h-4 w-4 text-blue-600" />
                     {t('navDashboard')}
                   </Button>
                 </Link>
@@ -198,22 +171,23 @@ export function Navbar() {
                     signOut();
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full justify-start text-slate-500"
+                  className="w-full justify-center text-slate-600"
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
+                  <LogOut className="h-4 w-4 mr-2" />
                   {t('navLogout')}
                 </Button>
               </>
             ) : (
               <>
                 <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full">
-                    {t('navLogin')}
+                  <Button variant="outline" className="w-full justify-center border-slate-200 text-slate-800">
+                    {isAz ? 'Daxil ol' : 'Sign In'}
                   </Button>
                 </Link>
                 <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="default" className="w-full">
-                    {t('navRegister')}
+                  <Button variant="default" className="w-full justify-center bg-blue-600 hover:bg-blue-700 text-white gap-2">
+                    {isAz ? 'Qeydiyyat' : 'Get Started'}
+                    <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
               </>

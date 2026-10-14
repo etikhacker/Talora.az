@@ -20,17 +20,17 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-semibold mb-4">
               <GraduationCap className="w-4 h-4" />
-              <span>Intern.az Platforması</span>
+              <span>Talora Platform</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              {isAz ? 'Haqqımızda' : 'About Intern.az'}
+              {isAz ? 'Haqqımızda' : 'About Talora'}
             </h1>
             <p className="mt-4 text-base text-slate-600 leading-relaxed">
               {isAz
-                ? 'Intern.az Azərbaycanda ali təhsil müəssisələrinin tələbələri ilə müasir əmək bazarının tələbləri arasında körpü quran ixtisaslaşmış təcrübə portalıdır.'
-                : 'Intern.az connects university students across Azerbaijan with real-world internship opportunities, industry mentorship, and verified credentials.'}
+                ? 'Talora tələbələr və gənc mütəxəssislər ilə müasir əmək bazarının tələbləri arasında körpü quran beynəlxalq təcrübə və inkişaf platformasıdır.'
+                : 'Talora connects aspiring professionals and students worldwide with real-world internship opportunities, industry mentorship, and verified credentials.'}
             </p>
           </div>
 

@@ -55,7 +55,7 @@ export default function ContactPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              {isAz ? 'Bizimlə Əlaqə' : 'Contact Intern.az'}
+              {isAz ? 'Bizimlə Əlaqə' : 'Contact Talora'}
             </h1>
             <p className="mt-3 text-sm text-slate-600">
               {isAz

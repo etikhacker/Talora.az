@@ -1,281 +1,483 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import type { Internship } from '@/types/database';
+import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
 import { useLanguage } from '@/lib/i18n/language-context';
+import type { Internship } from '@/types/database';
+import { formatDate } from '@/lib/utils/date';
 import {
-  ArrowRight,
-  ArrowUpRight,
-  Award,
-  BookOpen,
-  CheckCircle2,
-  ChevronRight,
-  BarChart3,
+  Search,
+  MapPin,
   Briefcase,
-  Check,
+  ArrowRight,
   Code2,
-  Database,
-  GraduationCap,
-  Layers3,
+  Palette,
+  BarChart3,
+  Cpu,
+  Layers,
   Sparkles,
-  Users,
+  Calendar,
+  Clock,
+  CheckCircle2,
+  FileCheck2,
+  Globe2,
 } from 'lucide-react';
 
-const tracks = [
+const CATEGORIES = [
   {
-    number: '01',
+    id: 'technology',
+    query: 'Software',
+    enName: 'Technology & Software',
+    azName: 'Texnologiya və Proqramlaşdırma',
+    enDesc: 'Web engineering, backend architectures, APIs, and modern platforms.',
+    azDesc: 'Veb proqramlaşdırma, backend sistemləri, API və müasir platformalar.',
     icon: Code2,
-    tone: 'violet',
-    azTitle: 'Frontend & Web Engineering',
-    enTitle: 'Frontend & Web Engineering',
-    azText: 'Next.js, TypeScript, UI sistemləri və real məhsul interfeysləri.',
-    enText: 'Next.js, TypeScript, UI systems, and real product interfaces.',
   },
   {
-    number: '02',
-    icon: Database,
-    tone: 'green',
-    azTitle: 'Backend & Data Systems',
-    enTitle: 'Backend & Data Systems',
-    azText: 'API-lər, PostgreSQL, verilənlər bazası dizaynı və təhlükəsiz serverlər.',
-    enText: 'APIs, PostgreSQL, database design, and secure server systems.',
+    id: 'data-ai',
+    query: 'Data',
+    enName: 'Data & Artificial Intelligence',
+    azName: 'Məlumat və Süni İntellekt',
+    enDesc: 'Analytics, data modeling, machine learning, and automation workflows.',
+    azDesc: 'Analitika, verilənlər bazası, maşın öyrənməsi və avtomatlaşdırma.',
+    icon: Cpu,
   },
   {
-    number: '03',
+    id: 'design',
+    query: 'Design',
+    enName: 'Design & Creative',
+    azName: 'Dizayn və Yaradıcı Sahələr',
+    enDesc: 'UI/UX systems, product design, prototyping, and user research.',
+    azDesc: 'UI/UX sistemləri, məhsul dizaynı, prototipləşdirmə və istifadəçi tədqiqatları.',
+    icon: Palette,
+  },
+  {
+    id: 'business',
+    query: 'Business',
+    enName: 'Business & Marketing',
+    azName: 'Biznes və Marketinq',
+    enDesc: 'Product growth, market research, content strategy, and operations.',
+    azDesc: 'Məhsul inkişafı, bazar araşdırmaları, məzmun strategiyası və əməliyyatlar.',
     icon: BarChart3,
-    tone: 'orange',
-    azTitle: 'AI, Analytics & Automation',
-    enTitle: 'AI, Analytics & Automation',
-    azText: 'AI alətləri, data düşüncəsi və iş axınlarını avtomatlaşdıran layihələr.',
-    enText: 'AI tools, data thinking, and projects that automate real workflows.',
   },
-];
-
-const steps = [
-  ['01', 'Qeydiyyat', 'Profilini yarat, universitet və maraq sahələrini əlavə et.'],
-  ['02', 'İstiqamət seçimi', 'Sənə uyğun təcrübə proqramına müraciət et.'],
-  ['03', 'Real tapşırıqlar', 'Mentor dəstəyi ilə həftəlik layihələr üzərində işləyin.'],
-  ['04', 'Sertifikat', 'Nəticəni göstərən təsdiqlənə bilən sertifikat əldə et.'],
+  {
+    id: 'engineering',
+    query: 'Engineering',
+    enName: 'Engineering & Systems',
+    azName: 'Mühəndislik və Sistemlər',
+    enDesc: 'Infrastructure, DevOps, system reliability, and cloud solutions.',
+    azDesc: 'İnfrastruktur, DevOps, sistem etibarlılığı və bulud texnologiyaları.',
+    icon: Layers,
+  },
+  {
+    id: 'other',
+    query: '',
+    enName: 'All Opportunities',
+    azName: 'Bütün İmkanlar',
+    enDesc: 'Browse the complete catalog of verified internship cohorts.',
+    azDesc: 'Təsdiqlənmiş bütün təcrübə proqramları kataloquna baxın.',
+    icon: Globe2,
+  },
 ];
 
 export default function HomePage() {
+  const router = useRouter();
   const { language } = useLanguage();
   const isAz = language === 'az';
-  const [programs, setPrograms] = useState<Internship[]>([]);
-  const [programsLoading, setProgramsLoading] = useState(true);
-  const [previewStep, setPreviewStep] = useState(0);
+
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchLocation, setSearchLocation] = useState('');
+  const [searchWorkType, setSearchWorkType] = useState('all');
+
+  const [internships, setInternships] = useState<Internship[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
     let active = true;
     async function loadPrograms() {
       try {
-        const response = await fetch('/api/internships/public', { cache: 'no-store' });
-        if (!response.ok) throw new Error('Could not load public programs');
-        const data = (await response.json()) as Internship[];
-        if (active) setPrograms(data.filter((program) => program.status === 'published').slice(0, 3));
+        setFetchError(false);
+        const res = await fetch('/api/internships/public', { cache: 'no-store' });
+        if (!res.ok) throw new Error('Could not fetch');
+        const data = (await res.json()) as Internship[];
+        if (active) {
+          const published = data.filter((item) => item.status === 'published');
+          setInternships(published.slice(0, 4));
+        }
       } catch {
-        if (active) setPrograms([]);
+        if (active) {
+          setFetchError(true);
+          setInternships([]);
+        }
       } finally {
-        if (active) setProgramsLoading(false);
+        if (active) setLoading(false);
       }
     }
     void loadPrograms();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, []);
 
-  const previewTasks = [
-    {
-      number: '01',
-      title: isAz ? 'Layihəni planlaşdır' : 'Plan your project',
-      detail: isAz ? 'Məqsədi müəyyən et, repo-nu yarat və ilk README-ni yaz.' : 'Define the goal, create your repository, and write the first README.',
-      deliverable: isAz ? 'GitHub repo + README' : 'GitHub repo + README',
-      icon: BookOpen,
-    },
-    {
-      number: '02',
-      title: isAz ? 'Həllini qur və yoxla' : 'Build and test your solution',
-      detail: isAz ? 'Tapşırığı kiçik addımlara böl, kodunu yaz və nəticəni test et.' : 'Break the task into small steps, implement your solution, and test it.',
-      deliverable: isAz ? 'Kod + test nəticələri' : 'Code + test results',
-      icon: Code2,
-    },
-    {
-      number: '03',
-      title: isAz ? 'İşini təqdim et' : 'Submit your work',
-      detail: isAz ? 'Nəticəni sənədləşdir, məhdudiyyətləri qeyd et və təqdimat linkini paylaş.' : 'Document the result, note limitations, and share your submission link.',
-      deliverable: isAz ? 'Demo + qısa hesabat' : 'Demo + short report',
-      icon: CheckCircle2,
-    },
-  ];
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (searchKeyword.trim()) params.set('search', searchKeyword.trim());
+    if (searchLocation.trim()) params.set('location', searchLocation.trim());
+    if (searchWorkType && searchWorkType !== 'all') params.set('type', searchWorkType);
+
+    const queryString = params.toString();
+    router.push(queryString ? `/internships?${queryString}` : '/internships');
+  };
 
   return (
-    <div className="portfolio-page flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-[#101828]">
       <Navbar />
 
       <main className="flex-1">
-        <section className="portfolio-hero relative overflow-hidden">
-          <div className="portfolio-noise" aria-hidden="true" />
-          <div className="portfolio-hero-glow portfolio-hero-glow-one" aria-hidden="true" />
-          <div className="portfolio-hero-glow portfolio-hero-glow-two" aria-hidden="true" />
-          <div className="mx-auto grid max-w-7xl items-center gap-14 px-5 pb-24 pt-20 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20 lg:px-10 lg:pb-32 lg:pt-28">
-            <div className="relative z-10">
-              <div className="reveal-up reveal-delay-1 mb-7 inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-emerald-200">
-                <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-                {isAz ? 'Azərbaycan tələbələri üçün' : 'For university students in Azerbaijan'}
-              </div>
-              <h1 className="reveal-up reveal-delay-2 max-w-4xl text-[3.25rem] font-black leading-[0.98] tracking-[-0.065em] text-white sm:text-6xl lg:text-[6.5rem]">
-                {isAz ? (
-                  <>Gələcəyini <span className="portfolio-gradient-text">bu gün</span> qur.</>
-                ) : (
-                  <>Build your <span className="portfolio-gradient-text">future</span> today.</>
-                )}
-              </h1>
-              <p className="reveal-up reveal-delay-3 mt-8 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">
-                {isAz
-                  ? 'Intern.az universitetdə öyrəndiklərini real layihələrə, mentor rəyinə və karyeran üçün görünən nəticələrə çevirir.'
-                  : 'Intern.az turns what you learn at university into real projects, mentor feedback, and visible career proof.'}
+        {/* =====================================================================
+            HERO SECTION
+            ===================================================================== */}
+        <section className="border-b border-slate-200 bg-white py-16 sm:py-20 lg:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-3">
+                {isAz ? 'Beynəlxalq Təcrübə Platforması' : 'International Internship Platform'}
               </p>
-              <div className="reveal-up reveal-delay-4 mt-9 flex flex-col gap-3 sm:flex-row">
-                <Link href="/register">
-                  <Button size="lg" className="portfolio-primary-button h-13 w-full gap-2 rounded-full px-7 sm:w-auto">
-                    {isAz ? 'Səyahətə başla' : 'Start your journey'}
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                  </Button>
-                </Link>
+              <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+                {isAz ? 'Növbəti fürsətiniz buradan başlayır.' : 'Your next opportunity starts here.'}
+              </h1>
+              <p className="mt-5 text-base leading-relaxed text-slate-600 sm:text-lg">
+                {isAz
+                  ? 'Təcrübə proqramlarını kəşf edin, real bacarıqlar qazanın və gələcəyinizə doğru ilk addımı atın.'
+                  : 'Discover internships, build real-world skills, and take the first step toward your future.'}
+              </p>
+
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Link href="/internships">
-                  <Button variant="outline" size="lg" className="portfolio-outline-button h-13 w-full gap-2 rounded-full px-7 sm:w-auto">
-                    {isAz ? 'Proqramları kəşf et' : 'Explore programs'}
-                    <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                  <Button size="lg" className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-medium gap-2">
+                    {isAz ? 'Təcrübələri Kəşf Et' : 'Explore Internships'}
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="#how-it-works">
+                  <Button variant="outline" size="lg" className="h-11 border-slate-200 text-slate-800 hover:bg-slate-50 px-6 font-medium">
+                    {isAz ? 'Necə İşləyir' : 'How It Works'}
                   </Button>
                 </Link>
               </div>
-              <div className="reveal-up reveal-delay-4 mt-12 flex flex-wrap gap-x-8 gap-y-4 border-t border-white/10 pt-6 text-xs text-slate-400">
-                <span className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-emerald-300" /> Real layihələr</span>
-                <span className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-emerald-300" /> Mentor rəyi</span>
-                <span className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-emerald-300" /> Verifiable sertifikat</span>
-              </div>
             </div>
 
-            <div className="portfolio-hero-art reveal-up reveal-delay-3 relative mx-auto h-[31rem] w-full max-w-[34rem] lg:h-[34rem]" aria-label="Intern.az tələbə inkişaf platformasının vizual önizləməsi">
-              <div className="portfolio-orbit portfolio-orbit-one" aria-hidden="true" />
-              <div className="portfolio-orbit portfolio-orbit-two" aria-hidden="true" />
-              <div className="portfolio-main-card">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-300 text-slate-950 shadow-[0_0_30px_rgba(110,231,183,0.35)]">
-                      <GraduationCap className="h-5 w-5" aria-hidden="true" />
-                    </div>
+            {/* Compact Search Interface */}
+            <div className="mx-auto mt-12 max-w-4xl rounded-xl border border-slate-200 bg-white p-3 shadow-xs sm:p-4">
+              <form onSubmit={handleSearchSubmit} className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Input
+                    type="text"
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    placeholder={isAz ? 'Vəzifə və ya açar söz...' : 'Role or keyword...'}
+                    className="h-11 pl-9 border-slate-200 bg-white text-sm focus:border-blue-600 focus:ring-blue-600/20"
+                  />
+                </div>
+
+                <div className="relative">
+                  <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Input
+                    type="text"
+                    value={searchLocation}
+                    onChange={(e) => setSearchLocation(e.target.value)}
+                    placeholder={isAz ? 'Şəhər və ya ölkə...' : 'Location (e.g. Remote, City)...'}
+                    className="h-11 pl-9 border-slate-200 bg-white text-sm focus:border-blue-600 focus:ring-blue-600/20"
+                  />
+                </div>
+
+                <div>
+                  <Select
+                    value={searchWorkType}
+                    onChange={(e) => setSearchWorkType(e.target.value)}
+                    className="h-11 border-slate-200 bg-white text-sm text-slate-800"
+                  >
+                    <option value="all">{isAz ? 'Bütün formatlar' : 'All Work Types'}</option>
+                    <option value="remote">{isAz ? 'Distant (Remote)' : 'Remote'}</option>
+                    <option value="hybrid">{isAz ? 'Hibrid' : 'Hybrid'}</option>
+                    <option value="onsite">{isAz ? 'Ofisdə (On-site)' : 'On-site'}</option>
+                  </Select>
+                </div>
+
+                <div>
+                  <Button type="submit" className="h-11 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium gap-2">
+                    <Search className="h-4 w-4" />
+                    <span>{isAz ? 'Təcrübə Axtar' : 'Search Internships'}</span>
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================================
+            OPPORTUNITY DISCOVERY SECTION
+            ===================================================================== */}
+        <section className="py-16 sm:py-20 border-b border-slate-200 bg-[#F8FAFC]">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="max-w-2xl">
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                {isAz ? 'İstiqamətinizi tapın' : 'Find your path'}
+              </h2>
+              <p className="mt-2 text-sm sm:text-base text-slate-600">
+                {isAz
+                  ? 'Maraqlarınıza və ambisiyalarınıza uyğun fürsətləri araşdırın.'
+                  : 'Explore opportunities that match your interests and ambitions.'}
+              </p>
+            </div>
+
+            <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {CATEGORIES.map((cat) => {
+                const Icon = cat.icon;
+                const linkHref = cat.query ? `/internships?search=${encodeURIComponent(cat.query)}` : '/internships';
+                return (
+                  <Link
+                    key={cat.id}
+                    href={linkHref}
+                    className="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-300 hover:shadow-xs"
+                  >
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-200">Intern.az</p>
-                      <p className="mt-1 text-sm text-slate-400">Student workspace</p>
+                      <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition-colors group-hover:bg-blue-600 group-hover:text-white">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <h3 className="mt-4 text-base font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                        {isAz ? cat.azName : cat.enName}
+                      </h3>
+                      <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-slate-500">
+                        {isAz ? cat.azDesc : cat.enDesc}
+                      </p>
                     </div>
-                  </div>
-                  <span className="rounded-full border border-emerald-300/25 bg-emerald-300/10 px-2.5 py-1 text-[10px] font-bold text-emerald-200">ACTIVE</span>
-                </div>
-                <div className="mt-9">
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Current focus</p>
-                  <h2 className="mt-3 max-w-xs text-4xl font-black tracking-[-0.05em] text-white">Build. Learn. Show it.</h2>
-                </div>
-                <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">{isAz ? 'Nümunə tapşırıq' : 'Sample task'}</p><p className="mt-2 text-base font-bold text-white">{isAz ? 'İlk layihə repozitoriyası' : 'Your first project repository'}</p></div>
-                    <span className="rounded-full border border-emerald-300/25 bg-emerald-300/10 px-2.5 py-1 text-[10px] font-bold text-emerald-200">{isAz ? 'Başlanğıc' : 'Beginner'}</span>
-                  </div>
-                  <div className="mt-4 space-y-3 text-xs text-slate-400">
-                    <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-300" /> {isAz ? 'Repo-nu yarat' : 'Create your repository'}</div>
-                    <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-300" /> {isAz ? 'README əlavə et' : 'Add a README'}</div>
-                    <div className="flex items-center gap-2"><span className="h-4 w-4 rounded-full border border-slate-600" /> {isAz ? 'Nəticəni təqdim et' : 'Submit your result'}</div>
-                  </div>
-                </div>
-                <div className="mt-5 grid grid-cols-3 gap-2">
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-3"><Layers3 className="h-4 w-4 text-violet-300" /><p className="mt-3 text-sm font-black text-white">{isAz ? 'Layihə' : 'Project'}</p><p className="text-[10px] text-slate-500">{isAz ? 'Praktika' : 'Practice'}</p></div>
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-3"><Users className="h-4 w-4 text-emerald-300" /><p className="mt-3 text-sm font-black text-white">{isAz ? 'Rəy' : 'Feedback'}</p><p className="text-[10px] text-slate-500">{isAz ? 'İnkişaf' : 'Growth'}</p></div>
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-3"><Award className="h-4 w-4 text-orange-300" /><p className="mt-3 text-sm font-black text-white">{isAz ? 'Nəticə' : 'Outcome'}</p><p className="text-[10px] text-slate-500">{isAz ? 'Portfolio' : 'Portfolio'}</p></div>
-                </div>
+
+                    <div className="mt-6 flex items-center gap-1 text-xs font-semibold text-blue-600 group-hover:translate-x-0.5 transition-transform">
+                      <span>{isAz ? 'Vakansiyalara bax' : 'Explore opportunities'}</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================================
+            FEATURED INTERNSHIPS SECTION
+            ===================================================================== */}
+        <section className="py-16 sm:py-20 border-b border-slate-200 bg-white">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                  {isAz ? 'Təcrübə imkanlarını kəşf edin' : 'Explore internship opportunities'}
+                </h2>
+                <p className="mt-2 text-sm sm:text-base text-slate-600">
+                  {isAz
+                    ? 'Sənaye mentorları ilə təcrübə qazanmaq üçün aktiv proqramlar.'
+                    : 'Active programs curated to help you gain structured hands-on experience.'}
+                </p>
               </div>
-              <div className="portfolio-floating-tag portfolio-floating-tag-top"><Briefcase className="h-4 w-4 text-orange-300" /> Real work</div>
-              <div className="portfolio-floating-tag portfolio-floating-tag-bottom"><span className="h-2 w-2 rounded-full bg-emerald-300" /> Mentor feedback</div>
+
+              <Link href="/internships">
+                <Button variant="outline" size="sm" className="border-slate-200 text-slate-800 hover:bg-slate-50 gap-1.5 font-medium">
+                  <span>{isAz ? 'Bütün vakansiyalar' : 'View all cohorts'}</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
             </div>
+
+            {/* Content states */}
+            {loading ? (
+              <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="animate-pulse rounded-xl border border-slate-200 bg-white p-6 space-y-4">
+                    <div className="h-4 w-24 rounded bg-slate-100" />
+                    <div className="h-6 w-3/4 rounded bg-slate-100" />
+                    <div className="h-4 w-full rounded bg-slate-100" />
+                    <div className="h-4 w-1/2 rounded bg-slate-100" />
+                  </div>
+                ))}
+              </div>
+            ) : fetchError ? (
+              <div className="mt-10 rounded-xl border border-slate-200 bg-slate-50 p-8 text-center">
+                <p className="text-sm text-slate-600">
+                  {isAz ? 'Təcrübə proqramlarını yükləmək mümkün olmadı.' : 'Could not load internship opportunities.'}
+                </p>
+                <Link href="/internships" className="mt-3 inline-block">
+                  <Button variant="outline" size="sm" className="mt-2">
+                    {isAz ? 'Yenidən cəhd et' : 'Try Again'}
+                  </Button>
+                </Link>
+              </div>
+            ) : internships.length === 0 ? (
+              <div className="mt-10 rounded-xl border border-slate-200 bg-slate-50 p-10 text-center">
+                <Briefcase className="mx-auto h-8 w-8 text-slate-400" />
+                <h3 className="mt-3 text-base font-semibold text-slate-900">
+                  {isAz ? 'Hazırda aktiv təcrübə vakansiyası yoxdur' : 'No active cohorts published yet'}
+                </h3>
+                <p className="mt-1.5 text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+                  {isAz
+                    ? 'Yeni təcrübə proqramları təsdiqləndikdən sonra burada elan olunacaq.'
+                    : 'New verified internship cohorts will appear here once published by program coordinators.'}
+                </p>
+              </div>
+            ) : (
+              <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
+                {internships.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={`/internships/${item.id}`}
+                    className="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-300 hover:shadow-xs"
+                  >
+                    <div>
+                      {/* Zero-pill metadata row */}
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 font-medium">
+                        <span className="text-blue-600 font-semibold">{item.category || 'General Track'}</span>
+                        <span aria-hidden="true">·</span>
+                        <span className="capitalize">{item.difficulty}</span>
+                        {item.duration_weeks ? (
+                          <>
+                            <span aria-hidden="true">·</span>
+                            <span>{item.duration_weeks} {isAz ? 'həftə' : 'weeks'}</span>
+                          </>
+                        ) : null}
+                      </div>
+
+                      <h3 className="mt-3 text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                        {item.title}
+                      </h3>
+
+                      <p className="mt-2 text-sm leading-relaxed text-slate-600 line-clamp-2">
+                        {item.short_description || item.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-6 border-t border-slate-100 pt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+                      <div className="flex items-center gap-3">
+                        {item.application_deadline ? (
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                            <span>{isAz ? 'Son tarix:' : 'Deadline:'} {formatDate(item.application_deadline)}</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3.5 w-3.5 text-slate-400" />
+                            <span>{isAz ? 'Müraciətlər açıqdır' : 'Open Cohort'}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <span className="inline-flex items-center gap-1 font-semibold text-blue-600 group-hover:translate-x-0.5 transition-transform">
+                        <span>{isAz ? 'Ətraflı bax' : 'View details'}</span>
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
-        <div className="portfolio-marquee border-y border-white/10 bg-white/[0.025] py-5">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-8 gap-y-3 px-5 text-xs font-bold uppercase tracking-[0.18em] text-slate-500 sm:justify-between sm:px-8 lg:px-10">
-            <span>Frontend</span><span>Backend</span><span>Data</span><span>AI & Automation</span><span>Cybersecurity</span><span>Product thinking</span>
-          </div>
-        </div>
-
-        <section id="programs" className="portfolio-section mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
-          <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <div className="max-w-2xl"><p className="portfolio-kicker">01 / {isAz ? 'Proqramlar' : 'Programs'}</p><h2 className="portfolio-heading">{isAz ? 'Növbəti addımını seç.' : 'Choose your next step.'}</h2><p className="mt-5 max-w-xl text-sm leading-6 text-slate-400">{isAz ? 'Proqramlar canlı siyahıdan yüklənir. Hər birində öyrən, qur və nəticəni portfoliona əlavə et.' : 'Programs load from the live listing. Learn, build, and add a tangible result to your portfolio.'}</p></div>
-            <Link href="/internships" className="portfolio-text-link">{isAz ? 'Bütün proqramlara bax' : 'View all programs'} <ArrowUpRight className="h-4 w-4" /></Link>
-          </div>
-          {programsLoading ? (
-            <div className="grid gap-5 lg:grid-cols-3">{[0,1,2].map((item) => <div key={item} className="h-64 animate-pulse rounded-3xl border border-white/10 bg-white/[0.035]" />)}</div>
-          ) : programs.length > 0 ? (
-            <div className="grid gap-5 lg:grid-cols-3">
-              {programs.map((program, index) => <Link href={`/internships/${program.slug}`} key={program.id} className="portfolio-track-card group">
-                <div className="flex items-start justify-between"><span className="text-xs font-bold tracking-[0.18em] text-slate-500">{String(index + 1).padStart(2,'0')}</span><span className="portfolio-track-icon"><GraduationCap className="h-5 w-5" aria-hidden="true" /></span></div>
-                <div className="mt-8 flex flex-wrap gap-2"><span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2.5 py-1 text-[10px] font-bold text-emerald-200">{program.category || (isAz ? 'Təcrübə proqramı' : 'Internship')}</span><span className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] font-semibold text-slate-400">{program.duration_weeks} {isAz ? 'həftə' : 'weeks'}</span></div>
-                <h3 className="mt-5 text-2xl font-black tracking-[-0.04em] text-white">{program.title}</h3>
-                <p className="mt-3 min-h-14 text-sm leading-6 text-slate-400">{program.short_description || program.description}</p>
-                <span className="mt-auto inline-flex items-center gap-2 pt-8 text-sm font-bold text-white">{isAz ? 'Proqramı araşdır' : 'Explore program'} <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" /></span>
-              </Link>)}
+        {/* =====================================================================
+            HOW IT WORKS SECTION
+            ===================================================================== */}
+        <section id="how-it-works" className="py-16 sm:py-20 border-b border-slate-200 bg-[#F8FAFC]">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-2">
+                {isAz ? 'Platformanın iş prinsipi' : 'Workflow & Methodology'}
+              </p>
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                {isAz ? 'Üç sadə addımla karyeranızı başladın' : 'How Talora works'}
+              </h2>
+              <p className="mt-2 text-sm sm:text-base text-slate-600">
+                {isAz
+                  ? 'Nəzəriyyəni real təcrübəyə və yoxlanıla bilən nəticələrə çeviririk.'
+                  : 'We bridge academic fundamentals with practical workplace output and verified credentials.'}
+              </p>
             </div>
-          ) : (
-            <div className="grid gap-5 lg:grid-cols-3">
-              {tracks.map((track) => { const Icon = track.icon; return <Link href="/internships" key={track.number} className={`portfolio-track-card portfolio-track-${track.tone}`}>
-                <div className="flex items-start justify-between"><span className="text-xs font-bold tracking-[0.18em] text-slate-500">{track.number}</span><span className="portfolio-track-icon"><Icon className="h-5 w-5" aria-hidden="true" /></span></div>
-                <h3 className="mt-12 text-2xl font-black tracking-[-0.04em] text-white">{isAz ? track.azTitle : track.enTitle}</h3>
-                <p className="mt-4 min-h-14 text-sm leading-6 text-slate-400">{isAz ? track.azText : track.enText}</p>
-                <span className="mt-auto inline-flex items-center gap-2 pt-8 text-sm font-bold text-white">{isAz ? 'İstiqaməti aç' : 'Open track'} <ArrowUpRight className="h-4 w-4" /></span>
-              </Link>; })}
-            </div>
-          )}
-        </section>
 
-        <section className="border-y border-white/10 bg-[#0b1016]">
-          <div className="mx-auto grid max-w-7xl gap-14 px-5 py-24 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:px-10 lg:py-32">
-            <div><p className="portfolio-kicker">02 / Process</p><h2 className="portfolio-heading">{isAz ? 'Bir addım. Sonra bir addım da.' : 'One step. Then another.'}</h2><p className="portfolio-intro mt-6 max-w-md text-base leading-7 text-slate-400">{isAz ? 'Mürəkkəb karyera yolunu aydın və ölçülə bilən mərhələlərə bölürük.' : 'We turn an overwhelming career start into a clear, measurable sequence of steps.'}</p></div>
-            <div className="grid gap-0">
-              {steps.map(([number, title, text], index) => <div key={number} className="portfolio-step-row"><span className="portfolio-step-number">{number}</span><div><h3 className="text-xl font-bold text-white">{isAz ? title : ['Registration', 'Direction', 'Real tasks', 'Certificate'][index]}</h3><p className="mt-2 max-w-lg text-sm leading-6 text-slate-400">{isAz ? text : ['Create your profile and add your university details.', 'Choose a program that fits your interests.', 'Work on practical projects with mentor guidance.', 'Earn a credential you can verify and share.'][index]}</p></div><ArrowUpRight className="ml-auto hidden h-5 w-5 text-emerald-300 sm:block" aria-hidden="true" /></div>)}
-            </div>
-          </div>
-        </section>
+            <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+              {/* Step 1 */}
+              <div className="rounded-xl border border-slate-200 bg-white p-7">
+                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">01 / Step</div>
+                <h3 className="mt-3 text-lg font-bold text-slate-900">
+                  {isAz ? 'Fürsətləri kəşf edin' : 'Discover opportunities'}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {isAz
+                    ? 'İxtisasınıza və maraqlarınıza uyğun təcrübə proqramlarını araşdırın, tələbləri nəzərdən keçirin.'
+                    : 'Explore curated programs across engineering, design, and business. Review prerequisites and curriculum roadmaps.'}
+                </p>
+              </div>
 
-        <section className="portfolio-preview-section border-y border-white/10 bg-[#090e13]">
-          <div className="mx-auto grid max-w-7xl gap-12 px-5 py-24 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:px-10 lg:py-28">
-            <div className="self-center">
-              <p className="portfolio-kicker">03 / {isAz ? 'Tapşırıq təcrübəsi' : 'Task experience'}</p>
-              <h2 className="portfolio-heading">{isAz ? 'Sadəcə öyrənmə. Qur, yoxla, təqdim et.' : 'Don’t just learn. Build, test, submit.'}</h2>
-              <p className="mt-6 max-w-lg text-base leading-7 text-slate-400">{isAz ? 'Hər tapşırıq aydın məqsəd, addım-addım təlimat və konkret təhvil nəticəsi ilə qurulub. Hansı mərhələdə olduğunu seç və nümunəyə bax.' : 'Each task has a clear goal, step-by-step guidance, and a concrete deliverable. Select a stage to preview the workflow.'}</p>
-              <div className="mt-8 flex flex-wrap gap-2">
-                {previewTasks.map((task, index) => <button key={task.number} type="button" onClick={() => setPreviewStep(index)} aria-pressed={previewStep === index} className={`rounded-full border px-4 py-2 text-xs font-bold transition-all ${previewStep === index ? 'border-emerald-300/40 bg-emerald-300/15 text-emerald-200 shadow-[0_0_25px_rgba(16,185,129,0.08)]' : 'border-white/10 bg-white/[0.03] text-slate-400 hover:border-white/20 hover:text-white'}`}>{task.number} · {index === 0 ? (isAz ? 'Planla' : 'Plan') : index === 1 ? (isAz ? 'Hazırla' : 'Build') : (isAz ? 'Təqdim et' : 'Submit')}</button>)}
+              {/* Step 2 */}
+              <div className="rounded-xl border border-slate-200 bg-white p-7">
+                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">02 / Step</div>
+                <h3 className="mt-3 text-lg font-bold text-slate-900">
+                  {isAz ? 'Müraciət edin və təcrübə toplayın' : 'Apply and build experience'}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {isAz
+                    ? 'Motivasiya məktubunuzu təqdim edin, təsdiq aldıqdan sonra strukturlaşdırılmış modullara başlayın.'
+                    : 'Submit your profile, receive approval from coordinators, and embark on structured weekly assignments.'}
+                </p>
+              </div>
+
+              {/* Step 3 */}
+              <div className="rounded-xl border border-slate-200 bg-white p-7">
+                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">03 / Step</div>
+                <h3 className="mt-3 text-lg font-bold text-slate-900">
+                  {isAz ? 'Tapşırıqları bitirin və bacarıqlarınızı artırın' : 'Complete tasks and grow your skills'}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {isAz
+                    ? 'Həftəlik layihələri mentor rəyi ilə tamamlayın və təsdiqlənə bilən rəsmi sertifikat əldə edin.'
+                    : 'Submit real deliverables, receive mentor reviews, and earn an authentic credential you can verify and share.'}
+                </p>
               </div>
             </div>
-            <div className="portfolio-preview-card rounded-[2rem] border border-emerald-300/15 bg-gradient-to-br from-[#12221f] via-[#0e171c] to-[#0a0e13] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.3)] sm:p-8">
-              <div className="flex items-center justify-between border-b border-white/10 pb-5"><div className="flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-300/10 text-emerald-200"><span className="text-sm font-black">{previewTasks[previewStep].number}</span></div><div><p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">{isAz ? 'Tapşırıq önizləməsi' : 'Task preview'}</p><h3 className="mt-1 text-lg font-black text-white">{previewTasks[previewStep].title}</h3></div></div><span className="rounded-full border border-white/10 px-3 py-1 text-[10px] font-bold text-slate-300">{isAz ? 'Nümunə' : 'Example'}</span></div>
-              <div className="py-8"><div className="flex items-start gap-4"><div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-300/15 bg-emerald-300/10 text-emerald-200">{(() => { const Icon = previewTasks[previewStep].icon; return <Icon className="h-4 w-4" aria-hidden="true" />; })()}</div><div><p className="text-xs font-bold uppercase tracking-[0.15em] text-emerald-200">{isAz ? 'Nə etməlisən?' : 'What you’ll do'}</p><p className="mt-3 text-sm leading-7 text-slate-300">{previewTasks[previewStep].detail}</p></div></div>
-                <div className="mt-7 rounded-2xl border border-white/10 bg-black/20 p-4"><p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">{isAz ? 'Təhvil veriləcək nəticə' : 'Deliverable'}</p><div className="mt-3 flex items-center justify-between gap-4"><span className="text-sm font-bold text-white">{previewTasks[previewStep].deliverable}</span><CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-300" aria-hidden="true" /></div></div>
-              </div>
-              <div className="flex items-center justify-between border-t border-white/10 pt-5"><span className="text-xs text-slate-500">{isAz ? 'Aydın təlimat · Konkret nəticə' : 'Clear guidance · Concrete outcome'}</span><button type="button" onClick={() => setPreviewStep((previewStep + 1) % previewTasks.length)} className="inline-flex items-center gap-2 text-xs font-bold text-emerald-200 transition-colors hover:text-white">{isAz ? 'Növbəti mərhələ' : 'Next step'} <ChevronRight className="h-4 w-4" /></button></div>
-            </div>
           </div>
         </section>
 
-        <section className="portfolio-cta mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
-          <div className="relative overflow-hidden rounded-[2rem] border border-emerald-300/20 bg-gradient-to-br from-emerald-400 via-emerald-500 to-cyan-500 px-7 py-14 text-center shadow-[0_30px_100px_rgba(16,185,129,0.2)] sm:px-12">
-            <div className="absolute -right-16 -top-24 h-72 w-72 rounded-full border-[40px] border-white/10" aria-hidden="true" /><div className="absolute -bottom-32 -left-10 h-72 w-72 rounded-full border-[45px] border-white/10" aria-hidden="true" />
-            <p className="relative text-xs font-black uppercase tracking-[0.2em] text-emerald-950/70">Intern.az / 2026</p>
-            <h2 className="relative mx-auto mt-5 max-w-3xl text-4xl font-black tracking-[-0.055em] text-slate-950 sm:text-6xl">{isAz ? 'Öyrəndiklərini göstərməyə başla.' : 'Start showing what you can do.'}</h2>
-            <p className="relative mx-auto mt-5 max-w-xl text-sm leading-6 text-emerald-950/75">{isAz ? 'İlk real layihənə bir klik məsafədəsən.' : 'Your first real project is one click away.'}</p>
-            <Link href="/register" className="relative mt-8 inline-block"><Button size="lg" className="h-13 rounded-full bg-slate-950 px-8 text-white shadow-xl hover:bg-slate-800">{isAz ? 'Qeydiyyatdan keç' : 'Create your profile'} <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
+        {/* =====================================================================
+            FINAL CTA SECTION
+            ===================================================================== */}
+        <section className="py-20 sm:py-24 bg-white">
+          <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+              {isAz ? 'Növbəti fəsliniz bir fürsətlə başlayır.' : 'Your next chapter starts with one opportunity.'}
+            </h2>
+            <p className="mt-4 text-base text-slate-600 sm:text-lg">
+              {isAz
+                ? 'Təcrübələri kəşf edin və karyeranıza doğru praktiki addım atın.'
+                : 'Explore internships and take a practical step toward your career.'}
+            </p>
+            <div className="mt-8 flex justify-center">
+              <Link href="/internships">
+                <Button size="lg" className="h-12 bg-blue-600 hover:bg-blue-700 text-white px-8 font-medium gap-2 shadow-xs">
+                  {isAz ? 'Təcrübələri Kəşf Et' : 'Explore Internships'}
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </section>
       </main>
+
       <Footer />
     </div>
   );

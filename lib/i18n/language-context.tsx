@@ -348,8 +348,8 @@ const translations: Record<Language, Translations> = {
     submitApplication: 'Müraciəti təsdiqlə və göndər',
     submitting: 'Göndərilir...',
     applicationSuccess: 'Müraciətiniz uğurla göndərildi!',
-    applicationSuccessDesc: 'Müraciətiniz inzibatçı tərəfindən nəzərdən keçiriləcək. Statusu şəxsi kabinetinizdən izləyə bilərsiniz.',
-    emailSpamFolderNotice: 'E-poçt bildirişləri aktivdirsə, Intern.az-dan gələn məktublar internaz.notification@gmail.com ünvanından göndərilir. Gələnlər qutusunda görünməsə, Spam qovluğunu yoxlayın və bu ünvanı kontaktlarınıza əlavə edin.',
+    applicationSuccessDesc: 'Müraciətiniz nəzərdən keçiriləcək. Statusu şəxsi kabinetinizdən izləyə bilərsiniz.',
+    emailSpamFolderNotice: 'E-poçt bildirişləri aktivdirsə, Talora-dan gələn məktublar bildiriş e-poçtunuzdan göndərilir. Gələnlər qutusunda görünməsə, Spam qovluğunu yoxlayın.',
 
     myApplicationsTitle: 'Müraciətlərim',
     myApplicationsSubtitle: 'Göndərdiyiniz təcrübə müraciətlərinin cari vəziyyəti və qərarlar.',
@@ -414,7 +414,7 @@ const translations: Record<Language, Translations> = {
     paymentApprovedDesc: 'Ödənişiniz uğurla təsdiq edildi. Rəsmi PDF sertifikatınız koordinator tərəfindən hazırlanır.',
     paymentRejectedDesc: 'Ödənişiniz təsdiqlənmədi. Zəhmət olmasa aşağıdakı qeydi oxuyun və yeni qəbz yükləyin.',
     publicVerifySuccess: 'Sertifikat rəsmi olaraq təsdiqlənmişdir',
-    publicVerifyNotice: 'Bu sertifikat Intern.az platformasında təcrübə proqramını uğurla tamamlamış tələbəyə rəsmi olaraq verilmişdir.',
+    publicVerifyNotice: 'Bu sertifikat Talora platformasında təcrübə proqramını uğurla tamamlamış tələbəyə rəsmi olaraq verilmişdir.',
     publicVerifyNotFound: 'Daxil edilmiş identifikator üzrə aktiv və ya etibarlı sertifikat tapılmadı.',
     certificateSettings: 'Sertifikat Parametrləri',
     certificateOrders: 'Sertifikat Sifarişləri',
@@ -536,7 +536,7 @@ const translations: Record<Language, Translations> = {
     sideAdminBadge: 'Administrator',
     sideAdminMenu: 'İdarəetmə',
     sideAdminSignOut: 'Çıxış',
-    sideAdminMobile: 'Intern.az İnzibatçı',
+    sideAdminMobile: 'Talora İnzibatçı',
     sideAdminOverview: 'Ümumi baxış',
     sideAdminInternships: 'Təcrübə proqramları',
     sideAdminApplications: 'Müraciətlər',
@@ -558,10 +558,10 @@ const translations: Record<Language, Translations> = {
     navDashboard: 'Dashboard',
     navLogout: 'Sign Out',
 
-    footerDesc: 'Empowering university students in Azerbaijan with hands-on industry internships, workplace projects, and verified career credentials.',
+    footerDesc: 'An international platform connecting aspiring professionals with internship opportunities to gain practical experience, develop skills, and shape their careers.',
     footerPlatform: 'Platform',
     footerRights: 'All rights reserved.',
-    footerBaku: 'Mingachevir, Azerbaijan',
+    footerBaku: 'Global Internship Network',
     privacy: 'Privacy Policy',
     terms: 'Terms of Service',
 
@@ -616,7 +616,7 @@ const translations: Record<Language, Translations> = {
     submitting: 'Submitting...',
     applicationSuccess: 'Your application has been submitted successfully!',
     applicationSuccessDesc: 'Your application will be carefully reviewed by the platform administrator. You can monitor its status from your dashboard.',
-    emailSpamFolderNotice: 'If email notifications are enabled, messages from Intern.az will come from internaz.notification@gmail.com. If a message is not in your inbox, check Spam and add this address to your contacts.',
+    emailSpamFolderNotice: 'If email notifications are enabled, messages from Talora will be delivered to your email inbox. If a message is not in your inbox, please check your Spam folder.',
 
     myApplicationsTitle: 'My Applications',
     myApplicationsSubtitle: 'Track your submitted internship applications and decisions.',
@@ -681,7 +681,7 @@ const translations: Record<Language, Translations> = {
     paymentApprovedDesc: 'Your payment was successfully confirmed. Your official certificate PDF is being prepared by our team.',
     paymentRejectedDesc: 'Your payment could not be verified. Please review the note below and submit a valid receipt.',
     publicVerifySuccess: 'Certificate Authenticated & Verified',
-    publicVerifyNotice: 'This credential was officially issued by Intern.az to recognize successful completion of an industry internship program.',
+    publicVerifyNotice: 'This credential was officially issued by Talora to recognize successful completion of an industry internship program.',
     publicVerifyNotFound: 'No active or valid certificate was found matching this credential ID.',
     certificateSettings: 'Certificate Settings',
     certificateOrders: 'Certificate Orders',
@@ -803,7 +803,7 @@ const translations: Record<Language, Translations> = {
     sideAdminBadge: 'Administrator',
     sideAdminMenu: 'Management',
     sideAdminSignOut: 'Sign Out',
-    sideAdminMobile: 'Intern.az Admin',
+    sideAdminMobile: 'Talora Admin',
     sideAdminOverview: 'Overview',
     sideAdminInternships: 'Internship Programs',
     sideAdminApplications: 'Applications',
@@ -828,7 +828,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLangState] = useState<Language>(() => {
     if (typeof window !== 'undefined') {
       try {
-        const saved = localStorage.getItem('intern_az_lang') as Language;
+        const saved = (localStorage.getItem('talora_lang') || localStorage.getItem('intern_az_lang')) as Language;
         if (saved === 'az' || saved === 'en') {
           return saved;
         }
@@ -836,13 +836,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         // ignore
       }
     }
-    return 'az';
+    return 'en';
   });
 
   const setLanguage = (lang: Language) => {
     setLangState(lang);
     if (typeof window !== 'undefined') {
       try {
+        localStorage.setItem('talora_lang', lang);
         localStorage.setItem('intern_az_lang', lang);
       } catch {
         // ignore
@@ -851,7 +852,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   const t = (key: keyof Translations): string => {
-    return translations[language]?.[key] || translations.az[key] || '';
+    return translations[language]?.[key] || translations.en?.[key] || translations.az[key] || '';
   };
 
   return (

@@ -1,6 +1,6 @@
 {
   "name": "Internship Management Platform",
-  "description": "Azerbaijan-focused internship platform for students and administrators, featuring verified internship catalogs, structured applications, weekly tasks, student submissions, mentor reviews, manual payment verification, and official certificate issuance.",
+  "description": "International internship platform connecting students, graduates, and aspiring professionals with real-world internship opportunities, hands-on tasks, mentor feedback, and verified credentials.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

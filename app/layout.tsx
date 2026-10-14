@@ -3,8 +3,8 @@ import './globals.css'; // Global styles
 import { Providers } from '@/components/layout/providers';
 
 export const metadata: Metadata = {
-  title: 'Intern.az',
-  description: 'Azərbaycan tələbələri üçün təcrübə platforması.',
+  title: 'Talora — Discover Internship Opportunities',
+  description: 'Discover internship opportunities, gain practical experience, and build skills for your future with Talora.',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
@@ -14,19 +14,19 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest',
   openGraph: {
-    title: 'Intern.az',
-    description: 'Azərbaycan tələbələri üçün təcrübə platforması.',
+    title: 'Talora — Discover Internship Opportunities',
+    description: 'Discover internship opportunities, gain practical experience, and build skills for your future with Talora.',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Intern.az',
-    description: 'Azərbaycan tələbələri üçün təcrübə platforması.',
+    title: 'Talora — Discover Internship Opportunities',
+    description: 'Discover internship opportunities, gain practical experience, and build skills for your future with Talora.',
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#00a651',
+  themeColor: '#2563EB',
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {

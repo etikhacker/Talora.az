@@ -97,7 +97,7 @@ export default function InternshipDetailsPage({ params }: Props) {
       <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
         <Navbar />
         <main className="flex-1 py-16 flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
         </main>
         <Footer />
       </div>
@@ -166,7 +166,7 @@ export default function InternshipDetailsPage({ params }: Props) {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-500 mb-6">
-            <Link href="/internships" className="hover:text-emerald-600 transition-colors">
+            <Link href="/internships" className="hover:text-blue-600 transition-colors">
               {t('navInternships')}
             </Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
@@ -413,7 +413,7 @@ export default function InternshipDetailsPage({ params }: Props) {
                 ) : (
                   <div className="space-y-3">
                     <Link href={`/internships/${internship.slug}/apply`}>
-                      <Button className="w-full gap-2 shadow-xs bg-emerald-600 hover:bg-emerald-700 text-white">
+                      <Button className="w-full gap-2 shadow-xs bg-blue-600 hover:bg-blue-700 text-white font-medium">
                         {t('applyNow')}
                         <ArrowRight className="w-4 h-4" />
                       </Button>

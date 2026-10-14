@@ -58,12 +58,12 @@ export function StudentSidebar() {
       {/* Brand Header */}
       <div className="p-5 border-b border-slate-100 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white shadow-xs">
+          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-xs">
             <GraduationCap className="w-4 h-4" />
           </div>
           <div>
             <span className="font-bold text-slate-900 text-base leading-tight block">
-              Intern<span className="text-emerald-600">.az</span>
+              talora<span className="text-blue-600">.</span>
             </span>
             <span className="text-[10px] text-slate-500 font-medium">
               {t('sideStudentPortal')}
@@ -157,10 +157,10 @@ export function StudentSidebar() {
       {/* Mobile top bar */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center text-white">
+          <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-white">
             <GraduationCap className="w-4 h-4" />
           </div>
-          <span className="font-bold text-slate-900 text-sm">Intern.az</span>
+          <span className="font-bold text-slate-900 text-sm">Talora</span>
         </Link>
         <button
           onClick={() => setMobileOpen(true)}
