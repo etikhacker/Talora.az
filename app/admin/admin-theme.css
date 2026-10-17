@@ -1,0 +1,17 @@
+/* Admin-only light theme overrides. All page data and business logic remain in the production Next.js/Supabase pages. */
+.admin-shell[data-admin-theme="light"]{background:#f4f7fb!important;color:#172033!important}
+.admin-shell[data-admin-theme="light"] .bg-slate-950{background-color:#f4f7fb!important}
+.admin-shell[data-admin-theme="light"] .bg-slate-950\/90{background-color:rgb(255 255 255 / 92%)!important}
+.admin-shell[data-admin-theme="light"] .bg-slate-900{background-color:#fff!important}
+.admin-shell[data-admin-theme="light"] .bg-slate-800,.admin-shell[data-admin-theme="light"] .bg-slate-800\/70,.admin-shell[data-admin-theme="light"] .bg-slate-800\/80{background-color:#f1f5f9!important}
+.admin-shell[data-admin-theme="light"] .text-white{color:#172033!important}
+.admin-shell[data-admin-theme="light"] .text-slate-100,.admin-shell[data-admin-theme="light"] .text-slate-200{color:#273449!important}
+.admin-shell[data-admin-theme="light"] .text-slate-300{color:#475569!important}
+.admin-shell[data-admin-theme="light"] .text-slate-400,.admin-shell[data-admin-theme="light"] .text-slate-500{color:#64748b!important}
+.admin-shell[data-admin-theme="light"] .border-slate-800,.admin-shell[data-admin-theme="light"] .border-slate-800\/80,.admin-shell[data-admin-theme="light"] .border-slate-700,.admin-shell[data-admin-theme="light"] .border-slate-700\/60{border-color:#e2e8f0!important}
+.admin-shell[data-admin-theme="light"] input,.admin-shell[data-admin-theme="light"] textarea,.admin-shell[data-admin-theme="light"] select{background-color:#fff!important;color:#172033!important;border-color:#cbd5e1!important}
+.admin-shell[data-admin-theme="light"] input::placeholder,.admin-shell[data-admin-theme="light"] textarea::placeholder{color:#94a3b8!important}
+.admin-shell[data-admin-theme="light"] [class*="hover:bg-slate-800"]:hover{background-color:#eaf0f7!important}
+.admin-shell[data-admin-theme="light"] [class*="hover:text-white"]:hover{color:#0f172a!important}
+.admin-shell[data-admin-theme="light"] .bg-amber-400,.admin-shell[data-admin-theme="light"] .bg-amber-500,.admin-shell[data-admin-theme="light"] .text-slate-950{color:#111827!important}
+.admin-shell[data-admin-theme="light"] .shadow-2xl{box-shadow:0 18px 50px rgb(15 23 42 / 12%)!important}
