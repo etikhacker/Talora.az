@@ -1322,3 +1322,71 @@ html.light .portfolio-preview-card .text-emerald-300 { color: #047857 !important
 html.light .portfolio-section .text-slate-400 { color: #64748b !important; }
 html.light .portfolio-intro { color: #64748b !important; }
 
+
+
+/* ==========================================================================
+   TALORA FULL-PLATFORM DESIGN SYSTEM
+   Visual layer ported from the approved prototype. Existing routes, Supabase
+   queries, authentication guards, API handlers and business rules are retained.
+   ========================================================================== */
+:root { --talora-radius: 14px; --talora-ink: #202b43; --talora-cobalt: #435fd1; --talora-paper: #f7f5ef; --talora-line: #e6e2d8; }
+html.light { --talora-ink: #202b43; --talora-cobalt: #435fd1; --talora-paper: #f7f5ef; --talora-line: #e6e2d8; }
+html.dark { --talora-ink: #f1f3fa; --talora-cobalt: #91a5ff; --talora-paper: #111827; --talora-line: rgba(148,163,184,.19); }
+body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: -.008em; }
+h1, h2, h3, h4 { letter-spacing: -.035em; }
+a, button, input, select, textarea { transition-duration: 180ms; }
+::selection { background: rgba(67,95,209,.18); }
+
+header.sticky.top-0 { border-color: var(--line) !important; box-shadow: 0 1px 0 rgba(25,35,55,.025); }
+html.light header.sticky.top-0, html.light footer { background: rgba(250,249,245,.94) !important; }
+html.dark header.sticky.top-0, html.dark footer { background: rgba(13,18,29,.94) !important; }
+header.sticky.top-0 .text-2xl { letter-spacing: -.065em; }
+header.sticky.top-0 .text-2xl span { color: var(--talora-cobalt) !important; }
+header.sticky.top-0 a, footer a { text-underline-offset: 4px; }
+header.sticky.top-0 a:hover, footer a:hover { text-decoration: none; }
+
+html.light .bg-\\[\\#F8FAFC\\], html.light .bg-\\[\\#F9FAFB\\] { background-color: var(--talora-paper) !important; }
+html.dark .bg-\\[\\#F8FAFC\\], html.dark .bg-\\[\\#F9FAFB\\] { background-color: var(--page) !important; }
+html.light .bg-white { background-color: #fffefa !important; }
+html.dark .bg-white { background-color: #111827 !important; }
+html.light .border-slate-200, html.light .border-slate-100, html.dark .border-slate-200, html.dark .border-slate-100 { border-color: var(--talora-line) !important; }
+html.light .text-slate-900 { color: var(--talora-ink) !important; }
+html.light .text-blue-600 { color: var(--talora-cobalt) !important; }
+html.light .bg-blue-600 { background-color: var(--talora-cobalt) !important; }
+html.light .hover\\:bg-blue-700:hover { background-color: #334bb4 !important; }
+html.light .focus\\:border-blue-600:focus { border-color: var(--talora-cobalt) !important; }
+
+.talora-home main > section:first-child { position: relative; overflow: hidden; }
+.talora-home main > section:first-child::before { content: ""; position: absolute; inset: 0 0 auto; height: 5px; background: var(--talora-cobalt); }
+html.light .talora-home main > section:first-child { background: radial-gradient(ellipse at 86% 12%, rgba(67,95,209,.09), transparent 35%), #fffefa !important; }
+html.dark .talora-home main > section:first-child { background: radial-gradient(ellipse at 86% 12%, rgba(145,165,255,.12), transparent 35%), #0d121d !important; }
+.talora-home main > section:first-child h1 { max-width: 900px; margin-inline: auto; font-size: clamp(2.55rem, 5vw, 4.65rem) !important; line-height: 1.03 !important; letter-spacing: -.06em !important; }
+.talora-home main > section:first-child p { max-width: 680px; margin-inline: auto; }
+.talora-home main > section:first-child .rounded-xl { border-radius: 16px !important; box-shadow: 0 18px 60px rgba(30,43,70,.07) !important; }
+.talora-home main > section:not(:first-child) { border-color: var(--line) !important; }
+.talora-home main > section:nth-child(2) a.group { min-height: 210px; border-radius: 14px !important; transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
+.talora-home main > section:nth-child(2) a.group:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(30,43,70,.07) !important; }
+.talora-home main > section:nth-child(2) a.group > div > div:first-child { border-radius: 11px !important; }
+
+html.light main .shadow-xs, html.light main .shadow-2xs { box-shadow: 0 2px 3px rgba(30,43,70,.025), 0 12px 32px rgba(30,43,70,.035) !important; }
+html.light main input, html.light main select, html.light main textarea { border-radius: 10px; }
+html.light main input:focus, html.light main select:focus, html.light main textarea:focus { outline: 3px solid rgba(67,95,209,.12); outline-offset: 1px; }
+html.light main button[class*="bg-blue-600"], html.light main a[class*="bg-blue-600"] { border-radius: 10px; }
+html.light main .rounded-xl, html.light main .rounded-2xl { border-radius: 14px; }
+
+html.light body:has(aside) .bg-slate-50 { background-color: #f5f6fa !important; }
+html.light body:has(aside) main .bg-white { background-color: #fff !important; }
+html.light body:has(aside) main .rounded-xl { border-radius: 12px; }
+html.light body:has(aside) main [class*="shadow"] { box-shadow: 0 2px 8px rgba(20,32,60,.035) !important; }
+html.dark body:has(aside) main .bg-white { background-color: #111827 !important; }
+.admin-shell { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+.admin-shell h1, .admin-shell h2, .admin-shell h3 { letter-spacing: -.035em; }
+.admin-shell .rounded-xl, .admin-shell .rounded-2xl { border-radius: 12px; }
+.admin-shell button, .admin-shell a { transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease; }
+@media (max-width: 640px) {
+  .talora-home main > section:first-child h1 { font-size: clamp(2.35rem, 11vw, 3.2rem) !important; line-height: 1.05 !important; }
+  .talora-home main > section:first-child { padding-top: 3.25rem !important; padding-bottom: 3.25rem !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
