@@ -320,7 +320,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: `${window.location.origin}/reset-password`,
+        // Prefer the canonical app URL so links sent from a Vercel preview do
+        // not point at a temporary deployment. Add this URL to Supabase's
+        // Auth > URL Configuration > Redirect URLs allow-list.
+        redirectTo: `${(process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || window.location.origin).replace(/\/$/, '')}/reset-password`,
       });
       if (resetError) return { success: false, error: resetError.message };
       return { success: true };

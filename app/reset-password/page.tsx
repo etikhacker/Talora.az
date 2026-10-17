@@ -32,13 +32,23 @@ export default function ResetPasswordPage() {
     }
 
     let active = true;
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
-      if (active && session) setHasSession(true);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
+      if (!active) return;
+      if (session && (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED')) {
+        setHasSession(true);
+        setError('');
+        setReady(true);
+      }
     });
 
     void supabase.auth.getSession().then(({ data, error: sessionError }: { data: { session: Session | null }; error: AuthError | null }) => {
       if (!active) return;
-      if (sessionError) setError(isAz ? 'Bərpa keçidi etibarsızdır və ya vaxtı bitib.' : 'This reset link is invalid or has expired.');
+      const url = new URL(window.location.href);
+      const fragment = new URLSearchParams(url.hash.replace(/^#/, ''));
+      const linkError = url.searchParams.get('error_description') || fragment.get('error_description');
+      if (sessionError || linkError) {
+        setError(linkError || (isAz ? 'Bərpa keçidi etibarsızdır və ya vaxtı bitib.' : 'This reset link is invalid or has expired.'));
+      }
       setHasSession(Boolean(data.session));
       setReady(true);
     });
@@ -95,7 +105,7 @@ export default function ResetPasswordPage() {
             <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{isAz ? 'Yeni şifrəniz yadda saxlanıldı. Giriş səhifəsinə yönləndirilirsiniz.' : 'Your new password is saved. Redirecting you to sign in.'}</p>
           ) : !hasSession ? (
             <>
-              <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{isAz ? 'Bərpa keçidi etibarsızdır və ya vaxtı bitib. Yenidən e-poçt istəyə bilərsiniz.' : 'This reset link is invalid or expired. You can request another email.'}</p>
+              <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{error || (isAz ? 'Bərpa keçidi etibarsızdır və ya vaxtı bitib. Yenidən e-poçt istəyə bilərsiniz.' : 'This reset link is invalid or expired. You can request another email.')}</p>
               {error && <Alert variant="destructive" className="mt-4"><AlertDescription>{error}</AlertDescription></Alert>}
               <Link href="/forgot-password" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800 dark:text-blue-300"><ArrowLeft className="h-4 w-4" aria-hidden="true" />{isAz ? 'Yeni bərpa keçidi istə' : 'Request another reset link'}</Link>
             </>
