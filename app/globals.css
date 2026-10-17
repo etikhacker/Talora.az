@@ -1589,12 +1589,13 @@ html.light .talora-home {
 .talora-home .landing-visual .bg-white\/85 { background: rgba(12, 21, 39, .78) !important; border-color: rgba(255, 255, 255, .18) !important; }
 .talora-home .landing-visual .bg-white\/85 p { color: #eff3ff !important; }
 .talora-home .landing-visual p.text-blue-700 { color: #c2ceff !important; }
+.talora-home .landing-visual .font-serif { color: #f4f6ff !important; }
 .talora-home .landing-accent { color: #9eb2ff !important; }
 
 @media (min-width: 768px) {
   .talora-home .landing-category-grid { grid-template-columns: 1.14fr .86fr !important; }
-  .talora-home .landing-category-grid > :nth-child(3n + 2) { transform: translateY(1.4rem); }
-  .talora-home .landing-category-grid > :nth-child(3n + 2):hover { transform: translateY(calc(1.4rem - 5px)) rotateX(1.2deg) rotateY(-.8deg); }
+  .talora-home .landing-category-grid > :nth-child(3n + 2) { transform: translateY(.55rem); }
+  .talora-home .landing-category-grid > :nth-child(3n + 2):hover { transform: translateY(calc(.55rem - 5px)) rotateX(1.2deg) rotateY(-.8deg); }
 }
 
 @media (max-width: 767px) {
