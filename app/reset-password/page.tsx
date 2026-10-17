@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { TaloraLogo } from '@/components/layout/talora-logo';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { createClient } from '@/lib/supabase/client';
+import { isSupabaseConfigured } from '@/lib/supabase/config';
 import type { AuthChangeEvent, AuthError, Session } from '@supabase/supabase-js';
 import { ArrowLeft, CheckCircle2, Loader2, Lock } from 'lucide-react';
 
@@ -15,7 +16,8 @@ export default function ResetPasswordPage() {
   const router = useRouter();
   const { language } = useLanguage();
   const isAz = language === 'az';
-  const [ready, setReady] = useState(false);
+  const isConfigured = isSupabaseConfigured();
+  const [ready, setReady] = useState(!isConfigured);
   const [hasSession, setHasSession] = useState(false);
   const [busy, setBusy] = useState(false);
   const [complete, setComplete] = useState(false);
@@ -26,8 +28,6 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     const supabase = createClient();
     if (!supabase) {
-      setReady(true);
-      setError(isAz ? 'Şifrə bərpa xidməti hazırda əlçatan deyil.' : 'Password recovery is currently unavailable.');
       return;
     }
 
@@ -47,7 +47,7 @@ export default function ResetPasswordPage() {
       active = false;
       subscription.unsubscribe();
     };
-  }, [isAz]);
+  }, [isAz, isConfigured]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -87,7 +87,9 @@ export default function ResetPasswordPage() {
             {complete ? <CheckCircle2 className="h-6 w-6" aria-hidden="true" /> : <Lock className="h-6 w-6" aria-hidden="true" />}
           </div>
           <h1 className="text-2xl font-bold tracking-tight">{complete ? (isAz ? 'Şifrə yeniləndi' : 'Password updated') : (isAz ? 'Yeni şifrə təyin et' : 'Choose a new password')}</h1>
-          {!ready ? (
+          {!isConfigured ? (
+            <Alert variant="destructive" className="mt-4"><AlertDescription>{isAz ? 'Şifrə bərpa xidməti hazırda əlçatan deyil.' : 'Password recovery is currently unavailable.'}</AlertDescription></Alert>
+          ) : !ready ? (
             <div className="mt-6 flex items-center gap-2 text-sm text-slate-500"><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />{isAz ? 'Bərpa keçidi yoxlanılır…' : 'Checking reset link…'}</div>
           ) : complete ? (
             <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{isAz ? 'Yeni şifrəniz yadda saxlanıldı. Giriş səhifəsinə yönləndirilirsiniz.' : 'Your new password is saved. Redirecting you to sign in.'}</p>
