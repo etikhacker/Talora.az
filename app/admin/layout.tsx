@@ -8,7 +8,7 @@ import {AdminTopbar} from '@/components/admin/admin-topbar';
 import {Loader2} from 'lucide-react';
 import './admin-theme.css';
 export default function AdminLayout({children}:{children:React.ReactNode}){
- const {user,isLoading}=useAuth();const isAdmin=isSoleAdminEmail(user?.email);const router=useRouter();const pathname=usePathname();const [sidebarCollapsed,setSidebarCollapsed]=useState(false);const [theme,setTheme]=useState<'light'|'dark'>('dark');
+ const {user,isLoading}=useAuth();const isAdmin=isSoleAdminEmail(user?.email);const router=useRouter();const pathname=usePathname();const [sidebarCollapsed,setSidebarCollapsed]=useState(false);const [theme,setTheme]=useState<'light'|'dark'>('light');
  useEffect(()=>{if(pathname==='/admin/login')return;if(!isLoading){if(!user)router.push('/admin/login');else if(!isAdmin)router.push('/dashboard')}},[user,isAdmin,isLoading,router,pathname]);
  if(pathname==='/admin/login')return <>{children}</>;
  if(isLoading)return <div className="admin-shell flex min-h-screen items-center justify-center bg-slate-900 p-12 text-slate-400"><div className="flex flex-col items-center gap-3"><Loader2 className="h-8 w-8 animate-spin text-amber-400"/><p className="text-xs font-medium">Admin icazələri yoxlanılır...</p></div></div>;

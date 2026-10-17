@@ -15,3 +15,30 @@
 .admin-shell[data-admin-theme="light"] [class*="hover:text-white"]:hover{color:#0f172a!important}
 .admin-shell[data-admin-theme="light"] .bg-amber-400,.admin-shell[data-admin-theme="light"] .bg-amber-500,.admin-shell[data-admin-theme="light"] .text-slate-950{color:#111827!important}
 .admin-shell[data-admin-theme="light"] .shadow-2xl{box-shadow:0 18px 50px rgb(15 23 42 / 12%)!important}
+
+/* Admin workspace aligned with the prototype's warm, restrained dashboard. */
+.admin-shell[data-admin-theme="light"]{background:#f7f5ef!important;color:#202b43!important}
+.admin-shell[data-admin-theme="light"] aside .bg-slate-900{background:#fffefa!important}
+.admin-shell[data-admin-theme="light"] aside .bg-slate-800,.admin-shell[data-admin-theme="light"] aside .bg-slate-800\/70{background:#f3f2ed!important}
+.admin-shell[data-admin-theme="light"] aside .text-white{color:#202b43!important}
+.admin-shell[data-admin-theme="light"] aside .text-slate-300{color:#526078!important}
+.admin-shell[data-admin-theme="light"] aside .text-slate-400,.admin-shell[data-admin-theme="light"] aside .text-slate-500{color:#758096!important}
+.admin-shell[data-admin-theme="light"] aside .border-slate-800,.admin-shell[data-admin-theme="light"] aside .border-slate-700,.admin-shell[data-admin-theme="light"] aside .border-slate-700\/60{border-color:#e7e4dc!important}
+.admin-shell[data-admin-theme="light"] aside .bg-amber-400{background:#435fd1!important;color:#fff!important}
+.admin-shell[data-admin-theme="light"] aside .text-amber-400,.admin-shell[data-admin-theme="light"] aside .text-amber-300{color:#435fd1!important}
+.admin-shell[data-admin-theme="light"] aside .bg-amber-400.text-slate-950,.admin-shell[data-admin-theme="light"] aside .bg-amber-400 .text-slate-950{color:#fff!important}
+.admin-shell[data-admin-theme="light"] main > div > header{background:rgba(247,245,239,.92)!important;border-color:#e7e4dc!important}
+.admin-shell[data-admin-theme="light"] main .bg-slate-900{background:#fffefa!important}
+.admin-shell[data-admin-theme="light"] main .bg-slate-950{background:#f0eee8!important}
+.admin-shell[data-admin-theme="light"] main .text-white{color:#202b43!important}
+.admin-shell[data-admin-theme="light"] main .text-slate-100,.admin-shell[data-admin-theme="light"] main .text-slate-200,.admin-shell[data-admin-theme="light"] main .text-slate-300{color:#34415a!important}
+.admin-shell[data-admin-theme="light"] main .text-slate-400,.admin-shell[data-admin-theme="light"] main .text-slate-500{color:#6c7890!important}
+.admin-shell[data-admin-theme="light"] main .border-slate-800,.admin-shell[data-admin-theme="light"] main .border-slate-800\/60,.admin-shell[data-admin-theme="light"] main .border-slate-800\/80,.admin-shell[data-admin-theme="light"] main .border-slate-700{border-color:#e7e4dc!important}
+.admin-shell[data-admin-theme="light"] main .bg-amber-500\/10,.admin-shell[data-admin-theme="light"] main .bg-amber-500\/5{background:rgba(67,95,209,.07)!important}
+.admin-shell[data-admin-theme="light"] main .text-amber-400,.admin-shell[data-admin-theme="light"] main .text-amber-300{color:#435fd1!important}
+.admin-shell[data-admin-theme="light"] main .bg-amber-400{background:#435fd1!important;color:#fff!important}
+.admin-shell[data-admin-theme="light"] main .bg-emerald-500\/10,.admin-shell[data-admin-theme="light"] main .bg-emerald-500\/15{background:rgba(67,95,209,.08)!important}
+.admin-shell[data-admin-theme="light"] main .text-emerald-400,.admin-shell[data-admin-theme="light"] main .text-emerald-300{color:#435fd1!important}
+.admin-shell[data-admin-theme="light"] main tr:hover,.admin-shell[data-admin-theme="light"] main [class*="hover:bg-slate-800"]:hover{background:#f5f4ef!important}
+.admin-shell[data-admin-theme="light"] main .rounded-xl,.admin-shell[data-admin-theme="light"] main .rounded-2xl{border-radius:14px}
+.admin-shell[data-admin-theme="light"] main [class*="shadow"]{box-shadow:0 8px 28px rgba(32,43,67,.045)!important}
