@@ -129,8 +129,8 @@ export default function HomePage() {
             ===================================================================== */}
         <section className="landing-hero relative overflow-hidden border-b border-slate-200 bg-white py-14 sm:py-20 lg:py-24">
           <div className="pointer-events-none absolute inset-0 landing-grain" aria-hidden="true" />
-          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.08fr_.92fr] lg:gap-16 lg:px-8">
-            <div className="max-w-2xl">
+          <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.08fr_.92fr] lg:gap-16 lg:px-8">
+            <div className="min-w-0 max-w-2xl">
               <p className="mb-5 inline-flex items-center gap-2 rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[.13em] text-blue-700">
                 <Sparkle className="h-3.5 w-3.5" />
                 {isAz ? 'Karyeran üçün real başlanğıc' : 'A practical start to your career'}
@@ -164,7 +164,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="landing-visual relative mx-auto w-full max-w-[570px] lg:ml-auto">
+            <div className="landing-visual relative mx-auto min-w-0 w-full max-w-[570px] lg:ml-auto">
               <div className="landing-visual-grid absolute inset-0 rounded-[2rem]" aria-hidden="true" />
               <div className="relative min-h-[350px] overflow-hidden rounded-[1.65rem] border border-[#d8deee] bg-[#e9edf9] p-5 shadow-[0_28px_80px_-44px_rgba(33,50,100,.45)] sm:min-h-[430px] sm:p-7">
                 <div className="absolute -right-12 -top-10 h-64 w-64 rounded-full border border-blue-300/60" aria-hidden="true" />
@@ -177,18 +177,18 @@ export default function HomePage() {
                   <p className="text-xs font-semibold text-blue-700">{isAz ? 'Nəzəriyyədən praktikaya' : 'From learning to doing'}</p>
                   <p className="mt-3 font-serif text-4xl leading-[1.02] tracking-[-.04em] text-[#202b43] sm:text-5xl">{isAz ? 'İlk layihən. Yeni istiqamətin.' : 'Your first project. A new direction.'}</p>
                 </div>
-                <div className="relative mt-10 flex items-end justify-between gap-4 sm:mt-12">
-                  <div className="rounded-xl border border-white/80 bg-white/85 p-4 shadow-lg shadow-blue-950/5 backdrop-blur">
+                <div className="relative mt-10 grid grid-cols-3 items-end gap-2 sm:mt-12 sm:flex sm:justify-between sm:gap-4">
+                  <div className="min-w-0 rounded-xl border border-white/80 bg-white/85 p-1.5 shadow-lg shadow-blue-950/5 backdrop-blur sm:p-4">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{isAz ? 'Öyrən' : 'Learn'}</p>
-                    <p className="mt-1 font-serif text-xl text-[#202b43]">{isAz ? 'Tapşırıq' : 'Assignment'}</p>
+                    <p className="mt-1 font-serif text-xs leading-tight text-[#202b43] sm:text-xl">{isAz ? 'Tapşırıq' : 'Assignment'}</p>
                   </div>
-                  <div className="mb-7 rounded-xl border border-white/70 bg-[#435fd1] p-4 text-white shadow-xl shadow-blue-900/20">
+                  <div className="mb-3 min-w-0 rounded-xl border border-white/70 bg-[#435fd1] p-1.5 text-white shadow-xl shadow-blue-900/20 sm:mb-7 sm:p-4">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-blue-100">{isAz ? 'İrəlilə' : 'Progress'}</p>
-                    <p className="mt-1 font-serif text-xl">{isAz ? 'Mentor rəyi' : 'Mentor review'}</p>
+                    <p className="mt-1 font-serif text-xs leading-tight sm:text-xl">{isAz ? 'Mentor rəyi' : 'Mentor review'}</p>
                   </div>
-                  <div className="rounded-xl border border-white/80 bg-white/85 p-4 shadow-lg shadow-blue-950/5 backdrop-blur">
+                  <div className="min-w-0 rounded-xl border border-white/80 bg-white/85 p-1.5 shadow-lg shadow-blue-950/5 backdrop-blur sm:p-4">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{isAz ? 'Nəticə' : 'Outcome'}</p>
-                    <p className="mt-1 font-serif text-xl text-[#202b43]">{isAz ? 'Sertifikat' : 'Certificate'}</p>
+                    <p className="mt-1 font-serif text-xs leading-tight text-[#202b43] sm:text-xl">{isAz ? 'Sertifikat' : 'Certificate'}</p>
                   </div>
                 </div>
                 <div className="absolute bottom-5 right-5 grid h-11 w-11 place-items-center rounded-full bg-white text-blue-700 shadow-md sm:bottom-7 sm:right-7"><ArrowRight className="h-5 w-5" /></div>
