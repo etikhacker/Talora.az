@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/auth/auth-context';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/layout/theme-toggle';
+import { TaloraLogo } from '@/components/layout/talora-logo';
 import { Menu, X, ArrowRight, User, LogOut } from 'lucide-react';
 
 export function Navbar() {
@@ -27,13 +28,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-30 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Talora text-based wordmark */}
-        <Link href="/" className="flex items-center gap-2.5 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">
-          <span aria-hidden="true" className="grid h-8 w-8 place-items-center rounded-md bg-blue-600 font-serif text-lg font-semibold italic text-white shadow-sm">t</span>
-          <span className="font-serif text-2xl font-semibold tracking-tight text-slate-900">
-            Talora
-          </span>
-        </Link>
+        <TaloraLogo />
 
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600" aria-label={isAz ? 'Əsas naviqasiya' : 'Main navigation'}>

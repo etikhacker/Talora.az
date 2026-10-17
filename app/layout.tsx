@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description: 'Azərbaycanda tələbələr üçün təcrübə platforması. Bacarıqlarını inkişaf etdir və real təcrübə qazan.',
   icons: {
     icon: [
+      { url: '/talora-mark.svg', type: 'image/svg+xml' },
       { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
       { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
     ],

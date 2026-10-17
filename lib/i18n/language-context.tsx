@@ -238,7 +238,6 @@ export interface Translations {
   authCreateAccount: string;
   authCreating: string;
   authHaveAccount: string;
-  authSecurityNote: string;
   authQuote: string;
   authQuoteAuthor: string;
   authQuoteMeta: string;
@@ -507,7 +506,6 @@ const translations: Record<Language, Translations> = {
     authCreateAccount: 'Hesab yarat',
     authCreating: 'Hesab yaradılır...',
     authHaveAccount: 'Artıq hesabın var?',
-    authSecurityNote: 'Məlumatların Supabase ilə şifrələnmiş şəkildə saxlanılır. Heç kim — hətta komanda üzvləri — şifrəni görə bilməz.',
     authQuote: 'Mentor mənə həftəlik fokus verdi — 8 həftə sonra ilk işimi tapdım.',
     authQuoteAuthor: 'Rauf A.',
     authQuoteMeta: 'Backend, 2025',
@@ -774,7 +772,6 @@ const translations: Record<Language, Translations> = {
     authCreateAccount: 'Create Account',
     authCreating: 'Creating account...',
     authHaveAccount: 'Already have an account?',
-    authSecurityNote: 'Your data is stored encrypted by Supabase. No one — not even team members — can see your password.',
     authQuote: 'My mentor gave me a weekly focus — eight weeks later I landed my first job.',
     authQuoteAuthor: 'Rauf A.',
     authQuoteMeta: 'Backend, 2025',

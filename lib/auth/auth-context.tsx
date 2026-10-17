@@ -17,6 +17,7 @@ interface AuthContextType {
   error: string | null;
   signUp: (params: { fullName: string; email: string; password: string; university: string }) => Promise<{ success: boolean; error?: string; requiresEmailConfirmation?: boolean }>;
   signIn: (params: { email: string; password: string }) => Promise<{ success: boolean; error?: string; role?: UserRole }>;
+  requestPasswordReset: (email: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   updateProfile: (input: ProfileUpdateInput) => Promise<{ success: boolean; error?: string; profile?: Profile }>;
   refreshProfile: () => Promise<void>;
@@ -311,6 +312,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push('/login');
   };
 
+  const requestPasswordReset = async (email: string): Promise<{ success: boolean; error?: string }> => {
+    if (!isConfigured) return { success: false, error: 'Auth xidməti konfiqurasiya edilməyib.' };
+
+    const supabase = createClient();
+    if (!supabase) return { success: false, error: 'Auth xidməti ilə əlaqə qurulmadı.' };
+
+    try {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (resetError) return { success: false, error: resetError.message };
+      return { success: true };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Bərpa e-poçtu göndərilə bilmədi.';
+      return { success: false, error: message };
+    }
+  };
+
   // Update Profile: students can ONLY update full_name, phone, university, avatar_url
   const updateProfile = async (
     input: ProfileUpdateInput
@@ -372,6 +391,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         error,
         signUp,
         signIn,
+        requestPasswordReset,
         signOut,
         updateProfile,
         refreshProfile,

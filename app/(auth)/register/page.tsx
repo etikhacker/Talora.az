@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/auth/auth-context';
 import { registerSchema, RegisterFormData } from '@/lib/validations/auth';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { LanguageSwitcher } from '@/components/layout/language-switcher';
+import { TaloraLogo } from '@/components/layout/talora-logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,11 +20,9 @@ import {
   Check,
   Eye,
   EyeOff,
-  GraduationCap,
   Loader2,
   Mail,
   Lock,
-  ShieldCheck,
   Sparkles,
   Star,
   University,
@@ -48,17 +47,7 @@ function BrandPanel() {
         className="pointer-events-none absolute -bottom-32 -right-20 h-[28rem] w-[28rem] rounded-full bg-cyan-300/30 blur-3xl"
       />
 
-      <Link href="/" className="relative z-10 flex items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-emerald-700 shadow-lg shadow-emerald-900/20">
-          <GraduationCap className="h-6 w-6" aria-hidden="true" />
-        </div>
-        <div>
-          <p className="text-lg font-bold tracking-tight">Talora</p>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-emerald-50/80">
-            {t('authPortalSubtitle')}
-          </p>
-        </div>
-      </Link>
+      <TaloraLogo inverted className="relative z-10" />
 
       <div className="relative z-10 max-w-md space-y-6">
         <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] backdrop-blur-md">
@@ -146,17 +135,7 @@ function MobileBrand() {
         aria-hidden="true"
         className="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-emerald-300/40 blur-3xl"
       />
-      <Link href="/" className="relative z-10 inline-flex items-center gap-2.5">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-emerald-700 shadow-lg shadow-emerald-900/20">
-          <GraduationCap className="h-5 w-5" aria-hidden="true" />
-        </div>
-        <div>
-          <p className="text-lg font-bold tracking-tight">Talora</p>
-          <p className="text-[9px] uppercase tracking-[0.18em] text-emerald-50/80">
-            {t('authPortalSubtitle')}
-          </p>
-        </div>
-      </Link>
+      <TaloraLogo inverted compact className="relative z-10" />
       <h2 className="relative z-10 mt-5 text-2xl font-black leading-tight">
         {t('authRegisterHeadline')}
       </h2>
@@ -463,14 +442,14 @@ export default function RegisterPage() {
                   </span>
                   <span>
                     <Link
-                      href="/contact"
+                      href="/terms"
                       className="font-semibold text-emerald-600 hover:underline"
                     >
                       {t('authTerms')}
                     </Link>{' '}
                     <span className="sr-only">,</span>
                     <Link
-                      href="/contact"
+                      href="/privacy"
                       className="font-semibold text-emerald-600 hover:underline"
                     >
                       {t('authPrivacy')}
@@ -515,14 +494,6 @@ export default function RegisterPage() {
                 </Link>
               </p>
 
-              {/* Security note */}
-              <div className="mt-6 flex items-start gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-[11px] text-slate-500">
-                <ShieldCheck
-                  className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-600"
-                  aria-hidden="true"
-                />
-                <p className="leading-relaxed">{t('authSecurityNote')}</p>
-              </div>
             </div>
           </div>
 
