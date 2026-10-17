@@ -2,19 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { ScrollRevealTitle } from '@/components/landing/scroll-reveal-title';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
 import { useLanguage } from '@/lib/i18n/language-context';
 import type { Internship } from '@/types/database';
 import { formatDate } from '@/lib/utils/date';
 import {
-  Search,
-  MapPin,
   Briefcase,
   ArrowRight,
   Code2,
@@ -90,13 +85,8 @@ const CATEGORIES = [
 ];
 
 export default function HomePage() {
-  const router = useRouter();
   const { language } = useLanguage();
   const isAz = language === 'az';
-
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [searchLocation, setSearchLocation] = useState('');
-  const [searchWorkType, setSearchWorkType] = useState('all');
 
   const [internships, setInternships] = useState<Internship[]>([]);
   const [loading, setLoading] = useState(true);
@@ -128,17 +118,6 @@ export default function HomePage() {
       active = false;
     };
   }, []);
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (searchKeyword.trim()) params.set('search', searchKeyword.trim());
-    if (searchLocation.trim()) params.set('location', searchLocation.trim());
-    if (searchWorkType && searchWorkType !== 'all') params.set('type', searchWorkType);
-
-    const queryString = params.toString();
-    router.push(queryString ? `/internships?${queryString}` : '/internships');
-  };
 
   return (
     <div className="talora-home flex min-h-screen flex-col bg-[#F8FAFC] text-[#101828]">
@@ -216,53 +195,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Compact Search Interface */}
-            <div className="landing-search relative z-10 mt-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_18px_60px_-38px_rgba(29,43,80,.32)] sm:p-4 lg:col-span-2 lg:mx-10 lg:-mt-2">
-              <div className="mb-3 flex items-center gap-2 px-1 text-xs font-semibold text-slate-700"><Search className="h-4 w-4 text-blue-600"/>{isAz ? 'Sənə uyğun fürsəti tap' : 'Find the right opportunity'}</div>
-              <form onSubmit={handleSearchSubmit} className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_.8fr_auto]">
-                <div className="relative">
-                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                  <Input
-                    type="text"
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
-                    placeholder={isAz ? 'Vəzifə və ya açar söz...' : 'Role or keyword...'}
-                    className="h-11 pl-9 border-slate-200 bg-white text-sm focus:border-blue-600 focus:ring-blue-600/20"
-                  />
-                </div>
-
-                <div className="relative">
-                  <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                  <Input
-                    type="text"
-                    value={searchLocation}
-                    onChange={(e) => setSearchLocation(e.target.value)}
-                    placeholder={isAz ? 'Şəhər və ya ölkə...' : 'Location (e.g. Remote, City)...'}
-                    className="h-11 pl-9 border-slate-200 bg-white text-sm focus:border-blue-600 focus:ring-blue-600/20"
-                  />
-                </div>
-
-                <div>
-                  <Select
-                    value={searchWorkType}
-                    onChange={(e) => setSearchWorkType(e.target.value)}
-                    className="h-11 border-slate-200 bg-white text-sm text-slate-800"
-                  >
-                    <option value="all">{isAz ? 'Bütün formatlar' : 'All Work Types'}</option>
-                    <option value="remote">{isAz ? 'Distant (Remote)' : 'Remote'}</option>
-                    <option value="hybrid">{isAz ? 'Hibrid' : 'Hybrid'}</option>
-                    <option value="onsite">{isAz ? 'Ofisdə (On-site)' : 'On-site'}</option>
-                  </Select>
-                </div>
-
-                <div>
-                  <Button type="submit" className="h-11 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium gap-2">
-                    <Search className="h-4 w-4" />
-                    <span>{isAz ? 'Təcrübə Axtar' : 'Search Internships'}</span>
-                  </Button>
-                </div>
-              </form>
-            </div>
           </div>
         </section>
 

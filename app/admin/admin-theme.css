@@ -1,44 +1,340 @@
-/* Admin-only light theme overrides. All page data and business logic remain in the production Next.js/Supabase pages. */
-.admin-shell[data-admin-theme="light"]{background:#f4f7fb!important;color:#172033!important}
-.admin-shell[data-admin-theme="light"] .bg-slate-950{background-color:#f4f7fb!important}
-.admin-shell[data-admin-theme="light"] .bg-slate-950\/90{background-color:rgb(255 255 255 / 92%)!important}
-.admin-shell[data-admin-theme="light"] .bg-slate-900{background-color:#fff!important}
-.admin-shell[data-admin-theme="light"] .bg-slate-800,.admin-shell[data-admin-theme="light"] .bg-slate-800\/70,.admin-shell[data-admin-theme="light"] .bg-slate-800\/80{background-color:#f1f5f9!important}
-.admin-shell[data-admin-theme="light"] .text-white{color:#172033!important}
-.admin-shell[data-admin-theme="light"] .text-slate-100,.admin-shell[data-admin-theme="light"] .text-slate-200{color:#273449!important}
-.admin-shell[data-admin-theme="light"] .text-slate-300{color:#475569!important}
-.admin-shell[data-admin-theme="light"] .text-slate-400,.admin-shell[data-admin-theme="light"] .text-slate-500{color:#64748b!important}
-.admin-shell[data-admin-theme="light"] .border-slate-800,.admin-shell[data-admin-theme="light"] .border-slate-800\/80,.admin-shell[data-admin-theme="light"] .border-slate-700,.admin-shell[data-admin-theme="light"] .border-slate-700\/60{border-color:#e2e8f0!important}
-.admin-shell[data-admin-theme="light"] input,.admin-shell[data-admin-theme="light"] textarea,.admin-shell[data-admin-theme="light"] select{background-color:#fff!important;color:#172033!important;border-color:#cbd5e1!important}
-.admin-shell[data-admin-theme="light"] input::placeholder,.admin-shell[data-admin-theme="light"] textarea::placeholder{color:#94a3b8!important}
-.admin-shell[data-admin-theme="light"] [class*="hover:bg-slate-800"]:hover{background-color:#eaf0f7!important}
-.admin-shell[data-admin-theme="light"] [class*="hover:text-white"]:hover{color:#0f172a!important}
-.admin-shell[data-admin-theme="light"] .bg-amber-400,.admin-shell[data-admin-theme="light"] .bg-amber-500,.admin-shell[data-admin-theme="light"] .text-slate-950{color:#111827!important}
-.admin-shell[data-admin-theme="light"] .shadow-2xl{box-shadow:0 18px 50px rgb(15 23 42 / 12%)!important}
+/*
+ * Admin-only light palette. The admin pages still use the existing dark
+ * Tailwind utility names, so this scoped mapping gives every surface one
+ * deliberate light value without changing the public or student experience.
+ */
+.admin-shell[data-admin-theme="light"] {
+  color-scheme: light;
+  --admin-page: #f4f6fb;
+  --admin-surface: #ffffff;
+  --admin-surface-soft: #f7f8fc;
+  --admin-surface-muted: #eef2f8;
+  --admin-hover: #e8edf6;
+  --admin-ink: #172033;
+  --admin-copy: #34415a;
+  --admin-muted: #64748b;
+  --admin-faint: #8290a5;
+  --admin-line: #e1e7f0;
+  --admin-accent: #435fd1;
+  --admin-accent-hover: #344ba9;
+  --admin-accent-soft: #edf0ff;
+  --admin-success: #047857;
+  --admin-success-soft: #ecfdf3;
+  --admin-warning: #925b00;
+  --admin-warning-soft: #fff6df;
+  --admin-danger: #b42318;
+  --admin-danger-soft: #fff0ef;
+  background: var(--admin-page) !important;
+  color: var(--admin-ink) !important;
+}
 
-/* Admin workspace aligned with the prototype's warm, restrained dashboard. */
-.admin-shell[data-admin-theme="light"]{background:#f7f5ef!important;color:#202b43!important}
-.admin-shell[data-admin-theme="light"] aside .bg-slate-900{background:#fffefa!important}
-.admin-shell[data-admin-theme="light"] aside .bg-slate-800,.admin-shell[data-admin-theme="light"] aside .bg-slate-800\/70{background:#f3f2ed!important}
-.admin-shell[data-admin-theme="light"] aside .text-white{color:#202b43!important}
-.admin-shell[data-admin-theme="light"] aside .text-slate-300{color:#526078!important}
-.admin-shell[data-admin-theme="light"] aside .text-slate-400,.admin-shell[data-admin-theme="light"] aside .text-slate-500{color:#758096!important}
-.admin-shell[data-admin-theme="light"] aside .border-slate-800,.admin-shell[data-admin-theme="light"] aside .border-slate-700,.admin-shell[data-admin-theme="light"] aside .border-slate-700\/60{border-color:#e7e4dc!important}
-.admin-shell[data-admin-theme="light"] aside .bg-amber-400{background:#435fd1!important;color:#fff!important}
-.admin-shell[data-admin-theme="light"] aside .text-amber-400,.admin-shell[data-admin-theme="light"] aside .text-amber-300{color:#435fd1!important}
-.admin-shell[data-admin-theme="light"] aside .bg-amber-400.text-slate-950,.admin-shell[data-admin-theme="light"] aside .bg-amber-400 .text-slate-950{color:#fff!important}
-.admin-shell[data-admin-theme="light"] main > div > header{background:rgba(247,245,239,.92)!important;border-color:#e7e4dc!important}
-.admin-shell[data-admin-theme="light"] main .bg-slate-900{background:#fffefa!important}
-.admin-shell[data-admin-theme="light"] main .bg-slate-950{background:#f0eee8!important}
-.admin-shell[data-admin-theme="light"] main .text-white{color:#202b43!important}
-.admin-shell[data-admin-theme="light"] main .text-slate-100,.admin-shell[data-admin-theme="light"] main .text-slate-200,.admin-shell[data-admin-theme="light"] main .text-slate-300{color:#34415a!important}
-.admin-shell[data-admin-theme="light"] main .text-slate-400,.admin-shell[data-admin-theme="light"] main .text-slate-500{color:#6c7890!important}
-.admin-shell[data-admin-theme="light"] main .border-slate-800,.admin-shell[data-admin-theme="light"] main .border-slate-800\/60,.admin-shell[data-admin-theme="light"] main .border-slate-800\/80,.admin-shell[data-admin-theme="light"] main .border-slate-700{border-color:#e7e4dc!important}
-.admin-shell[data-admin-theme="light"] main .bg-amber-500\/10,.admin-shell[data-admin-theme="light"] main .bg-amber-500\/5{background:rgba(67,95,209,.07)!important}
-.admin-shell[data-admin-theme="light"] main .text-amber-400,.admin-shell[data-admin-theme="light"] main .text-amber-300{color:#435fd1!important}
-.admin-shell[data-admin-theme="light"] main .bg-amber-400{background:#435fd1!important;color:#fff!important}
-.admin-shell[data-admin-theme="light"] main .bg-emerald-500\/10,.admin-shell[data-admin-theme="light"] main .bg-emerald-500\/15{background:rgba(67,95,209,.08)!important}
-.admin-shell[data-admin-theme="light"] main .text-emerald-400,.admin-shell[data-admin-theme="light"] main .text-emerald-300{color:#435fd1!important}
-.admin-shell[data-admin-theme="light"] main tr:hover,.admin-shell[data-admin-theme="light"] main [class*="hover:bg-slate-800"]:hover{background:#f5f4ef!important}
-.admin-shell[data-admin-theme="light"] main .rounded-xl,.admin-shell[data-admin-theme="light"] main .rounded-2xl{border-radius:14px}
-.admin-shell[data-admin-theme="light"] main [class*="shadow"]{box-shadow:0 8px 28px rgba(32,43,67,.045)!important}
+.admin-shell[data-admin-theme="light"] main {
+  background: var(--admin-page);
+  color: var(--admin-ink);
+}
+
+.admin-shell[data-admin-theme="light"] aside,
+.admin-shell[data-admin-theme="light"] aside > div {
+  background-color: var(--admin-surface) !important;
+}
+
+/* Slate surfaces: map every opacity used in admin routes, not only the base
+   shades. The 70-85% variants remain dark only where they are modal backdrops. */
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="bg-slate-50"], [class~="bg-slate-50/50"],
+  [class~="bg-slate-950"], [class~="bg-slate-950/20"],
+  [class~="bg-slate-950/50"], [class~="bg-slate-950/60"]
+) {
+  background-color: var(--admin-page) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="bg-slate-900"], [class~="bg-slate-900/40"],
+  [class~="bg-slate-900/60"], [class~="bg-slate-900/70"],
+  [class~="bg-slate-900/90"]
+) {
+  background-color: var(--admin-surface) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="bg-slate-700"], [class~="bg-slate-700/50"],
+  [class~="bg-slate-800"], [class~="bg-slate-800/30"],
+  [class~="bg-slate-800/40"], [class~="bg-slate-800/60"],
+  [class~="bg-slate-800/70"], [class~="bg-slate-800/80"],
+  [class~="bg-slate-800/90"]
+) {
+  background-color: var(--admin-surface-muted) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="bg-slate-950/90"]
+) {
+  background-color: rgb(255 255 255 / 94%) !important;
+}
+
+.admin-shell[data-admin-theme="light"] [class~="bg-slate-950/70"],
+.admin-shell[data-admin-theme="light"] [class~="bg-slate-950/80"],
+.admin-shell[data-admin-theme="light"] [class~="bg-slate-950/85"] {
+  background-color: rgb(15 23 42 / 62%) !important;
+}
+
+/* Readable copy and consistent, cool-neutral borders. */
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="text-white"], [class~="text-slate-900"],
+  [class~="text-slate-700"], [class~="text-slate-600"]
+) {
+  color: var(--admin-ink) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="text-slate-100"], [class~="text-slate-200"],
+  [class~="text-slate-300"]
+) {
+  color: var(--admin-copy) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="text-slate-400"], [class~="text-slate-500"]
+) {
+  color: var(--admin-muted) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="text-slate-950"]
+) {
+  color: var(--admin-ink) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="border-slate-100"], [class~="border-slate-200"],
+  [class~="border-slate-600"], [class~="border-slate-700"],
+  [class~="border-slate-700/50"], [class~="border-slate-700/60"],
+  [class~="border-slate-800"], [class~="border-slate-800/60"],
+  [class~="border-slate-800/80"], [class~="border-slate-950"]
+) {
+  border-color: var(--admin-line) !important;
+}
+
+/* Brand actions stay cobalt; semantic success/warning/error states keep their
+   familiar colors but use light, legible tints instead of dark-mode fills. */
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="bg-amber-400"], [class~="bg-amber-500"]
+) {
+  background-color: var(--admin-accent) !important;
+  color: #ffffff !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="hover:bg-amber-300"], [class~="hover:bg-amber-400"],
+  [class~="hover:bg-amber-500"]
+):hover {
+  background-color: var(--admin-accent-hover) !important;
+  color: #ffffff !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="bg-amber-50"], [class~="bg-amber-100"],
+  [class~="bg-amber-400/10"], [class~="bg-amber-400/15"],
+  [class~="bg-amber-400/20"], [class~="bg-amber-500/5"],
+  [class~="bg-amber-500/10"], [class~="bg-amber-500/20"]
+) {
+  background-color: var(--admin-accent-soft) !important;
+}
+
+.admin-shell[data-admin-theme="light"] [class~="bg-blue-500/10"] {
+  background-color: var(--admin-accent-soft) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="text-blue-400"], [class~="text-blue-500"],
+  [class~="text-blue-600"], [class~="text-blue-700"]
+) {
+  color: var(--admin-accent) !important;
+}
+
+.admin-shell[data-admin-theme="light"] [class~="border-blue-500/20"] {
+  border-color: #cfd8ff !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="text-amber-100"], [class~="text-amber-200"],
+  [class~="text-amber-300"], [class~="text-amber-400"],
+  [class~="text-amber-600"], [class~="text-amber-700"],
+  [class~="text-amber-800"]
+) {
+  color: var(--admin-accent) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="border-amber-400"], [class~="border-amber-400/20"],
+  [class~="border-amber-400/30"], [class~="border-amber-400/40"],
+  [class~="border-amber-400/50"], [class~="border-amber-400/80"],
+  [class~="border-amber-500"], [class~="border-amber-500/20"],
+  [class~="border-amber-500/30"], [class~="border-amber-500/40"]
+) {
+  border-color: #cfd8ff !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="bg-emerald-500"], [class~="bg-emerald-600"],
+  [class~="bg-emerald-700"]
+) {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="hover:bg-emerald-500"], [class~="hover:bg-emerald-600"],
+  [class~="hover:bg-emerald-700"]
+):hover {
+  background-color: var(--admin-success) !important;
+  color: #ffffff !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="bg-emerald-400/10"], [class~="bg-emerald-500/10"],
+  [class~="bg-emerald-500/15"], [class~="bg-emerald-500/20"],
+  [class~="bg-emerald-500/30"], [class~="bg-emerald-950"],
+  [class~="bg-emerald-950/40"], [class~="bg-emerald-950/60"]
+) {
+  background-color: var(--admin-success-soft) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="text-emerald-200"], [class~="text-emerald-300"],
+  [class~="text-emerald-400"], [class~="text-emerald-600"],
+  [class~="text-emerald-700"]
+) {
+  color: var(--admin-success) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="bg-red-500"], [class~="bg-red-600"]
+) {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="hover:bg-red-500"], [class~="hover:bg-red-600"]
+):hover {
+  background-color: #b91c1c !important;
+  color: #ffffff !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="bg-red-950/40"], [class~="bg-red-950/50"],
+  [class~="bg-red-950/60"], [class~="bg-rose-500/10"],
+  [class~="bg-rose-500/15"], [class~="bg-rose-500/20"],
+  [class~="bg-rose-900"], [class~="bg-rose-950/40"],
+  [class~="bg-rose-950/60"]
+) {
+  background-color: var(--admin-danger-soft) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="text-red-200"], [class~="text-red-300"],
+  [class~="text-red-400"], [class~="text-red-500"],
+  [class~="text-red-600"], [class~="text-rose-300"],
+  [class~="text-rose-400"]
+) {
+  color: var(--admin-danger) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="border-emerald-500"], [class~="border-emerald-500/20"],
+  [class~="border-emerald-500/30"], [class~="border-emerald-500/40"],
+  [class~="border-emerald-800"]
+) {
+  border-color: #b7e4d2 !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="border-red-500"], [class~="border-red-800"],
+  [class~="border-red-900/40"], [class~="border-rose-500/20"],
+  [class~="border-rose-500/30"], [class~="border-rose-800/40"],
+  [class~="border-rose-800/80"]
+) {
+  border-color: #f3c6c2 !important;
+}
+
+/* Inputs and native controls must share the same light palette on every route. */
+.admin-shell[data-admin-theme="light"] :is(input, textarea, select) {
+  color-scheme: light;
+  background-color: var(--admin-surface) !important;
+  color: var(--admin-ink) !important;
+  border-color: #cbd5e1 !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(input, textarea, select)::placeholder {
+  color: var(--admin-faint) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(input, textarea, select):focus {
+  border-color: var(--admin-accent) !important;
+  box-shadow: 0 0 0 3px rgb(67 95 209 / 14%);
+  outline: none;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="hover:bg-slate-800"], [class~="hover:bg-slate-800/90"]
+):hover {
+  background-color: var(--admin-hover) !important;
+}
+
+.admin-shell[data-admin-theme="light"] [class~="hover:text-white"]:hover {
+  color: var(--admin-ink) !important;
+}
+
+.admin-shell[data-admin-theme="light"] tr:hover {
+  background-color: var(--admin-surface-soft) !important;
+}
+
+.admin-shell[data-admin-theme="light"] [class~="text-white"][class~="bg-emerald-500"],
+.admin-shell[data-admin-theme="light"] [class~="text-white"][class~="bg-emerald-600"],
+.admin-shell[data-admin-theme="light"] [class~="text-white"][class~="bg-emerald-700"],
+.admin-shell[data-admin-theme="light"] [class~="text-white"][class~="bg-red-500"],
+.admin-shell[data-admin-theme="light"] [class~="text-white"][class~="bg-red-600"] {
+  color: #ffffff !important;
+}
+
+.admin-shell[data-admin-theme="light"] [class~="text-slate-950"][class~="bg-emerald-500"],
+.admin-shell[data-admin-theme="light"] [class~="text-slate-950"][class~="bg-emerald-600"],
+.admin-shell[data-admin-theme="light"] [class~="text-slate-950"][class~="bg-emerald-700"] {
+  color: #ffffff !important;
+}
+
+.admin-shell[data-admin-theme="light"] [class~="bg-amber-400"] [class~="text-slate-950"],
+.admin-shell[data-admin-theme="light"] [class~="bg-amber-500"] [class~="text-slate-950"],
+.admin-shell[data-admin-theme="light"] [class~="bg-amber-400"][class~="text-slate-950"],
+.admin-shell[data-admin-theme="light"] [class~="bg-amber-500"][class~="text-slate-950"] {
+  color: #ffffff !important;
+}
+
+.admin-shell[data-admin-theme="light"] [class*="shadow"] {
+  --tw-shadow-color: rgb(23 32 51 / 7%);
+}
+
+.admin-shell[data-admin-theme="light"] .shadow-2xl {
+  box-shadow: 0 18px 50px rgb(15 23 42 / 14%) !important;
+}
+
+.admin-shell[data-admin-theme="light"] header {
+  background-color: rgb(255 255 255 / 94%) !important;
+  border-color: var(--admin-line) !important;
+}
+
+.admin-shell[data-admin-theme="light"] aside a[aria-current="page"] {
+  background-color: var(--admin-accent-soft) !important;
+  color: var(--admin-accent) !important;
+}
+
+.admin-shell[data-admin-theme="light"] aside a[aria-current="page"] :is(
+  [class~="text-amber-300"], [class~="text-amber-400"], [class~="text-slate-950"]
+) {
+  color: var(--admin-accent) !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(.rounded-xl, .rounded-2xl) {
+  border-radius: 12px;
+}

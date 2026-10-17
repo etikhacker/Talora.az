@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/i18n/language-context';
+import { TaloraLogo } from '@/components/layout/talora-logo';
 import { Globe, Mail, ArrowUpRight } from 'lucide-react';
 
 export function Footer() {
@@ -15,10 +16,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4 lg:gap-12">
           {/* Brand Info */}
           <div className="md:col-span-2 space-y-4">
-            <Link href="/" className="inline-flex items-center gap-2.5" aria-label="Talora">
-              <span aria-hidden="true" className="grid h-8 w-8 place-items-center rounded-md bg-blue-600 font-serif text-lg font-semibold italic text-white">t</span>
-              <span className="font-serif text-2xl font-semibold tracking-tight text-slate-900">Talora</span>
-            </Link>
+            <TaloraLogo compact />
             <p className="max-w-md text-sm leading-relaxed text-slate-500">
               {isAz
                 ? 'Tələbələr və gənc mütəxəssislər üçün beynəlxalq təcrübə proqramları, real layihələr və rəsmi sertifikatlaşdırma platforması.'
@@ -100,11 +98,11 @@ export function Footer() {
         <div className="mt-10 border-t border-slate-200 pt-6 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>© {new Date().getFullYear()} Talora. {isAz ? 'Bütün hüquqlar qorunur.' : 'All rights reserved.'}</p>
           <div className="flex items-center gap-4 text-xs text-slate-500">
-            <Link href="/about" className="hover:text-slate-900 transition-colors">
+            <Link href="/privacy" className="hover:text-slate-900 transition-colors">
               {t('privacy')}
             </Link>
             <span aria-hidden="true">·</span>
-            <Link href="/about" className="hover:text-slate-900 transition-colors">
+            <Link href="/terms" className="hover:text-slate-900 transition-colors">
               {t('terms')}
             </Link>
             <span aria-hidden="true">·</span>
