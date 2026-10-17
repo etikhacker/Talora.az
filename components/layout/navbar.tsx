@@ -19,7 +19,6 @@ export function Navbar() {
 
   const navLinks = [
     { href: '/internships', label: isAz ? 'Təcrübələr' : 'Explore Internships' },
-    { href: '/contact?type=employer', label: isAz ? 'Şirkətlər üçün' : 'For Companies' },
     { href: '/how-it-works', label: isAz ? 'Necə işləyir?' : 'How It Works' },
     { href: '/about', label: t('navAbout') },
     { href: '/contact', label: t('navContact') },

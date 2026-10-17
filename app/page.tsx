@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
+import { ScrollRevealTitle } from '@/components/landing/scroll-reveal-title';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
@@ -268,12 +269,12 @@ export default function HomePage() {
         {/* =====================================================================
             OPPORTUNITY DISCOVERY SECTION
             ===================================================================== */}
-        <section className="py-16 sm:py-20 border-b border-slate-200 bg-[#F8FAFC]">
+        <section className="landing-discovery-section py-16 sm:py-20 border-b border-slate-200 bg-[#F8FAFC]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl">
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              <ScrollRevealTitle className="landing-section-title text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
                 {isAz ? 'İstiqamətinizi tapın' : 'Find your path'}
-              </h2>
+              </ScrollRevealTitle>
               <p className="mt-2 text-sm sm:text-base text-slate-600">
                 {isAz
                   ? 'Maraqlarınıza və ambisiyalarınıza uyğun fürsətləri araşdırın.'
@@ -281,7 +282,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="landing-category-grid mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {CATEGORIES.map((cat) => {
                 const Icon = cat.icon;
                 const linkHref = cat.query ? `/internships?search=${encodeURIComponent(cat.query)}` : '/internships';
@@ -289,7 +290,7 @@ export default function HomePage() {
                   <Link
                     key={cat.id}
                     href={linkHref}
-                    className="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-300 hover:shadow-xs"
+                    className="landing-category-card group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-300 hover:shadow-xs"
                   >
                     <div>
                       <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition-colors group-hover:bg-blue-600 group-hover:text-white">
@@ -317,13 +318,13 @@ export default function HomePage() {
         {/* =====================================================================
             FEATURED INTERNSHIPS SECTION
             ===================================================================== */}
-        <section className="py-16 sm:py-20 border-b border-slate-200 bg-white">
+        <section className="landing-programs-section py-16 sm:py-20 border-b border-slate-200 bg-white">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                <ScrollRevealTitle className="landing-section-title text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
                   {isAz ? 'Təcrübə imkanlarını kəşf edin' : 'Explore internship opportunities'}
-                </h2>
+                </ScrollRevealTitle>
                 <p className="mt-2 text-sm sm:text-base text-slate-600">
                   {isAz
                     ? 'Sənaye mentorları ilə təcrübə qazanmaq üçün aktiv proqramlar.'
@@ -380,7 +381,7 @@ export default function HomePage() {
                   <Link
                     key={item.id}
                     href={`/internships/${item.id}`}
-                    className="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-300 hover:shadow-xs"
+                    className="landing-program-card group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-300 hover:shadow-xs"
                   >
                     <div>
                       {/* Zero-pill metadata row */}
@@ -435,15 +436,15 @@ export default function HomePage() {
         {/* =====================================================================
             HOW IT WORKS SECTION
             ===================================================================== */}
-        <section id="how-it-works" className="py-16 sm:py-20 border-b border-slate-200 bg-[#F8FAFC]">
+        <section id="how-it-works" className="landing-process-section py-16 sm:py-20 border-b border-slate-200 bg-[#F8FAFC]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-2">
                 {isAz ? 'Platformanın iş prinsipi' : 'Workflow & Methodology'}
               </p>
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              <ScrollRevealTitle className="landing-section-title text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
                 {isAz ? 'Üç sadə addımla karyeranızı başladın' : 'How Talora works'}
-              </h2>
+              </ScrollRevealTitle>
               <p className="mt-2 text-sm sm:text-base text-slate-600">
                 {isAz
                   ? 'Nəzəriyyəni real təcrübəyə və yoxlanıla bilən nəticələrə çeviririk.'
@@ -453,8 +454,8 @@ export default function HomePage() {
 
             <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
               {/* Step 1 */}
-              <div className="rounded-xl border border-slate-200 bg-white p-7">
-                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">01 / Step</div>
+              <div className="landing-step-card rounded-xl border border-slate-200 bg-white p-7">
+                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">{isAz ? 'Kəşf et' : 'Discover'}</div>
                 <h3 className="mt-3 text-lg font-bold text-slate-900">
                   {isAz ? 'Fürsətləri kəşf edin' : 'Discover opportunities'}
                 </h3>
@@ -466,8 +467,8 @@ export default function HomePage() {
               </div>
 
               {/* Step 2 */}
-              <div className="rounded-xl border border-slate-200 bg-white p-7">
-                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">02 / Step</div>
+              <div className="landing-step-card rounded-xl border border-slate-200 bg-white p-7">
+                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">{isAz ? 'Müraciət et' : 'Apply'}</div>
                 <h3 className="mt-3 text-lg font-bold text-slate-900">
                   {isAz ? 'Müraciət edin və təcrübə toplayın' : 'Apply and build experience'}
                 </h3>
@@ -479,8 +480,8 @@ export default function HomePage() {
               </div>
 
               {/* Step 3 */}
-              <div className="rounded-xl border border-slate-200 bg-white p-7">
-                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">03 / Step</div>
+              <div className="landing-step-card rounded-xl border border-slate-200 bg-white p-7">
+                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">{isAz ? 'İrəlilə' : 'Grow'}</div>
                 <h3 className="mt-3 text-lg font-bold text-slate-900">
                   {isAz ? 'Tapşırıqları bitirin və bacarıqlarınızı artırın' : 'Complete tasks and grow your skills'}
                 </h3>
@@ -497,11 +498,11 @@ export default function HomePage() {
         {/* =====================================================================
             FINAL CTA SECTION
             ===================================================================== */}
-        <section className="py-20 sm:py-24 bg-white">
+        <section className="landing-cta-section py-20 sm:py-24 bg-white">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            <ScrollRevealTitle className="landing-section-title text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
               {isAz ? 'Növbəti fəsliniz bir fürsətlə başlayır.' : 'Your next chapter starts with one opportunity.'}
-            </h2>
+            </ScrollRevealTitle>
             <p className="mt-4 text-base text-slate-600 sm:text-lg">
               {isAz
                 ? 'Təcrübələri kəşf edin və karyeranıza doğru praktiki addım atın.'
