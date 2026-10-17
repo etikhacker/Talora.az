@@ -3,8 +3,8 @@ import './globals.css'; // Global styles
 import { Providers } from '@/components/layout/providers';
 
 export const metadata: Metadata = {
-  title: 'Talora — Discover Internship Opportunities',
-  description: 'Discover internship opportunities, gain practical experience, and build skills for your future with Talora.',
+  title: 'Talora — İlk peşəkar təcrübənə başla',
+  description: 'Azərbaycanda tələbələr üçün təcrübə platforması. Bacarıqlarını inkişaf etdir və real təcrübə qazan.',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#2563EB',
+  themeColor: '#435FD1',
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {

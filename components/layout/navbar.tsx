@@ -29,14 +29,15 @@ export function Navbar() {
     <header className="sticky top-0 z-30 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Talora text-based wordmark */}
-        <Link href="/" className="flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded-md">
-          <span className="text-2xl font-bold tracking-tight text-slate-900">
-            talora<span className="text-blue-600">.</span>
+        <Link href="/" className="flex items-center gap-2.5 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">
+          <span aria-hidden="true" className="grid h-8 w-8 place-items-center rounded-md bg-blue-600 font-serif text-lg font-semibold italic text-white shadow-sm">t</span>
+          <span className="font-serif text-2xl font-semibold tracking-tight text-slate-900">
+            Talora
           </span>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600">
+        <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600" aria-label={isAz ? 'Əsas naviqasiya' : 'Main navigation'}>
           {navLinks.map((link) => {
             const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href.split('?')[0]));
             return (
@@ -140,7 +141,7 @@ export function Navbar() {
 
       {/* Mobile dropdown menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 bg-white px-4 pt-3 pb-6 space-y-4">
+        <div className="md:hidden space-y-4 border-b border-slate-200 bg-white px-4 pb-6 pt-3">
           <nav className="flex flex-col space-y-2">
             {navLinks.map((link) => (
               <Link

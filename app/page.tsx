@@ -138,7 +138,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F8FAFC] text-[#101828]">
+    <div className="talora-home flex min-h-screen flex-col bg-[#F8FAFC] text-[#101828]">
       <Navbar />
 
       <main className="flex-1">
