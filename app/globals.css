@@ -744,8 +744,8 @@ html.light button.bg-emerald-500 {
  * where it must stay bright. `--c-emerald-700` is likewise a light green in
  * the dark block, which would have made hover lighter than rest; the hover
  * override keeps the interaction going deeper instead. */
-html.dark .bg-emerald-600 { background-color: #059669 !important; }
-html.dark .hover\:bg-emerald-700:hover { background-color: #047857 !important; }
+html.dark .bg-emerald-600 { background-color: #526edb !important; }
+html.dark .hover\:bg-emerald-700:hover { background-color: #435fd1 !important; }
 
 html.light button.bg-amber-400 {
   box-shadow: 0 10px 24px rgba(217, 119, 6, 0.22);
@@ -1333,7 +1333,7 @@ html.light .portfolio-intro { color: #64748b !important; }
 html.light { --talora-ink: #202b43; --talora-cobalt: #435fd1; --talora-paper: #f7f5ef; --talora-line: #e6e2d8; }
 html.dark { --talora-ink: #f1f3fa; --talora-cobalt: #91a5ff; --talora-paper: #111827; --talora-line: rgba(148,163,184,.19); }
 body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: -.008em; }
-h1, h2, h3, h4 { letter-spacing: -.035em; }
+h1, h2, h3, h4 { font-family: Iowan Old Style, Palatino Linotype, Book Antiqua, Georgia, serif; letter-spacing: -.035em; font-weight: 650; text-wrap: balance; }
 a, button, input, select, textarea { transition-duration: 180ms; }
 ::selection { background: rgba(67,95,209,.18); }
 
@@ -1355,6 +1355,39 @@ html.light .text-blue-600 { color: var(--talora-cobalt) !important; }
 html.light .bg-blue-600 { background-color: var(--talora-cobalt) !important; }
 html.light .hover\\:bg-blue-700:hover { background-color: #334bb4 !important; }
 html.light .focus\\:border-blue-600:focus { border-color: var(--talora-cobalt) !important; }
+
+/* The prototype has a single cobalt accent across the site, authentication,
+   and student workspace. Existing live routes use semantic emerald utilities;
+   remapping their tokens changes their appearance without touching Supabase
+   queries, form submission, loading, or empty-state logic. */
+:root, html.dark {
+  --c-emerald-50: rgba(91, 112, 219, .14);
+  --c-emerald-100: rgba(91, 112, 219, .20);
+  --c-emerald-200: rgba(119, 145, 255, .30);
+  --c-emerald-300: #a6b6ff;
+  --c-emerald-400: #91a5ff;
+  --c-emerald-500: #6d86ef;
+  --c-emerald-600: #91a5ff;
+  --c-emerald-700: #a6b6ff;
+  --c-emerald-800: #c8d2ff;
+  --c-emerald-900: #e0e7ff;
+  --c-emerald-100-text: #a6b6ff;
+  --c-emerald-200-text: #c8d2ff;
+}
+html.light {
+  --c-emerald-50: #edf0ff;
+  --c-emerald-100: #dfe5ff;
+  --c-emerald-200: #c8d2ff;
+  --c-emerald-300: #a6b6ff;
+  --c-emerald-400: #7890ef;
+  --c-emerald-500: #5973e0;
+  --c-emerald-600: #435fd1;
+  --c-emerald-700: #344ba9;
+  --c-emerald-800: #293d89;
+  --c-emerald-900: #202b62;
+  --c-emerald-100-text: #344ba9;
+  --c-emerald-200-text: #293d89;
+}
 
 .talora-home main > section:first-child { position: relative; overflow: hidden; }
 .talora-home main > section:first-child::before { content: ""; position: absolute; inset: 0 0 auto; height: 5px; background: var(--talora-cobalt); }
@@ -1396,6 +1429,8 @@ html.dark body:has(aside) main .bg-white { background-color: #111827 !important;
 .auth-login-brand, .auth-login-mobile-brand {
   background: radial-gradient(ellipse at 90% 10%, rgba(119,145,255,.38), transparent 38%), linear-gradient(145deg, #202b43 0%, #18233b 58%, #2d438b 100%) !important;
 }
+.auth-login-brand [class*="text-emerald-50"],
+.auth-login-mobile-brand [class*="text-emerald-50"] { color: #e0e7ff !important; }
 html.light .theme-toggle {
   background: #fffefa !important;
   border-color: var(--talora-line) !important;
@@ -1417,6 +1452,14 @@ html.light aside a.bg-emerald-50 { border-radius: 9px; }
 html.dark aside .bg-emerald-50 { background-color: rgba(145,165,255,.13) !important; }
 html.dark aside .text-emerald-900 { color: #dfe5ff !important; }
 html.dark aside .text-emerald-600 { color: #a6b6ff !important; }
+
+/* Keep operational warning badges amber, but give the admin navigation the
+   same cobalt identity as the reference dashboard. */
+.admin-shell aside .bg-amber-400 { background-color: #435fd1 !important; }
+.admin-shell aside .text-amber-400,
+.admin-shell aside .text-amber-300 { color: #91a5ff !important; }
+.admin-shell aside .bg-amber-400.text-slate-950,
+.admin-shell aside .bg-amber-400 .text-slate-950 { color: #ffffff !important; }
 
 html.light .admin-shell[data-admin-theme="light"] .bg-amber-400 { background-color: #435fd1 !important; }
 html.light .admin-shell[data-admin-theme="light"] .text-amber-400,

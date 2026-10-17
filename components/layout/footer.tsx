@@ -15,10 +15,9 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4 lg:gap-12">
           {/* Brand Info */}
           <div className="md:col-span-2 space-y-4">
-            <Link href="/" className="inline-block">
-              <span className="text-2xl font-bold tracking-tight text-slate-900">
-                talora<span className="text-blue-600">.</span>
-              </span>
+            <Link href="/" className="inline-flex items-center gap-2.5" aria-label="Talora">
+              <span aria-hidden="true" className="grid h-8 w-8 place-items-center rounded-md bg-blue-600 font-serif text-lg font-semibold italic text-white">t</span>
+              <span className="font-serif text-2xl font-semibold tracking-tight text-slate-900">Talora</span>
             </Link>
             <p className="max-w-md text-sm leading-relaxed text-slate-500">
               {isAz
