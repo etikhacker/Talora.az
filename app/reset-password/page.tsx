@@ -45,9 +45,18 @@ export default function ResetPasswordPage() {
       if (!active) return;
       const url = new URL(window.location.href);
       const fragment = new URLSearchParams(url.hash.replace(/^#/, ''));
-      const linkError = url.searchParams.get('error_description') || fragment.get('error_description');
-      if (sessionError || linkError) {
-        setError(linkError || (isAz ? 'Bərpa keçidi etibarsızdır və ya vaxtı bitib.' : 'This reset link is invalid or has expired.'));
+      const errorCode = url.searchParams.get('error_code') || fragment.get('error_code');
+      const linkError = url.searchParams.get('error') || fragment.get('error');
+      const errorDescription = url.searchParams.get('error_description') || fragment.get('error_description');
+      if (sessionError || linkError || errorDescription) {
+        const isExpired = errorCode === 'otp_expired' || /expired|invalid/i.test(errorDescription || '');
+        setError(isAz
+          ? (isExpired
+              ? 'Bu bərpa keçidinin vaxtı bitib və ya o, artıq istifadə olunub. Yeni keçid istəyin və e-poçta gələn ən son linki açın.'
+              : 'Bərpa keçidi təsdiqlənmədi. Yeni keçid istəyib e-poçtdan yenidən açın.')
+          : (isExpired
+              ? 'This reset link has expired or was already used. Request a new link and open the latest email.'
+              : 'The reset link could not be verified. Request a new link and open it from your email.'));
       }
       setHasSession(Boolean(data.session));
       setReady(true);
@@ -105,8 +114,11 @@ export default function ResetPasswordPage() {
             <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{isAz ? 'Yeni şifrəniz yadda saxlanıldı. Giriş səhifəsinə yönləndirilirsiniz.' : 'Your new password is saved. Redirecting you to sign in.'}</p>
           ) : !hasSession ? (
             <>
-              <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{error || (isAz ? 'Bərpa keçidi etibarsızdır və ya vaxtı bitib. Yenidən e-poçt istəyə bilərsiniz.' : 'This reset link is invalid or expired. You can request another email.')}</p>
-              {error && <Alert variant="destructive" className="mt-4"><AlertDescription>{error}</AlertDescription></Alert>}
+              {error ? (
+                <Alert variant="destructive" className="mt-4"><AlertDescription>{error}</AlertDescription></Alert>
+              ) : (
+                <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{isAz ? 'Şifrəni dəyişmək üçün e-poçtunuza göndərilən ən son bərpa keçidini açın.' : 'Open the latest reset link sent to your email to choose a new password.'}</p>
+              )}
               <Link href="/forgot-password" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800 dark:text-blue-300"><ArrowLeft className="h-4 w-4" aria-hidden="true" />{isAz ? 'Yeni bərpa keçidi istə' : 'Request another reset link'}</Link>
             </>
           ) : (
