@@ -166,6 +166,7 @@ export interface CertificateSettings {
   price: number;
   currency: string;
   card_number: string;
+  m10_phone_number: string | null;
   is_enabled: boolean;
   created_at: string;
   updated_at: string;

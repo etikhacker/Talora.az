@@ -10,7 +10,7 @@ import { useLanguage } from '@/lib/i18n/language-context';
 import { createClient } from '@/lib/supabase/client';
 import { isSupabaseConfigured } from '@/lib/supabase/config';
 import type { AuthChangeEvent, AuthError, Session } from '@supabase/supabase-js';
-import { ArrowLeft, CheckCircle2, Loader2, Lock } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Eye, EyeOff, Loader2, Lock } from 'lucide-react';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -23,6 +23,8 @@ export default function ResetPasswordPage() {
   const [complete, setComplete] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -125,9 +127,19 @@ export default function ResetPasswordPage() {
             <form onSubmit={handleSubmit} className="mt-5 space-y-4">
               <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">{isAz ? 'Yeni şifrəniz ən azı 8 simvol olmalıdır.' : 'Your new password must contain at least 8 characters.'}</p>
               <label htmlFor="new-password" className="block text-sm font-semibold">{isAz ? 'Yeni şifrə' : 'New password'}</label>
-              <input id="new-password" type="password" autoComplete="new-password" required minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} className="h-12 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-950 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 dark:border-slate-600 dark:bg-slate-950 dark:text-white" />
+              <div className="relative">
+                <input id="new-password" type={showPassword ? 'text' : 'password'} autoComplete="new-password" required minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} className="h-12 w-full rounded-xl border border-slate-300 bg-white px-4 pr-12 text-sm text-[var(--ink)] outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 dark:border-slate-600 dark:bg-slate-950" />
+                <button type="button" onClick={() => setShowPassword((shown) => !shown)} aria-label={showPassword ? (isAz ? 'Şifrəni gizlət' : 'Hide password') : (isAz ? 'Şifrəni göstər' : 'Show password')} aria-pressed={showPassword} className="absolute inset-y-0 right-0 grid w-12 place-items-center text-slate-500 hover:text-blue-600 dark:hover:text-blue-300">
+                  {showPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
+                </button>
+              </div>
               <label htmlFor="confirm-password" className="block text-sm font-semibold">{isAz ? 'Şifrəni təsdiqlə' : 'Confirm password'}</label>
-              <input id="confirm-password" type="password" autoComplete="new-password" required minLength={8} value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} className="h-12 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-950 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 dark:border-slate-600 dark:bg-slate-950 dark:text-white" />
+              <div className="relative">
+                <input id="confirm-password" type={showConfirmPassword ? 'text' : 'password'} autoComplete="new-password" required minLength={8} value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} className="h-12 w-full rounded-xl border border-slate-300 bg-white px-4 pr-12 text-sm text-[var(--ink)] outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 dark:border-slate-600 dark:bg-slate-950" />
+                <button type="button" onClick={() => setShowConfirmPassword((shown) => !shown)} aria-label={showConfirmPassword ? (isAz ? 'Şifrəni gizlət' : 'Hide password') : (isAz ? 'Şifrəni göstər' : 'Show password')} aria-pressed={showConfirmPassword} className="absolute inset-y-0 right-0 grid w-12 place-items-center text-slate-500 hover:text-blue-600 dark:hover:text-blue-300">
+                  {showConfirmPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
+                </button>
+              </div>
               {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
               <Button type="submit" disabled={busy} className="h-12 w-full bg-blue-600 font-semibold text-white hover:bg-blue-700">{busy ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />{isAz ? 'Yadda saxlanılır…' : 'Saving…'}</> : (isAz ? 'Yeni şifrəni yadda saxla' : 'Save new password')}</Button>
             </form>

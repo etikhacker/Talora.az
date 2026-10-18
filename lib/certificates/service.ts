@@ -73,19 +73,25 @@ export async function saveCertificateSettings({
   price,
   currency = 'AZN',
   cardNumber,
+  m10PhoneNumber,
   isEnabled,
 }: {
   internshipId: string;
   price: number;
   currency?: string;
   cardNumber: string;
+  m10PhoneNumber: string;
   isEnabled: boolean;
 }): Promise<{ success: boolean; error?: string; settings?: CertificateSettings }> {
   if (!Number.isFinite(price) || price < 0) {
     return { success: false, error: 'Qiymət mənfi ola bilməz.' };
   }
-  if (isEnabled && !cardNumber.trim()) {
-    return { success: false, error: 'Sertifikat aktiv olduqda kart nömrəsi qeyd edilməlidir.' };
+  if (isEnabled && !cardNumber.trim() && !m10PhoneNumber.trim()) {
+    return { success: false, error: 'Sertifikat aktiv olduqda bank kartı və ya M10 nömrəsi daxil edilməlidir.' };
+  }
+  const m10Digits = m10PhoneNumber.replace(/\D/g, '');
+  if (m10Digits && (m10Digits.length < 9 || m10Digits.length > 15)) {
+    return { success: false, error: 'M10 nömrəsini düzgün formatda daxil edin.' };
   }
 
   if (!isSupabaseConfigured()) {
@@ -101,6 +107,7 @@ export async function saveCertificateSettings({
       price: Number(price),
       currency: currency.trim() || 'AZN',
       card_number: cardNumber.trim(),
+      m10_phone_number: m10PhoneNumber.trim() || null,
       is_enabled: isEnabled,
       updated_at: new Date().toISOString(),
     };
