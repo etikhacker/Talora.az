@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { ScrollRevealTitle } from '@/components/landing/scroll-reveal-title';
+import { DevelopmentNotice } from '@/components/landing/development-notice';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/lib/i18n/language-context';
 import type { Internship } from '@/types/database';
@@ -122,6 +123,7 @@ export default function HomePage() {
   return (
     <div className="talora-home flex min-h-screen flex-col bg-[#F8FAFC] text-[#101828]">
       <Navbar />
+      <DevelopmentNotice />
 
       <main className="flex-1">
         {/* =====================================================================

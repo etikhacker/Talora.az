@@ -1,0 +1,8 @@
+node_modules/
+.next/
+.git/
+.vercel/
+supabase/.temp/
+.playwright-cli/
+.manus/
+.env*
