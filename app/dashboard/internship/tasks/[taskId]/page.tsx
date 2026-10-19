@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useEffect, useState, useCallback, use } from 'react';
+import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +12,8 @@ import { useLanguage } from '@/lib/i18n/language-context';
 import { extractLocalizedTaskText } from '@/lib/tasks/content.mjs';
 import { getLocalizedTaskTitle } from '@/lib/tasks/localized-title.mjs';
 import { TaskInstructionArticle } from '@/components/tasks/instruction-article.mjs';
-import { getStudentActiveEnrollment } from '@/lib/enrollments/service';
+import { getStudentEnrollments } from '@/lib/enrollments/service';
+import { getTaskEnrollment } from '@/lib/tasks/task-enrollment.mjs';
 import { getTaskById } from '@/lib/tasks/service';
 import {
   getSubmissionForTask,
@@ -61,7 +61,6 @@ export default function StudentTaskDetailPage({
   const { profile } = useAuth();
   const { language } = useLanguage();
   const isAz = language === 'az';
-  const router = useRouter();
 
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   const [task, setTask] = useState<InternshipTask | null>(null);
@@ -82,45 +81,18 @@ export default function StudentTaskDetailPage({
 
   const studentId = profile?.id;
 
-  const loadData = useCallback(async () => {
-    if (!studentId) return;
-    try {
-      const [taskData, activeEnrollment] = await Promise.all([
-        getTaskById(taskId),
-        getStudentActiveEnrollment(studentId),
-      ]);
-      setTask(taskData);
-      setEnrollment(activeEnrollment);
-
-      if (taskData) {
-        const sub = await getSubmissionForTask(taskId, studentId);
-        setSubmission(sub);
-        if (sub) {
-          setGithubUrl(sub.github_url || '');
-          setSubmissionUrl(sub.submission_url || '');
-          setTextAnswer(sub.text_answer || '');
-          setComment(sub.comment || '');
-        }
-      }
-    } catch (err) {
-      console.error('Failed to load task details:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [taskId, studentId]);
-
   useEffect(() => {
     let active = true;
     const fetchAsync = async () => {
       if (!studentId) return;
       try {
-        const [taskData, activeEnrollment] = await Promise.all([
+        const [taskData, enrollments] = await Promise.all([
           getTaskById(taskId),
-          getStudentActiveEnrollment(studentId),
+          getStudentEnrollments(studentId),
         ]);
         if (!active) return;
         setTask(taskData);
-        setEnrollment(activeEnrollment);
+        setEnrollment(getTaskEnrollment(enrollments, taskData?.internship_id));
 
         if (taskData) {
           const sub = await getSubmissionForTask(taskId, studentId);
@@ -282,7 +254,7 @@ export default function StudentTaskDetailPage({
     return (
       <div className="space-y-4">
         <Link
-          href="/dashboard/internship"
+          href="/dashboard/tasks"
           className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-800"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
@@ -314,7 +286,7 @@ export default function StudentTaskDetailPage({
       {/* Top Breadcrumb */}
       <div>
         <Link
-          href="/dashboard/internship"
+          href={`/dashboard/tasks?program=${encodeURIComponent(task.internship_id)}`}
           className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-emerald-700 transition-colors mb-3"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -394,7 +366,7 @@ export default function StudentTaskDetailPage({
                 <CheckCircle2 className="w-5 h-5" />
               </div>
               <div className="space-y-1">
-                <h4 className="text-sm font-bold text-emerald-950">
+                <h4 className="text-base font-bold text-emerald-900">
                   {isAz ? 'Tapşırıq Təsdiqlənib!' : 'Assignment Approved!'}
                 </h4>
                 <p className="text-xs text-emerald-800 leading-relaxed">
@@ -413,21 +385,21 @@ export default function StudentTaskDetailPage({
           )}
 
           {submission.status === 'pending' && (
-            <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-start justify-between gap-3">
+            <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row items-start justify-between gap-3" role="status">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shrink-0 mt-0.5">
-                  <Clock className="w-5 h-5 animate-pulse" />
+                  <Clock className="w-5 h-5" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="text-sm font-bold text-amber-950">
+                  <h4 className="text-base font-bold text-amber-900">
                     {isAz ? 'Yoxlanışdadır (Gözləmədə)' : 'Under Review'}
                   </h4>
-                  <p className="text-xs text-amber-800 leading-relaxed">
+                  <p className="text-sm text-amber-800 leading-relaxed">
                     {isAz
                       ? 'Həlliniz qəbul edilib və tezliklə koordinator tərəfindən qiymətləndiriləcəkdir.'
                       : 'Your submission is queued for review by the coordinator.'}
                   </p>
-                  <p className="text-[11px] text-amber-700">
+                  <p className="text-sm text-amber-800">
                     {isAz ? 'Göndərilmə tarixi:' : 'Submitted on:'}{' '}
                     {new Date(submission.submitted_at).toLocaleString(isAz ? 'az-AZ' : 'en-US')}
                   </p>
@@ -439,7 +411,7 @@ export default function StudentTaskDetailPage({
                   size="sm"
                   variant="outline"
                   onClick={() => setIsEditing(true)}
-                  className="text-xs border-amber-300 text-amber-900 hover:bg-amber-100 shrink-0"
+                  className="min-h-11 text-sm border-amber-300 text-amber-900 hover:bg-amber-100 shrink-0"
                 >
                   {isAz ? 'Düzəliş et' : 'Edit submission'}
                 </Button>
@@ -454,7 +426,7 @@ export default function StudentTaskDetailPage({
                   <AlertCircle className="w-5 h-5" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="text-sm font-bold text-orange-950">
+                  <h4 className="text-base font-bold text-orange-900">
                     {isAz ? 'Düzəliş Tələb Olunur' : 'Revision Requested'}
                   </h4>
                   <p className="text-xs text-orange-800 leading-relaxed">
@@ -466,7 +438,7 @@ export default function StudentTaskDetailPage({
               </div>
 
               {submission.admin_feedback && (
-                <div className="p-3 bg-white rounded-xl border border-orange-200 text-xs text-orange-950 space-y-1">
+                <div className="p-3 bg-white rounded-xl border border-orange-200 text-sm text-orange-900 space-y-1">
                   <span className="font-bold flex items-center gap-1.5 text-orange-900">
                     <MessageSquare className="w-3.5 h-3.5" />
                     {isAz ? 'Mentorun Tələbi:' : 'Mentor Instructions:'}
