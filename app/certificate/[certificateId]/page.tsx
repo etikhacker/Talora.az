@@ -120,7 +120,7 @@ export default function PublicCertificateVerificationPage() {
             <div className="pt-2">
               <Link href="/">
                 <Button size="sm" variant="outline" className="text-xs">
-                  Intern.az Ana Səhifəsinə Qayıt
+                  Talora.az Ana Səhifəsinə Qayıt
                 </Button>
               </Link>
             </div>
@@ -139,7 +139,7 @@ export default function PublicCertificateVerificationPage() {
                       Sertifikat Ləğv Edilmişdir
                     </h3>
                     <p className="text-xs text-red-100">
-                      Bu sertifikat etibarsızdır və Intern.az inzibatçısı tərəfindən ləğv edilmişdir.
+                      Bu sertifikat etibarsızdır və Talora.az inzibatçısı tərəfindən ləğv edilmişdir.
                     </p>
                   </div>
                 </div>
@@ -158,7 +158,7 @@ export default function PublicCertificateVerificationPage() {
                       Rəsmi Təsdiqlənmiş Təcrübə Sertifikatı
                     </h3>
                     <p className="text-xs text-emerald-100">
-                      Sənəd Intern.az reyestrində qeydiyyatdan keçmiş və həqiqidir.
+                      Sənəd Talora.az reyestrində qeydiyyatdan keçmiş və həqiqidir.
                     </p>
                   </div>
                 </div>
@@ -272,7 +272,7 @@ export default function PublicCertificateVerificationPage() {
       {/* Footer */}
       <footer className="w-full bg-white border-t border-slate-200 py-4 px-4 text-center text-xs text-slate-500">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>© {new Date().getFullYear()} Intern.az — Bütün hüquqlar qorunur.</span>
+          <span>© {new Date().getFullYear()} Talora.az — Bütün hüquqlar qorunur.</span>
           <span>Mingəçevir, Azərbaycan</span>
         </div>
       </footer>

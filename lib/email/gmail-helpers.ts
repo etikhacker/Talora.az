@@ -70,7 +70,7 @@ export function getGmailSettings(
     secure: true,
     user,
     password,
-    from: `Intern.az Bildirişləri <${user}>`,
+    from: `Talora Bildirişləri <${user}>`,
   };
 }
 
@@ -101,7 +101,7 @@ export function buildApplicationStatusEmail(input: {
     '',
     `Müraciətinizə baxın: ${input.applicationUrl}`,
     '',
-    'Intern.az',
+    'Talora.az',
   ]
     .filter((line, index, lines) => line !== '' || lines[index - 1] !== '')
     .join('\n');
@@ -122,12 +122,12 @@ export function buildInternshipAnnouncementEmail(input: {
     text: [
       'Salam,',
       '',
-      `Intern.az-da yeni təcrübə proqramı yayımlandı: ${input.title}`,
+      `Talora.az-da yeni təcrübə proqramı yayımlandı: ${input.title}`,
       input.shortDescription,
       '',
       `Proqrama baxın: ${input.internshipUrl}`,
       '',
-      'Intern.az',
+      'Talora.az',
     ].join('\n'),
   };
 }

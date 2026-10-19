@@ -42,6 +42,7 @@ export default function AdminCertificateSettingsPage() {
   const [price, setPrice] = useState<number>(25);
   const [currency, setCurrency] = useState<string>('AZN');
   const [cardNumber, setCardNumber] = useState<string>('');
+  const [m10PhoneNumber, setM10PhoneNumber] = useState<string>('');
   const [isEnabled, setIsEnabled] = useState<boolean>(true);
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -95,11 +96,13 @@ export default function AdminCertificateSettingsPage() {
       setPrice(existing.price);
       setCurrency(existing.currency || 'AZN');
       setCardNumber(existing.card_number || '');
+      setM10PhoneNumber(existing.m10_phone_number || '');
       setIsEnabled(existing.is_enabled);
     } else {
       setPrice(25);
       setCurrency('AZN');
       setCardNumber('');
+      setM10PhoneNumber('');
       setIsEnabled(true);
     }
     setErrorMsg(null);
@@ -115,8 +118,8 @@ export default function AdminCertificateSettingsPage() {
       return;
     }
 
-    if (isEnabled && !cardNumber.trim()) {
-      setErrorMsg('Sertifikat aktiv edildikdə kart nömrəsi daxil edilməlidir.');
+    if (isEnabled && !cardNumber.trim() && !m10PhoneNumber.trim()) {
+      setErrorMsg('Sertifikat aktiv edildikdə bank kartı və ya M10 nömrəsi daxil edilməlidir.');
       return;
     }
 
@@ -130,6 +133,7 @@ export default function AdminCertificateSettingsPage() {
         price,
         currency,
         cardNumber,
+        m10PhoneNumber,
         isEnabled,
       });
 
@@ -155,12 +159,14 @@ export default function AdminCertificateSettingsPage() {
     const curPrice = currentSetting ? currentSetting.price : 25;
     const curCurr = currentSetting ? currentSetting.currency : 'AZN';
     const curCard = currentSetting ? currentSetting.card_number : '';
+    const curM10Phone = currentSetting?.m10_phone_number || '';
 
-    if (newEnabledState && !curCard.trim()) {
+    if (newEnabledState && !curCard.trim() && !curM10Phone.trim()) {
       setEditingInternship(internship);
       setPrice(curPrice);
       setCurrency(curCurr);
       setCardNumber('');
+      setM10PhoneNumber('');
       setIsEnabled(true);
       setErrorMsg('Sertifikat ödənişini aktiv etməzdən əvvəl real ödəniş kartı və ya köçürmə məlumatını daxil edin.');
       return;
@@ -172,6 +178,7 @@ export default function AdminCertificateSettingsPage() {
         price: curPrice,
         currency: curCurr,
         cardNumber: curCard,
+        m10PhoneNumber: curM10Phone,
         isEnabled: newEnabledState,
       });
       await loadData();
@@ -230,6 +237,7 @@ export default function AdminCertificateSettingsPage() {
             const isEnabled = setting ? setting.is_enabled : false;
             const displayPrice = setting ? `${setting.price} ${setting.currency}` : 'Təyin edilməyib (25 AZN defolt)';
             const displayCard = setting?.card_number || 'Kart təyin edilməyib';
+            const displayM10 = setting?.m10_phone_number || 'M10 nömrəsi təyin edilməyib';
 
             return (
               <Card
@@ -282,6 +290,15 @@ export default function AdminCertificateSettingsPage() {
                     <div className="p-2.5 rounded-lg bg-slate-950 font-mono text-xs font-semibold text-slate-200 border border-slate-800 flex items-center justify-between">
                       <span className="truncate">{displayCard}</span>
                       <CreditCard className="w-3.5 h-3.5 text-amber-400/80 shrink-0 ml-1.5" />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">
+                      M10 ilə ödəniş:
+                    </span>
+                    <div className="p-2.5 rounded-lg bg-slate-950 font-mono text-xs font-semibold text-slate-200 border border-slate-800 flex items-center justify-between">
+                      <span className="truncate">{displayM10}</span>
+                      <span className="shrink-0 ml-1.5 text-emerald-300 font-sans font-bold">m10</span>
                     </div>
                   </div>
 
@@ -351,8 +368,8 @@ export default function AdminCertificateSettingsPage() {
               <div className="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-between">
                 <div>
                   <p className="font-semibold text-white">Sertifikat verilməsi aktivdir?</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
-                    Tələbələr təcrübəni bitirdikdən sonra sertifikat ödənişi və müraciəti edə bilsin.
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                    Tələbələr təcrübəni bitirdikdən sonra bank kartı və ya M10 ilə ödəniş qəbzi göndərə bilsin.
                   </p>
                 </div>
                 <button
@@ -397,10 +414,10 @@ export default function AdminCertificateSettingsPage() {
                 </div>
               </div>
 
-              {/* Card Number */}
+              {/* Payment destinations */}
               <div className="space-y-1.5">
                 <label className="text-slate-300 font-semibold block">
-                  Ödəniş üçün Bank Kart Nömrəsi *
+                  Ödəniş üçün Bank Kart Nömrəsi
                 </label>
                 <div className="relative">
                   <input
@@ -408,13 +425,29 @@ export default function AdminCertificateSettingsPage() {
                     value={cardNumber}
                     onChange={(e) => setCardNumber(e.target.value)}
                     placeholder="4169 7388 9012 3456"
-                    required={isEnabled}
+                    required={isEnabled && !m10PhoneNumber.trim()}
                     className="w-full pl-3 pr-10 py-2 rounded-lg bg-slate-950 border border-slate-700 text-amber-300 font-mono text-sm tracking-wider focus:border-amber-400 focus:outline-hidden"
                   />
                   <CreditCard className="w-4 h-4 text-slate-500 absolute right-3 top-2.5" />
                 </div>
+              </div>
+              <div className="space-y-1.5">
+                <label htmlFor="certificate-m10-number" className="text-slate-300 font-semibold block">
+                  M10 qəbul nömrəsi
+                </label>
+                <input
+                  id="certificate-m10-number"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  maxLength={20}
+                  value={m10PhoneNumber}
+                  onChange={(e) => setM10PhoneNumber(e.target.value)}
+                  placeholder="+994 50 123 45 67"
+                  className="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-emerald-200 font-mono text-sm tracking-wider focus:border-emerald-400 focus:outline-hidden"
+                />
                 <p className="text-[11px] text-slate-500">
-                  Tələbəyə ödəniş səhifəsində nümayiş etdiriləcək 16 rəqəmli kart nömrəsi.
+                  M10 tətbiqində bu nömrəyə köçürmə qəbul edəcəksiniz. Aktiv ödəniş üçün kart və ya M10 nömrəsindən ən azı biri olmalıdır; qəbz admin tərəfindən əl ilə yoxlanılır.
                 </p>
               </div>
 

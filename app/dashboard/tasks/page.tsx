@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/auth-context';
 import { useLanguage } from '@/lib/i18n/language-context';
-import { getStudentActiveEnrollment } from '@/lib/enrollments/service';
+import { getStudentEnrollments } from '@/lib/enrollments/service';
 import { getAllTasksForInternship } from '@/lib/tasks/service';
 import { getStudentSubmissionsForEnrollment } from '@/lib/submissions/service';
 import { extractLocalizedTaskText } from '@/lib/tasks/content.mjs';
@@ -65,9 +65,12 @@ export default function StudentTasksPage() {
   const { profile } = useAuth();
   const { language } = useLanguage();
   const isAz = language === 'az';
-  const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
-  const [tasks, setTasks] = useState<InternshipTask[]>([]);
-  const [submissions, setSubmissions] = useState<TaskSubmission[]>([]);
+  const [programs, setPrograms] = useState<Array<{
+    enrollment: Enrollment;
+    tasks: InternshipTask[];
+    submissions: TaskSubmission[];
+  }>>([]);
+  const [selectedProgramId, setSelectedProgramId] = useState('');
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<TaskFilter>('all');
 
@@ -76,37 +79,33 @@ export default function StudentTasksPage() {
 
     async function load() {
       if (!profile?.id) {
-        setEnrollment(null);
-        setTasks([]);
-        setSubmissions([]);
+        setPrograms([]);
         setLoading(false);
         return;
       }
 
       setLoading(true);
       try {
-        const activeEnrollment = await getStudentActiveEnrollment(profile.id);
+        const enrollments = await getStudentEnrollments(profile.id);
         if (!active) return;
-        setEnrollment(activeEnrollment);
-
-        if (!activeEnrollment?.internship_id) {
-          setTasks([]);
-          setSubmissions([]);
-          return;
-        }
-
-        const [publishedTasks, studentSubmissions] = await Promise.all([
-          getAllTasksForInternship(activeEnrollment.internship_id, false),
-          getStudentSubmissionsForEnrollment(profile.id, activeEnrollment.id),
-        ]);
+        const activePrograms = await Promise.all(enrollments
+          .filter((item) => item.status === 'active')
+          .map(async (item) => {
+            const [tasks, submissions] = await Promise.all([
+              getAllTasksForInternship(item.internship_id, false),
+              getStudentSubmissionsForEnrollment(profile.id, item.id),
+            ]);
+            return { enrollment: item, tasks, submissions };
+          }));
         if (!active) return;
-        setTasks(publishedTasks);
-        setSubmissions(studentSubmissions);
+        setPrograms(activePrograms);
+        const requestedProgram = new URLSearchParams(window.location.search).get('program');
+        setSelectedProgramId(activePrograms.find((item) => item.enrollment.internship_id === requestedProgram)?.enrollment.id
+          || activePrograms[0]?.enrollment.id || '');
       } catch (error) {
         console.error('Tələbə tapşırıqları yüklənə bilmədi:', error);
         if (active) {
-          setTasks([]);
-          setSubmissions([]);
+          setPrograms([]);
         }
       } finally {
         if (active) setLoading(false);
@@ -117,13 +116,18 @@ export default function StudentTasksPage() {
     return () => { active = false; };
   }, [profile?.id]);
 
+  const selectedProgram = programs.find((item) => item.enrollment.id === selectedProgramId) || programs[0];
+  const enrollment = selectedProgram?.enrollment;
+  const tasks = useMemo(() => selectedProgram?.tasks ?? [], [selectedProgram]);
+  const submissions = useMemo(() => selectedProgram?.submissions ?? [], [selectedProgram]);
+
   const groupedTasks = useMemo(
     () => groupStudentTasks(tasks, submissions),
     [tasks, submissions],
   );
   const weeks = useMemo(() => {
     const maxTaskWeek = groupedTasks.reduce((max, group) => Math.max(max, group.weekNumber), 0);
-    const duration = enrollment?.internship?.duration_weeks || maxTaskWeek;
+    const duration = Math.max(enrollment?.internship?.duration_weeks || 0, maxTaskWeek);
     return Array.from({ length: duration }, (_, index) => {
       const weekNumber = index + 1;
       const group = groupedTasks.find((item) => item.weekNumber === weekNumber);
@@ -193,6 +197,35 @@ export default function StudentTasksPage() {
         </section>
       ) : (
         <>
+          {programs.length > 1 && (
+            <section className="space-y-2">
+              <label htmlFor="task-program" className="block text-sm font-semibold text-slate-900">
+                {isAz ? 'Təcrübə proqramını seç' : 'Choose an internship program'}
+              </label>
+              <select
+                id="task-program"
+                value={enrollment.id}
+                onChange={(event) => {
+                  setSelectedProgramId(event.target.value);
+                  setFilter('all');
+                  const program = programs.find((item) => item.enrollment.id === event.target.value);
+                  const url = new URL(window.location.href);
+                  if (program) url.searchParams.set('program', program.enrollment.internship_id);
+                  window.history.replaceState(null, '', url);
+                }}
+                className="min-h-11 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-2 text-base text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              >
+                {programs.map((item) => (
+                  <option key={item.enrollment.id} value={item.enrollment.id}>
+                    {item.enrollment.internship?.title || (isAz ? 'Təcrübə proqramı' : 'Internship program')} — {item.tasks.length} {isAz ? 'tapşırıq' : 'tasks'}
+                  </option>
+                ))}
+              </select>
+              <p className="text-sm text-slate-500">
+                {isAz ? `${programs.length} aktiv proqramın tapşırıqlarına buradan keçə bilərsiniz.` : `Switch between assignments from your ${programs.length} active programs.`}
+              </p>
+            </section>
+          )}
           <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0">

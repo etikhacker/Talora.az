@@ -13,7 +13,7 @@ export default function AdminSettingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
-    platformName: 'Intern.az',
+    platformName: 'Talora.az',
     supportEmail: 'babayev.omr.23@gmail.com',
     contactPhone: '+994 70 644 92 22',
     certificatePrice: '15 AZN',
@@ -38,7 +38,9 @@ export default function AdminSettingsPage() {
         (data ?? []).map((item: { key: string; value: string }) => [item.key, item.value]),
       );
       setSettings((current) => ({
-        platformName: loaded.platform_name ?? current.platformName,
+        platformName: loaded.platform_name && !/^intern\.az$/i.test(loaded.platform_name.trim())
+          ? loaded.platform_name
+          : current.platformName,
         supportEmail: loaded.support_email ?? current.supportEmail,
         contactPhone: loaded.contact_phone ?? current.contactPhone,
         certificatePrice: loaded.certificate_price ?? current.certificatePrice,

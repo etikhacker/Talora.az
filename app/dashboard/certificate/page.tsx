@@ -38,6 +38,7 @@ import {
   Sparkles,
   ArrowRight,
   Share2,
+  Smartphone,
 } from 'lucide-react';
 
 export default function StudentCertificatePage() {
@@ -58,6 +59,7 @@ export default function StudentCertificatePage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [copiedCard, setCopiedCard] = useState(false);
+  const [copiedM10, setCopiedM10] = useState(false);
   const [copiedCertUrl, setCopiedCertUrl] = useState(false);
   const [receiptSignedUrl, setReceiptSignedUrl] = useState<string | null>(null);
   const [certSignedUrl, setCertSignedUrl] = useState<string | null>(null);
@@ -137,6 +139,14 @@ export default function StudentCertificatePage() {
       navigator.clipboard.writeText(cardNum.replace(/\s+/g, ''));
       setCopiedCard(true);
       setTimeout(() => setCopiedCard(false), 2500);
+    }
+  };
+
+  const handleCopyM10 = (phoneNumber: string) => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(phoneNumber);
+      setCopiedM10(true);
+      setTimeout(() => setCopiedM10(false), 2500);
     }
   };
 
@@ -381,7 +391,7 @@ export default function StudentCertificatePage() {
                 <Award className="w-10 h-10 text-emerald-600" />
               </div>
               <p className="text-xs font-bold text-slate-800">
-                Intern.az Verified Credential
+                Talora.az Verified Credential
               </p>
               <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
                 {language === 'az'
@@ -543,14 +553,14 @@ export default function StudentCertificatePage() {
                   <a
                     href={`https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(
                       certificate.internship_title
-                    )}&organizationName=Intern.az&issueYear=${new Date(
+                    )}&organizationName=Talora.az&issueYear=${new Date(
                       certificate.issued_at
                     ).getFullYear()}&issueMonth=${
                       new Date(certificate.issued_at).getMonth() + 1
                     }&certUrl=${encodeURIComponent(
                       typeof window !== 'undefined'
                         ? `${window.location.origin}/certificate/${certificate.certificate_id}`
-                        : `https://intern.az/certificate/${certificate.certificate_id}`
+                        : `https://talora-az.vercel.app/certificate/${certificate.certificate_id}`
                     )}&certId=${encodeURIComponent(certificate.certificate_id)}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -751,7 +761,8 @@ export default function StudentCertificatePage() {
   // Case 5: ELIGIBLE - NO PAYMENT YET OR PAYMENT WAS REJECTED
   const price = settings?.price ?? 25;
   const currency = settings?.currency ?? 'AZN';
-  const cardNumber = settings?.card_number || '4169 7388 9012 3456';
+  const cardNumber = settings?.card_number?.trim() || '';
+  const m10PhoneNumber = settings?.m10_phone_number?.trim() || '';
   const isEnabled = settings?.is_enabled ?? true;
 
   return (
@@ -781,8 +792,8 @@ export default function StudentCertificatePage() {
               </p>
               <p className="text-[11px] text-red-600 font-medium pt-1">
                 {language === 'az'
-                  ? 'Zəhmət olmasa aşağıdakı kart nömrəsinə ödəniş edib düzgün qəbzi yenidən yükləyin.'
-                  : 'Please complete the transfer to the card number below and upload a clear receipt.'}
+                  ? 'Zəhmət olmasa göstərilən bank kartı və ya M10 nömrəsinə ödəniş edib düzgün qəbzi yenidən yükləyin.'
+                  : 'Please transfer to the bank card or M10 number shown below and upload a clear receipt.'}
               </p>
             </div>
           </CardContent>
@@ -828,7 +839,9 @@ export default function StudentCertificatePage() {
                   {language === 'az' ? '1. Ödəniş Məlumatları' : '1. Payment Instructions'}
                 </CardTitle>
                 <CardDescription className="text-xs">
-                  {language === 'az' ? 'Kartdan-karta və ya mobil bank vasitəsilə köçürmə' : 'Manual card-to-card or banking transfer'}
+                    {language === 'az'
+                      ? (m10PhoneNumber ? 'Bank kartına və ya M10 nömrəsinə əl ilə köçürmə' : 'Bank kartına əl ilə köçürmə')
+                      : (m10PhoneNumber ? 'Manual transfer to a bank card or M10 number' : 'Manual bank card transfer')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-5 space-y-5">
@@ -847,35 +860,38 @@ export default function StudentCertificatePage() {
                   </div>
                 </div>
 
-                {/* Card Number Capsule */}
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-slate-700 block">
-                    {t('paymentCardNumber')}
-                  </label>
-                  <div className="p-3.5 rounded-xl bg-slate-900 text-white flex items-center justify-between gap-2 shadow-xs">
-                    <div className="font-mono text-sm sm:text-base font-bold tracking-widest text-amber-300">
-                      {cardNumber}
+                {cardNumber && (
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-700 block">{t('paymentCardNumber')}</label>
+                    <div className="p-3.5 rounded-xl bg-slate-900 text-white flex items-center justify-between gap-2 shadow-xs">
+                      <div className="font-mono text-sm sm:text-base font-bold tracking-widest text-amber-300">{cardNumber}</div>
+                      <Button size="sm" type="button" onClick={() => handleCopyCard(cardNumber)} className="h-8 px-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs border border-slate-700 gap-1.5 shrink-0">
+                        {copiedCard ? <><Check className="w-3.5 h-3.5 text-emerald-400" /><span className="text-emerald-400 font-semibold">{t('cardNumberCopied')}</span></> : <><Copy className="w-3.5 h-3.5 text-slate-300" /><span>{t('copyCardNumber')}</span></>}
+                      </Button>
                     </div>
-                    <Button
-                      size="sm"
-                      type="button"
-                      onClick={() => handleCopyCard(cardNumber)}
-                      className="h-8 px-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs border border-slate-700 gap-1.5 shrink-0"
-                    >
-                      {copiedCard ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
-                          <span className="text-emerald-400 font-semibold">{t('cardNumberCopied')}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3.5 h-3.5 text-slate-300" />
-                          <span>{t('copyCardNumber')}</span>
-                        </>
-                      )}
-                    </Button>
                   </div>
-                </div>
+                )}
+
+                {m10PhoneNumber && (
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-700 block">{t('paymentM10Number')}</label>
+                    <div className="p-3.5 rounded-xl bg-slate-900 text-white flex items-center justify-between gap-2 shadow-xs">
+                      <div className="min-w-0 flex items-center gap-2 font-mono text-sm sm:text-base font-bold tracking-widest text-emerald-300">
+                        <Smartphone className="w-4 h-4 shrink-0" aria-hidden="true" />
+                        <span className="truncate">{m10PhoneNumber}</span>
+                      </div>
+                      <Button size="sm" type="button" onClick={() => handleCopyM10(m10PhoneNumber)} className="h-8 px-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs border border-slate-700 gap-1.5 shrink-0">
+                        {copiedM10 ? <><Check className="w-3.5 h-3.5 text-emerald-400" /><span className="text-emerald-400 font-semibold">{t('m10NumberCopied')}</span></> : <><Copy className="w-3.5 h-3.5 text-slate-300" /><span>{t('copyM10Number')}</span></>}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {!cardNumber && !m10PhoneNumber && (
+                  <p className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
+                    {language === 'az' ? 'Ödəniş rekvizitləri hələ təyin edilməyib. Zəhmət olmasa administratorla əlaqə saxlayın.' : 'Payment details are not configured yet. Please contact the administrator.'}
+                  </p>
+                )}
 
                 {/* Instructions text */}
                 <div className="p-3 rounded-lg bg-amber-50/60 border border-amber-200/60 text-[11px] text-amber-900 space-y-1">
@@ -885,8 +901,16 @@ export default function StudentCertificatePage() {
                   </p>
                   <p className="text-amber-800 leading-relaxed">
                     {language === 'az'
-                      ? 'İstənilən bank tətbiqi (m10, Leobank, Birbank, ABB və s.) vasitəsilə yuxarıdakı kart nömrəsinə tam məbləği köçürün və əməliyyat qəbzini (PDF və ya ekran görüntüsü) sağdakı formaya yükləyin.'
-                      : 'Transfer the full amount to the specified card using any bank app and upload the receipt (PDF or screenshot) in the form.'}
+                      ? (m10PhoneNumber && cardNumber
+                          ? 'Tam məbləği yuxarıdakı bank kartına və ya M10 tətbiqində göstərilən M10 nömrəsinə köçürün. Sonra qəbzi sağdakı formaya yükləyin.'
+                          : m10PhoneNumber
+                            ? 'M10 tətbiqində yuxarıdakı nömrəyə tam məbləği köçürün. Sonra əməliyyat qəbzini sağdakı formaya yükləyin.'
+                            : 'İstənilən bank tətbiqi ilə yuxarıdakı karta tam məbləği köçürün və qəbzi sağdakı formaya yükləyin.')
+                      : (m10PhoneNumber && cardNumber
+                          ? 'Transfer the full amount to the bank card above or to the M10 number in the M10 app, then upload the receipt in the form.'
+                          : m10PhoneNumber
+                            ? 'Transfer the full amount to the number above in the M10 app, then upload the transaction receipt in the form.'
+                            : 'Transfer the full amount to the card above using your bank app, then upload the receipt in the form.')}
                   </p>
                 </div>
               </CardContent>

@@ -28,7 +28,7 @@ function getAppBaseUrl(): string {
     }
   }
 
-  return 'https://intern-az.vercel.app';
+  return 'https://talora-az.vercel.app';
 }
 
 function jsonError(message: string, status: number) {

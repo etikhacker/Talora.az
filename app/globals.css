@@ -1,5 +1,29 @@
 @import "tailwindcss";
 
+/* Task briefs: warm emphasis that follows the site's light/dark color tokens. */
+.task-brief {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.task-brief li::marker {
+  color: var(--c-amber-800);
+  font-weight: 700;
+}
+.task-brief .task-brief-inline-code {
+  border-radius: 4px;
+  background-color: var(--c-slate-100);
+  color: var(--c-amber-800);
+  padding: 0.125em 0.3em;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.9em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.task-brief .task-brief-emphasis {
+  color: var(--c-amber-900);
+  font-weight: 700;
+}
+
 /* =============================================================================
  * Theme tokens & Tailwind remap
  *
@@ -702,13 +726,9 @@ html.light body {
 }
 
 ::selection {
-  color: #04120d;
-  background: var(--accent-bright);
-}
-
-html.light ::selection {
   color: #ffffff;
-  background: #059669;
+  background-color: #3653c7;
+  text-shadow: none;
 }
 
 :focus-visible {
@@ -1335,11 +1355,11 @@ html.dark { --talora-ink: #f1f3fa; --talora-cobalt: #91a5ff; --talora-paper: #11
 body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: -.008em; }
 h1, h2, h3, h4 { font-family: Iowan Old Style, Palatino Linotype, Book Antiqua, Georgia, serif; letter-spacing: -.035em; font-weight: 650; text-wrap: balance; }
 a, button, input, select, textarea { transition-duration: 180ms; }
-::selection { background: rgba(67,95,209,.18); }
 
-header.sticky.top-0 { border-color: var(--line) !important; box-shadow: 0 1px 0 rgba(25,35,55,.025); }
-html.light header.sticky.top-0, html.light footer { background: rgba(250,249,245,.94) !important; }
-html.dark header.sticky.top-0, html.dark footer { background: rgba(13,18,29,.94) !important; }
+/* Admin chrome follows data-admin-theme independently of the public theme. */
+header.sticky.top-0:where(:not(.admin-shell *)) { border-color: var(--line) !important; box-shadow: 0 1px 0 rgba(25,35,55,.025); }
+html.light header.sticky.top-0:where(:not(.admin-shell *)), html.light footer { background: rgba(250,249,245,.94) !important; }
+html.dark header.sticky.top-0:where(:not(.admin-shell *)), html.dark footer { background: rgba(13,18,29,.94) !important; }
 header.sticky.top-0 .text-2xl { letter-spacing: -.065em; }
 header.sticky.top-0 .text-2xl span { color: var(--talora-cobalt) !important; }
 header.sticky.top-0 a, footer a { text-underline-offset: 4px; }
@@ -1466,19 +1486,7 @@ html.dark aside .bg-emerald-50 { background-color: rgba(145,165,255,.13) !import
 html.dark aside .text-emerald-900 { color: #dfe5ff !important; }
 html.dark aside .text-emerald-600 { color: #a6b6ff !important; }
 
-/* Keep operational warning badges amber, but give the admin navigation the
-   same cobalt identity as the reference dashboard. */
-.admin-shell aside .bg-amber-400 { background-color: #435fd1 !important; }
-.admin-shell aside .text-amber-400,
-.admin-shell aside .text-amber-300 { color: #91a5ff !important; }
-.admin-shell aside .bg-amber-400.text-slate-950,
-.admin-shell aside .bg-amber-400 .text-slate-950 { color: #ffffff !important; }
-
-html.light .admin-shell[data-admin-theme="light"] .bg-amber-400 { background-color: #435fd1 !important; }
-html.light .admin-shell[data-admin-theme="light"] .text-amber-400,
-html.light .admin-shell[data-admin-theme="light"] .text-amber-300 { color: #435fd1 !important; }
-html.light .admin-shell[data-admin-theme="light"] .bg-amber-400.text-slate-950 { color: #fff !important; }
-html.light .admin-shell[data-admin-theme="light"] .bg-amber-400 .text-slate-950 { color: #fff !important; }
+/* Admin navigation colors are owned by admin-theme.css, not the public theme. */
 
 @media (min-width: 768px) {
   body:has(aside) main { scrollbar-gutter: stable; }

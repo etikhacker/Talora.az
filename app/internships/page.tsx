@@ -140,7 +140,7 @@ function InternshipsContent({
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-[#F8FAFC]">
+    <div className="flex-1 flex flex-col min-h-screen bg-[var(--page)]">
       <Navbar />
 
       <main className="flex-1 py-10 sm:py-14">
@@ -409,7 +409,7 @@ function InternshipsPageContent() {
 export default function InternshipsPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--page)] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     }>

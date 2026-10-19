@@ -1,0 +1,15 @@
+.notice { background: #10203c; border-bottom: 1px solid #2e4974; }
+.heading { color: #f1f5f9; }
+.copy { color: #c5d4ec; }
+.link, .icon { color: #93c5fd; }
+.close { color: #bfdbfe; }
+.close:hover { background: #253d61; }
+.link:focus-visible, .close:focus-visible { outline: 2px solid #93c5fd; outline-offset: 4px; }
+
+:global(html.light) .notice { background: #eff6ff; border-color: #bfdbfe; }
+:global(html.light) .heading { color: #172b4d; }
+:global(html.light) .copy { color: #334d6e; }
+:global(html.light) .link, :global(html.light) .icon { color: #1d4ed8; }
+:global(html.light) .close { color: #334d6e; }
+:global(html.light) .close:hover { background: #dbeafe; }
+:global(html.light) .link:focus-visible, :global(html.light) .close:focus-visible { outline-color: #2563eb; }

@@ -105,6 +105,34 @@
   color: var(--admin-ink) !important;
 }
 
+/* Less-common status colors used on submissions and task review screens were
+   previously left in dark-mode shades, making the light theme look patchy. */
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="bg-orange-500/15"], [class~="bg-orange-500/20"],
+  [class~="bg-orange-500/30"], [class~="bg-purple-500/10"],
+  [class~="bg-purple-500/20"]
+) {
+  background-color: #f1f3ff !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="text-orange-300"], [class~="text-orange-400"],
+  [class~="text-purple-300"], [class~="text-purple-400"],
+  [class~="text-sky-300"], [class~="text-sky-400"],
+  [class~="text-amber-50/70"], [class~="text-amber-50/80"],
+  [class~="text-amber-50/90"], [class~="text-amber-400/80"],
+  [class~="text-amber-400/90"]
+) {
+  color: #4256b8 !important;
+}
+
+.admin-shell[data-admin-theme="light"] :is(
+  [class~="border-orange-500/30"], [class~="border-orange-500/40"],
+  [class~="border-purple-500/20"], [class~="border-purple-500/30"]
+) {
+  border-color: #d7ddf5 !important;
+}
+
 .admin-shell[data-admin-theme="light"] :is(
   [class~="border-slate-100"], [class~="border-slate-200"],
   [class~="border-slate-600"], [class~="border-slate-700"],
@@ -304,10 +332,10 @@
   color: #ffffff !important;
 }
 
-.admin-shell[data-admin-theme="light"] [class~="bg-amber-400"] [class~="text-slate-950"],
-.admin-shell[data-admin-theme="light"] [class~="bg-amber-500"] [class~="text-slate-950"],
-.admin-shell[data-admin-theme="light"] [class~="bg-amber-400"][class~="text-slate-950"],
-.admin-shell[data-admin-theme="light"] [class~="bg-amber-500"][class~="text-slate-950"] {
+.admin-shell[data-admin-theme="light"] [class~="bg-amber-400"] [class~="text-slate-950"]:where(:not(nav *)),
+.admin-shell[data-admin-theme="light"] [class~="bg-amber-500"] [class~="text-slate-950"]:where(:not(nav *)),
+.admin-shell[data-admin-theme="light"] [class~="bg-amber-400"][class~="text-slate-950"]:where(:not(nav *)),
+.admin-shell[data-admin-theme="light"] [class~="bg-amber-500"][class~="text-slate-950"]:where(:not(nav *)) {
   color: #ffffff !important;
 }
 
@@ -320,19 +348,33 @@
 }
 
 .admin-shell[data-admin-theme="light"] header {
-  background-color: rgb(255 255 255 / 94%) !important;
+  background: var(--admin-surface) !important;
   border-color: var(--admin-line) !important;
+  color: var(--admin-ink) !important;
 }
 
-.admin-shell[data-admin-theme="light"] aside a[aria-current="page"] {
+.admin-shell[data-admin-theme="light"] nav a[aria-current="page"] {
   background-color: var(--admin-accent-soft) !important;
-  color: var(--admin-accent) !important;
+  color: var(--admin-accent-hover) !important;
 }
 
-.admin-shell[data-admin-theme="light"] aside a[aria-current="page"] :is(
-  [class~="text-amber-300"], [class~="text-amber-400"], [class~="text-slate-950"]
-) {
-  color: var(--admin-accent) !important;
+.admin-shell[data-admin-theme="light"] nav a[aria-current="page"] :is(span, svg) {
+  color: var(--admin-accent-hover) !important;
+}
+
+.admin-shell[data-admin-theme="dark"] header {
+  background: #0d121d !important;
+  border-color: #293449 !important;
+  color: #f1f3fa !important;
+}
+
+.admin-shell[data-admin-theme="dark"] nav a[aria-current="page"] {
+  background-color: #435fd1 !important;
+  color: #ffffff !important;
+}
+
+.admin-shell[data-admin-theme="dark"] nav a[aria-current="page"] :is(span, svg) {
+  color: #ffffff !important;
 }
 
 .admin-shell[data-admin-theme="light"] :is(.rounded-xl, .rounded-2xl) {

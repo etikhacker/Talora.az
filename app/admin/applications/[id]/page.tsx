@@ -113,7 +113,7 @@ export default function AdminApplicationReviewPage({ params }: Props) {
         adminProfile: profile || {
           id: user?.id || 'admin',
           user_id: user?.id || 'admin',
-          email: user?.email || 'admin@intern.az',
+          email: user?.email || 'admin@talora.az',
           full_name: 'İnzibatçı',
           role: 'admin',
           avatar_url: null,

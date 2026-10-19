@@ -125,6 +125,9 @@ export interface Translations {
   paymentCardNumber: string;
   copyCardNumber: string;
   cardNumberCopied: string;
+  paymentM10Number: string;
+  copyM10Number: string;
+  m10NumberCopied: string;
   uploadReceipt: string;
   uploadReceiptDesc: string;
   submitPayment: string;
@@ -393,6 +396,9 @@ const translations: Record<Language, Translations> = {
     paymentCardNumber: 'Ödəniş üçün kart',
     copyCardNumber: 'Kart nömrəsini kopyala',
     cardNumberCopied: 'Kopyalandı!',
+    paymentM10Number: 'M10 qəbul nömrəsi',
+    copyM10Number: 'M10 nömrəsini kopyala',
+    m10NumberCopied: 'M10 nömrəsi kopyalandı!',
     uploadReceipt: 'Ödəniş qəbzi',
     uploadReceiptDesc: 'Bank və ya mobil tətbiqdən ödəniş qəbzini (JPG, PNG, PDF) yükləyin.',
     submitPayment: 'Qəbzi göndər',
@@ -659,6 +665,9 @@ const translations: Record<Language, Translations> = {
     paymentCardNumber: 'Card for Payment',
     copyCardNumber: 'Copy Card Number',
     cardNumberCopied: 'Copied!',
+    paymentM10Number: 'M10 payment number',
+    copyM10Number: 'Copy M10 number',
+    m10NumberCopied: 'M10 number copied!',
     uploadReceipt: 'Payment Receipt',
     uploadReceiptDesc: 'Upload your bank transfer receipt (JPG, PNG, WEBP or PDF).',
     submitPayment: 'Submit Receipt',
