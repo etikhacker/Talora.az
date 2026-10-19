@@ -332,10 +332,10 @@
   color: #ffffff !important;
 }
 
-.admin-shell[data-admin-theme="light"] [class~="bg-amber-400"] [class~="text-slate-950"],
-.admin-shell[data-admin-theme="light"] [class~="bg-amber-500"] [class~="text-slate-950"],
-.admin-shell[data-admin-theme="light"] [class~="bg-amber-400"][class~="text-slate-950"],
-.admin-shell[data-admin-theme="light"] [class~="bg-amber-500"][class~="text-slate-950"] {
+.admin-shell[data-admin-theme="light"] [class~="bg-amber-400"] [class~="text-slate-950"]:where(:not(nav *)),
+.admin-shell[data-admin-theme="light"] [class~="bg-amber-500"] [class~="text-slate-950"]:where(:not(nav *)),
+.admin-shell[data-admin-theme="light"] [class~="bg-amber-400"][class~="text-slate-950"]:where(:not(nav *)),
+.admin-shell[data-admin-theme="light"] [class~="bg-amber-500"][class~="text-slate-950"]:where(:not(nav *)) {
   color: #ffffff !important;
 }
 
@@ -348,19 +348,33 @@
 }
 
 .admin-shell[data-admin-theme="light"] header {
-  background-color: rgb(255 255 255 / 94%) !important;
+  background: var(--admin-surface) !important;
   border-color: var(--admin-line) !important;
+  color: var(--admin-ink) !important;
 }
 
-.admin-shell[data-admin-theme="light"] aside a[aria-current="page"] {
+.admin-shell[data-admin-theme="light"] nav a[aria-current="page"] {
   background-color: var(--admin-accent-soft) !important;
-  color: var(--admin-accent) !important;
+  color: var(--admin-accent-hover) !important;
 }
 
-.admin-shell[data-admin-theme="light"] aside a[aria-current="page"] :is(
-  [class~="text-amber-300"], [class~="text-amber-400"], [class~="text-slate-950"]
-) {
-  color: var(--admin-accent) !important;
+.admin-shell[data-admin-theme="light"] nav a[aria-current="page"] :is(span, svg) {
+  color: var(--admin-accent-hover) !important;
+}
+
+.admin-shell[data-admin-theme="dark"] header {
+  background: #0d121d !important;
+  border-color: #293449 !important;
+  color: #f1f3fa !important;
+}
+
+.admin-shell[data-admin-theme="dark"] nav a[aria-current="page"] {
+  background-color: #435fd1 !important;
+  color: #ffffff !important;
+}
+
+.admin-shell[data-admin-theme="dark"] nav a[aria-current="page"] :is(span, svg) {
+  color: #ffffff !important;
 }
 
 .admin-shell[data-admin-theme="light"] :is(.rounded-xl, .rounded-2xl) {
