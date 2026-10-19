@@ -1,5 +1,29 @@
 @import "tailwindcss";
 
+/* Task briefs: warm emphasis that follows the site's light/dark color tokens. */
+.task-brief {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.task-brief li::marker {
+  color: var(--c-amber-800);
+  font-weight: 700;
+}
+.task-brief .task-brief-inline-code {
+  border-radius: 4px;
+  background-color: var(--c-slate-100);
+  color: var(--c-amber-800);
+  padding: 0.125em 0.3em;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.9em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.task-brief .task-brief-emphasis {
+  color: var(--c-amber-900);
+  font-weight: 700;
+}
+
 /* =============================================================================
  * Theme tokens & Tailwind remap
  *
