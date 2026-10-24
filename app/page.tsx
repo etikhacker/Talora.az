@@ -1,12 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowDown, ArrowUpRight, Clock3, ArrowRight } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUpRight,
+  Clock3,
+  ArrowRight,
+  Pause,
+  Play,
+} from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { DevelopmentNotice } from "@/components/landing/development-notice";
 import { ExperienceArt } from "@/components/landing/experience-art";
+import { useLandingMotion } from "@/components/landing/use-landing-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { useLanguage } from "@/lib/i18n/language-context";
 import type { Internship } from "@/types/database";
@@ -66,6 +74,9 @@ const directions = [
 export default function HomePage() {
   const { language } = useLanguage();
   const isAz = language === "az";
+  const landingRef = useRef<HTMLDivElement>(null);
+  const [motionPaused, setMotionPaused] = useState(false);
+  useLandingMotion(landingRef, motionPaused);
   const [internships, setInternships] = useState<Internship[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
@@ -133,7 +144,10 @@ export default function HomePage() {
         ],
       ];
   return (
-    <div className="talora-landing">
+    <div
+      ref={landingRef}
+      className={`talora-landing${motionPaused ? " is-motion-paused" : ""}`}
+    >
       <DevelopmentNotice />
       <Navbar />
       <main id="main-content">
@@ -181,8 +195,27 @@ export default function HomePage() {
                 ? "Real layihələr   ·   Addım-addım inkişaf"
                 : "Real projects   ·   Progress, step by step"}
             </p>
+            <button
+              type="button"
+              className="landing-motion-control"
+              aria-pressed={motionPaused}
+              onClick={() => setMotionPaused((value) => !value)}
+            >
+              {motionPaused ? (
+                <Play size={13} aria-hidden="true" />
+              ) : (
+                <Pause size={13} aria-hidden="true" />
+              )}
+              {isAz
+                ? motionPaused
+                  ? "Hərəkəti davam etdir"
+                  : "Hərəkəti dayandır"
+                : motionPaused
+                  ? "Resume motion"
+                  : "Pause motion"}
+            </button>
           </div>
-          <ExperienceArt isAz={isAz} />
+          <ExperienceArt isAz={isAz} animated />
         </section>
         <section
           className="landing-section landing-section--surface"
