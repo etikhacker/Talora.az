@@ -1,6 +1,7 @@
 import type {Metadata, Viewport} from 'next';
 import './globals.css'; // Global styles
 import { Providers } from '@/components/layout/providers';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
   title: 'Talora — İlk peşəkar təcrübənə başla',
@@ -41,6 +42,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <Providers>
           {children}
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
