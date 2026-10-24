@@ -2,6 +2,7 @@
 
 import { Footer } from '@/components/layout/footer';
 import { Navbar } from '@/components/layout/navbar';
+import { PageHeading } from '@/components/layout/page-heading';
 import { useLanguage } from '@/lib/i18n/language-context';
 
 type LegalDocumentKind = 'terms' | 'privacy';
@@ -63,11 +64,9 @@ export function LegalDocument({ kind }: { kind: LegalDocumentKind }) {
   return (
     <div className="flex min-h-screen flex-col bg-[var(--page)] text-[var(--ink)]">
       <Navbar />
-      <main className="flex-1 px-4 py-14 sm:px-6 lg:py-20">
+      <main id="main-content" className="flex-1 px-6 public-main">
         <article className="mx-auto max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-[.12em] text-blue-700 dark:text-blue-300">Talora</p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{document.title}</h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">{document.intro}</p>
+          <PageHeading eyebrow="Talora" title={document.title} description={document.intro} />
           <div className="mt-10 divide-y divide-slate-200 border-t border-slate-200 dark:divide-slate-700 dark:border-slate-700">
             {document.sections.map(([title, content]) => (
               <section key={title} className="py-6">

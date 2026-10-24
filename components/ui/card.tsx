@@ -9,7 +9,7 @@ const Card = React.forwardRef<
     id={id}
     ref={ref}
     className={cn(
-      'rounded-xl border border-slate-200/80 bg-white text-slate-950 shadow-sm',
+      'talora-card rounded-xl border border-slate-200/80 bg-white text-slate-950 shadow-sm',
       className
     )}
     {...props}

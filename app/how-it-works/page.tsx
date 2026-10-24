@@ -1,138 +1,92 @@
-'use client';
-
-import React from 'react';
-import Link from 'next/link';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
-import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/lib/i18n/language-context';
-import {
-  UserCheck,
-  Send,
-  ListTodo,
-  Award,
-  ArrowRight,
-  ShieldCheck,
-  Building,
-  CheckCircle,
-} from 'lucide-react';
-
+"use client";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
+import { PageHeading } from "@/components/layout/page-heading";
+import { buttonVariants } from "@/components/ui/button";
+import { useLanguage } from "@/lib/i18n/language-context";
 export default function HowItWorksPage() {
   const { language } = useLanguage();
-  const isAz = language === 'az';
-
+  const isAz = language === "az";
   const steps = isAz
     ? [
-        {
-          num: '01',
-          title: 'Tələbə Profilinin Yaradılması',
-          desc: 'Universitet e-poçtunuz və ya şəxsi məlumatlarınızla qeydiyyatdan keçin. Fakültə, ixtisas və maraqlandığınız istiqaməti göstərin.',
-          icon: UserCheck,
-        },
-        {
-          num: '02',
-          title: 'Proqrama Müraciət',
-          desc: 'Aktiv təcrübə proqramları arasından sizə uyğun olanı seçin və müraciət formasını göndərin. Müraciətiniz koordinatorlar tərəfindən yoxlanılır.',
-          icon: Send,
-        },
-        {
-          num: '03',
-          title: 'Praktiki Tapşırıqlar və Mentorluq',
-          desc: 'Qəbul olunduqdan sonra hər həftə real iş ssenarilərinə uyğun tapşırıqlar alacaqsınız. Hər mərhələdə rəy alaraq layihənizi inkişaf etdirin.',
-          icon: ListTodo,
-        },
-        {
-          num: '04',
-          title: 'Yekun Qiymətləndirmə və Sertifikat',
-          desc: 'Bütün tapşırıqları müvəffəqiyyətlə tamamlayan tələbələrə unikal identifikasiya nömrəsi olan rəsmi karyera sertifikatı təqdim olunur.',
-          icon: Award,
-        },
+        [
+          "Hesabını yarat.",
+          "Adını, e-poçtunu və təhsil məlumatlarını əlavə et. Şəxsi kabinetin müraciətlərini və proqram üzrə irəliləyişini izlədiyin yer olacaq.",
+        ],
+        [
+          "Proqramını seç və müraciət et.",
+          "İstiqamət, səviyyə və müddətə görə proqramları araşdır. Şərtləri oxu və müraciətini göndər. Statusunu “Müraciətlərim” bölməsində izlə.",
+        ],
+        [
+          "Tapşırıqları tamamla, rəy al.",
+          "Qəbul olunduğun proqramın həftəlik tapşırıqlarını aç. Təlimata uyğun işlə, tələb olunan formatda həllini göndər və koordinatorun rəyinə əsasən düzəliş et.",
+        ],
+        [
+          "Nəticələrini təqdim et.",
+          "Tələb olunan işlər təsdiqləndikdən sonra, proqramda sertifikat verilməsi aktivdirsə, kabinetindən sifariş yarada bilərsən. Sertifikat ödənişlidir; məbləğ və ödəniş məlumatları əvvəlcədən göstərilir.",
+        ],
       ]
     : [
-        {
-          num: '01',
-          title: 'Create Your Student Profile',
-          desc: 'Sign up with your university credentials and specify your field of study, university, and preferred career track.',
-          icon: UserCheck,
-        },
-        {
-          num: '02',
-          title: 'Apply to Selected Programs',
-          desc: 'Browse open cohorts and submit your application. Track coordinators review applicant profiles for cohort placement.',
-          icon: Send,
-        },
-        {
-          num: '03',
-          title: 'Weekly Deliverables & Feedback',
-          desc: 'Work on structured real-world tasks each week. Receive actionable mentor feedback to elevate your engineering and analytical skills.',
-          icon: ListTodo,
-        },
-        {
-          num: '04',
-          title: 'Verification & Official Certificate',
-          desc: 'Successfully complete project milestones to earn a verified digital certificate complete with unique public verification code.',
-          icon: Award,
-        },
+        [
+          "Create your account.",
+          "Add your name, email and education details. Your dashboard is where you follow applications and progress through your program.",
+        ],
+        [
+          "Choose a program and apply.",
+          "Explore programs by track, level and duration. Read the requirements and submit your application. Follow its status in My applications.",
+        ],
+        [
+          "Complete assignments and get feedback.",
+          "Open the weekly assignments for your accepted program. Follow the instructions, submit in the required format and improve your work using coordinator feedback.",
+        ],
+        [
+          "Present your results.",
+          "Once the required work is approved, you can place an order from your dashboard if certification is enabled. A certificate fee applies; the amount and payment details are displayed first.",
+        ],
       ];
-
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
+    <div>
       <Navbar />
-
-      <main className="flex-1 py-14">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              {isAz ? 'Təcrübə Proqramı Necə İşləyir?' : 'How the Internship Program Works'}
-            </h1>
-            <p className="mt-4 text-base text-slate-600 leading-relaxed">
-              {isAz
-                ? 'Talora tələbələrə nəzəri bilikləri real sənaye təcrübəsinə çevirmək üçün aydın və şəffaf mexanizm təqdim edir.'
-                : 'A structured, transparent pathway helping students and aspiring professionals bridge the gap into professional roles.'}
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            {steps.map((step) => {
-              const Icon = step.icon;
-              return (
-                <div
-                  key={step.num}
-                  className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-2xs flex flex-col sm:flex-row gap-6 items-start sm:items-center hover:border-emerald-300 transition-colors"
-                >
-                  <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 font-extrabold text-xl flex items-center justify-center shrink-0 border border-emerald-100">
-                    {step.num}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
-                      <span>{step.title}</span>
-                    </h3>
-                    <p className="text-sm text-slate-600 leading-relaxed">{step.desc}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="mt-14 p-8 bg-emerald-900 text-white rounded-2xl text-center">
-            <h2 className="text-2xl font-bold mb-3">
-              {isAz ? 'Karyeranızı qurmağa bu gündən başlayın' : 'Start shaping your career today'}
-            </h2>
-            <p className="text-emerald-100 text-sm max-w-xl mx-auto mb-6">
-              {isAz
-                ? 'Tələbə kabinetinizi yaradın və ilk təcrübə müraciətinizə hazırlaşın.'
-                : 'Set up your student profile and get ready for the upcoming application cohorts.'}
-            </p>
-            <Link href="/register">
-              <Button size="lg" className="bg-white text-emerald-950 hover:bg-emerald-50 font-semibold gap-2">
-                {isAz ? 'Qeydiyyatdan Keç' : 'Register Now'}
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
-          </div>
+      <main id="main-content" className="public-main content-width">
+        <PageHeading
+          eyebrow={isAz ? "ADDIM-ADDIM İNKİŞAF" : "PROGRESS, STEP BY STEP"}
+          title={
+            isAz
+              ? "Başlamaq düşündüyündən sadədir."
+              : "Getting started is simpler than you think."
+          }
+          description={
+            isAz
+              ? "İlk müraciətdən tamamladığın layihəyə qədər bütün yol bir platformada."
+              : "From your first application to a completed project, follow your journey in one place."
+          }
+        />
+        <div className="public-stack">
+          {steps.map(([title, copy], i) => (
+            <article className="public-step" key={title}>
+              <span>{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <h2>{title}</h2>
+                <p>{copy}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div className="mt-10 flex flex-wrap gap-4">
+          <Link href="/internships" className={buttonVariants({ size: "lg" })}>
+            {isAz ? "Proqramlara bax" : "Explore programs"}
+            <ArrowUpRight size={18} />
+          </Link>
+          <Link
+            href="/register"
+            className={buttonVariants({ size: "lg", variant: "outline" })}
+          >
+            {isAz ? "Hesab yarat" : "Create account"}
+          </Link>
         </div>
       </main>
-
       <Footer />
     </div>
   );

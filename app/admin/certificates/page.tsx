@@ -1,4 +1,5 @@
 'use client';
+import { PageHeading } from '@/components/layout/page-heading';
 
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
@@ -240,17 +241,11 @@ export default function AdminCertificatesPage() {
       {/* Header */}
       <div className="pb-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-white tracking-tight">
+          <PageHeading embedded title={<>
               Sertifikat İdarəetməsi
-            </h1>
-            <Badge variant="admin" className="bg-amber-400/20 text-amber-300 border-amber-400/30 text-[10px]">
-              Phase 4
-            </Badge>
-          </div>
-          <p className="text-xs text-slate-400 mt-1">
+            </>} description={<>
             Ödənişi təsdiqlənmiş tələbələrə Canva və ya dizayn şablonunda tərtib edilmiş PDF sertifikatları yükləyin və verifikasiya reyestrinə nəzarət edin.
-          </p>
+          </>} />
         </div>
 
         <Button

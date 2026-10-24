@@ -1,5 +1,7 @@
 'use client';
 
+import { AuthBrand } from '@/components/layout/auth-brand';
+import { ThemeToggle } from '@/components/layout/theme-toggle';
 import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -47,118 +49,10 @@ function safeRedirectPath(raw: string | null): string {
  * Left brand panel — shown on desktop. Marketing copy, abstract art and
  * social proof stacked above decorative gradient orbs.
  * ------------------------------------------------------------------------ */
-function BrandPanel() {
-  const { t } = useLanguage();
+function BrandPanel() { return <AuthBrand />; }
 
-  return (
-    <div className="auth-login-brand relative hidden overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 text-white lg:flex lg:flex-col lg:justify-between lg:p-12 xl:p-16">
-      {/* Decorative orbs */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-emerald-300/40 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-32 -right-20 h-[28rem] w-[28rem] rounded-full bg-cyan-300/30 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-1/3 right-12 h-48 w-48 rounded-full bg-white/10 blur-2xl"
-      />
+function MobileBrand() { return <AuthBrand mobile />; }
 
-      {/* Subtle grid */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.07]"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-        }}
-      />
-
-      {/* Logo + nav hint */}
-      <TaloraLogo inverted className="relative z-10" />
-
-      {/* Marketing copy */}
-      <div className="relative z-10 max-w-md space-y-6">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] backdrop-blur-md">
-          <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-          {t('authLoginBadge')}
-        </div>
-        <h2 className="text-4xl font-black leading-[1.05] tracking-tight xl:text-5xl">
-          {t('authLoginHeadline')}
-        </h2>
-        <p className="text-base leading-relaxed text-emerald-50/90">
-          {t('authLoginSubline')}
-        </p>
-
-        {/* Feature bullets */}
-        <ul className="space-y-2.5 pt-2 text-sm text-emerald-50/90">
-          {[t('authLoginBullet1'), t('authLoginBullet2'), t('authLoginBullet3')].map(
-            (bullet) => (
-              <li key={bullet} className="flex items-center gap-2.5">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/15">
-                  <Check className="h-3 w-3" aria-hidden="true" />
-                </span>
-                {bullet}
-              </li>
-            )
-          )}
-        </ul>
-      </div>
-
-      {/* Floating stats card */}
-      <div className="relative z-10 grid grid-cols-3 gap-3">
-        <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-md">
-          <Users className="h-4 w-4 text-emerald-50" aria-hidden="true" />
-          <p className="mt-3 text-2xl font-black tracking-tight">8</p>
-          <p className="text-[10px] uppercase tracking-wider text-emerald-50/80">
-            {t('authStatPrograms')}
-          </p>
-        </div>
-        <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-md">
-          <Briefcase className="h-4 w-4 text-amber-200" aria-hidden="true" />
-          <p className="mt-3 text-2xl font-black tracking-tight">80</p>
-          <p className="text-[10px] uppercase tracking-wider text-emerald-50/80">
-            {t('authStatTasks')}
-          </p>
-        </div>
-        <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-md">
-          <Award className="h-4 w-4 text-cyan-200" aria-hidden="true" />
-          <p className="mt-3 text-2xl font-black tracking-tight">8</p>
-          <p className="text-[10px] uppercase tracking-wider text-emerald-50/80">
-            {t('authStatWeeks')}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---------------------------------------------------------------------------
- * Mobile-only compact brand bar.
- * ------------------------------------------------------------------------ */
-function MobileBrand() {
-  const { t } = useLanguage();
-
-  return (
-    <div className="auth-login-mobile-brand relative overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 px-6 py-7 text-white lg:hidden">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-emerald-300/40 blur-3xl"
-      />
-      <TaloraLogo inverted compact className="relative z-10" />
-      <h2 className="relative z-10 mt-5 text-2xl font-black leading-tight">
-        {t('authLoginHeadline')}
-      </h2>
-    </div>
-  );
-}
-
-/* ---------------------------------------------------------------------------
- * Form panel — the actual login UI.
- * ------------------------------------------------------------------------ */
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -285,7 +179,7 @@ function LoginForm() {
           </span>
           <span>{t('authBackHome')}</span>
         </Link>
-        <LanguageSwitcher />
+        <div className="flex items-center gap-2"><ThemeToggle /><LanguageSwitcher /></div>
       </div>
 
       {/* Form area — this is the only scrolling region on desktop */}
@@ -339,6 +233,7 @@ function LoginForm() {
                 <Input
                   id="email"
                   name="email"
+                      autoComplete="email"
                   type="email"
                   placeholder="telebe@universitet.edu.az"
                   value={formData.email}
@@ -376,6 +271,7 @@ function LoginForm() {
                 <Input
                   id="password"
                   name="password"
+                      autoComplete="current-password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   value={formData.password}

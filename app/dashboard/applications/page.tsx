@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
@@ -128,12 +130,11 @@ export default function StudentApplicationsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <PageHeading embedded title={<>
             {t('myApplicationsTitle')}
-          </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          </>} description={<>
             {t('myApplicationsSubtitle')}
-          </p>
+          </>} />
         </div>
         <Link href="/internships">
           <Button size="sm" className="gap-1.5 shadow-xs">

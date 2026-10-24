@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { UploadCloud } from 'lucide-react';
@@ -8,12 +10,11 @@ export default function StudentSubmissionsPage() {
   return (
     <div className="space-y-6">
       <div className="pb-4 border-b border-slate-200">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+        <PageHeading embedded title={<>
           Təqdimatlar
-        </h1>
-        <p className="text-xs text-slate-500 mt-1">
+        </>} description={<>
           Göndərilmiş layihə və tapşırıq həllərinin arxiv və qiymətləndirmə siyahısı
-        </p>
+        </>} />
       </div>
 
       <Card className="border-slate-200 shadow-2xs">

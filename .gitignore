@@ -10,6 +10,7 @@ package-lock.json
 
 # Local browser-inspection artifacts (screenshots/console logs from layout checks)
 .playwright-cli/
+output/playwright/
 
 # MCP session artifacts (tool transcripts / scratch worktrees) — never project code
 .manus/

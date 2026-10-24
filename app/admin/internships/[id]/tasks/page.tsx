@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState, useCallback, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -375,15 +377,14 @@ export default function AdminInternshipTasksPage({
               {isAz ? 'Təcrübə proqramlarına qayıt' : 'Back to Internships'}
             </Link>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
+          <PageHeading embedded title={<>
             <ListTodo className="w-6 h-6 text-amber-400" />
             <span>{internship?.title || (isAz ? 'Tapşırıqlar İdarəetməsi' : 'Task Management')}</span>
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          </>} description={<>
             {isAz
               ? 'Tələbələrin icra edəcəyi həftəlik praktiki tapşırıqlar, meyarlar və təhvil formatları'
               : 'Weekly hands-on tasks, instructions and submission formats for enrolled students'}
-          </p>
+          </>} />
         </div>
 
         <div className="flex items-center gap-2">

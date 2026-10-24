@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,12 +12,11 @@ export default function AdminNotificationsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between pb-4 border-b border-slate-800">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">
+          <PageHeading embedded title={<>
             Bildirişlər və Elanlar
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          </>} description={<>
             Tələbələrə və təcrübəçilərə kütləvi və ya fərdi bildirişlərin göndərilməsi
-          </p>
+          </>} />
         </div>
         <Button size="sm" className="bg-amber-400 hover:bg-amber-500 text-slate-950 font-semibold gap-1.5 shadow-xs">
           <Send className="w-4 h-4" />

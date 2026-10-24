@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -105,7 +107,7 @@ export default function ApplyInternshipPage({ params }: Props) {
     return (
       <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
         <Navbar />
-        <main className="flex-1 py-16 flex items-center justify-center">
+        <main id="main-content" className="flex-1 py-16 flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
         </main>
         <Footer />
@@ -117,7 +119,7 @@ export default function ApplyInternshipPage({ params }: Props) {
     return (
       <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
         <Navbar />
-        <main className="flex-1 py-16 text-center">
+        <main id="main-content" className="flex-1 py-16 text-center">
           <h2 className="text-xl font-bold text-slate-900 mb-2">
             {isAz ? 'Təcrübə proqramı tapılmadı' : 'Internship Not Found'}
           </h2>
@@ -137,19 +139,18 @@ export default function ApplyInternshipPage({ params }: Props) {
     return (
       <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
         <Navbar />
-        <main className="flex-1 py-16">
+        <main id="main-content" className="flex-1 py-16">
           <div className="max-w-xl mx-auto px-4 text-center">
             <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-4 border border-blue-200">
               <ShieldAlert className="w-8 h-8" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">
+            <PageHeading embedded title={<>
               {isAz ? 'İnzibatçı Rejimi' : 'Administrator Mode'}
-            </h1>
-            <p className="text-sm text-slate-600 mb-6 leading-relaxed">
+            </>} description={<>
               {isAz
                 ? 'İnzibatçı hesabları tələbə kimi təcrübə proqramlarına müraciət edə bilməz. Müraciətləri idarə etmək üçün admin panelinə keçid edin.'
                 : 'Administrator accounts cannot submit student applications. Please visit the admin console to review applicants.'}
-            </p>
+            </>} />
             <div className="flex items-center justify-center gap-3">
               <Link href={`/internships/${slug}`}>
                 <Button variant="outline" size="sm">
@@ -229,7 +230,7 @@ export default function ApplyInternshipPage({ params }: Props) {
     <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
       <Navbar />
 
-      <main className="flex-1 py-10 sm:py-14">
+      <main id="main-content" className="flex-1 public-main">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back link */}
           <Link
@@ -250,12 +251,11 @@ export default function ApplyInternshipPage({ params }: Props) {
                 {internship.duration_weeks} {t('durationWeeks')}
               </Badge>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
+            <PageHeading embedded title={<>
               {internship.title}
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-500">
+            </>} description={<>
               {t('applySubtitle')}
-            </p>
+            </>} />
           </div>
 
           {/* Already Applied Notice */}

@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -325,12 +327,11 @@ export default function StudentTaskDetailPage({
         </div>
 
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <PageHeading embedded title={<>
             {getLocalizedTaskTitle(task.title, isAz ? 'az' : 'en')}
-          </h1>
-          <p className="text-[15px] sm:text-base text-slate-600 leading-7 mt-2 max-w-3xl whitespace-pre-wrap">
+          </>} description={<>
             {taskDescription}
-          </p>
+          </>} />
         </div>
       </div>
 

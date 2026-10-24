@@ -100,10 +100,10 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <main className="flex min-h-[100dvh] flex-col bg-[var(--page)] px-4 py-8 text-[var(--ink)] sm:px-6">
+    <main id="main-content" className="flex min-h-[100dvh] flex-col bg-[var(--page)] px-4 py-8 text-[var(--ink)] sm:px-6">
       <div className="mx-auto w-full max-w-5xl">
         <TaloraLogo />
-        <div className="mx-auto mt-16 max-w-md rounded-2xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-900/5 dark:border-slate-700 dark:bg-slate-900 sm:p-9">
+        <div className="auth-recovery-card mx-auto mt-16 max-w-md rounded-2xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-900/5 dark:border-slate-700 dark:bg-slate-900 sm:p-9">
           <div className="mb-6 grid h-12 w-12 place-items-center rounded-2xl bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
             {complete ? <CheckCircle2 className="h-6 w-6" aria-hidden="true" /> : <Lock className="h-6 w-6" aria-hidden="true" />}
           </div>

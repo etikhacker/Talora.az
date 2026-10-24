@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useState } from 'react';
 import { useAuth } from '@/lib/auth/auth-context';
 import { createClient } from '@/lib/supabase/client';
@@ -373,12 +375,11 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+        <PageHeading embedded title={<>
           Tələbə Profili
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+        </>} description={<>
           Universitet və şəxsi əlaqə məlumatlarınızı idarə edin.
-        </p>
+        </>} />
       </div>
 
       <ProfileForm

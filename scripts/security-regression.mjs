@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = new URL('../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
 
-const [config, middleware, adminLayout, adminLogin, admin, students, migration, certificates, submissions, tasks, loginPage, registerPage, adminLoginLayout, dashboardLayout, adminSidebar, studentSidebar, globals, internshipsPage, selectComponent, providers] = await Promise.all([
+const [config, middleware, adminLayout, adminLogin, admin, students, migration, certificates, submissions, tasks, loginPage, registerPage, adminLoginLayout, dashboardLayout, adminSidebar, studentSidebar, legacyGlobals, internshipsPage, selectComponent, providers] = await Promise.all([
   read('lib/supabase/config.ts'),
   read('lib/supabase/middleware.ts'),
   read('app/admin/layout.tsx'),
@@ -29,6 +29,12 @@ const [config, middleware, adminLayout, adminLogin, admin, students, migration, 
   read('components/ui/select.tsx'),
   read('components/layout/providers.tsx'),
 ]);
+
+const designSystem = await read('app/design-system.css');
+const themeController = await read('lib/theme.ts');
+const globals = legacyGlobals + '\n' + designSystem;
+assert.match(middleware, /isProtectedArea = \(isAdminArea && !isAdminLogin\) \|\| isDashboardArea/,
+  'auth unavailability must not redirect the public admin login to itself');
 
 assert.match(config, /process\.env\.SUPABASE_URL/);
 assert.match(config, /process\.env\.SUPABASE_PUBLISHABLE_KEY/);
@@ -130,27 +136,11 @@ for (const [name, page] of [
   assert.match(page, /min-w-0/, `${name}: panel can exceed its grid track`);
 }
 
-// The grid itself: two minmax(0,1fr) tracks at one viewport height.
-assert.match(
-  globals,
-  /\.auth-login-page \{[\s\S]{0,400}grid-template-columns: minmax\(0, 1fr\) minmax\(0, 1fr\);/
-);
-assert.match(globals, /grid-template-rows: 100dvh;/);
-assert.match(globals, /overflow-x: clip;/);
-
-// The scroll region is only usable if every box above it may shrink below its
-// content height. A flex/grid item defaults to `min-height: auto`
-// (= min-content), so /register's form wrapper grew to ~1035px inside a 732px
-// panel: `.auth-login-scroll` then measured clientHeight == scrollHeight
-// (nothing to scroll), the "Hesab yarat" button sat ~80px below the viewport
-// and the grid's `overflow: hidden` clipped it — the page could not scroll and
-// registration was impossible. Keep `min-height: 0` on the panel and its
-// children.
-assert.match(
-  globals,
-  /\.auth-login-page > \*,[\s\S]{0,120}\.auth-login-panel > \* \{[\s\S]{0,40}min-height: 0;/,
-  'auth panel must allow min-height: 0 so the form region can scroll'
-);
+// Auth uses normal document scrolling so tall registration forms stay reachable.
+assert.match(designSystem, /grid-template-columns:\s*minmax\(0,\s*1fr\) minmax\(0,\s*1fr\)/);
+assert.match(designSystem, /min-height:\s*100dvh/);
+assert.doesNotMatch(designSystem, /grid-template-rows:\s*100dvh/);
+assert.match(designSystem, /\.auth-login-panel[^}]*min-width:\s*0/);
 
 // Exactly one viewport, no magic offset, for both shells.
 for (const [name, shell] of [
@@ -175,8 +165,8 @@ assert.doesNotMatch(internshipsPage, /<select/);
 assert.match(internshipsPage, /from '@\/components\/ui\/select'/);
 assert.match(selectComponent, /appearance-none/);
 assert.match(selectComponent, /colorScheme: 'inherit'/);
-assert.match(globals, /select option,\s*\n?select optgroup \{/);
-assert.match(globals, /select \{\s*\n?\s*color-scheme: inherit;/);
+assert.match(globals, /select option,\s*select optgroup\s*\{/);
+assert.match(globals, /select\s*\{\s*color-scheme:\s*inherit;/);
 
 /* ---------------------------------------------------------------------------
  * Translucent-surface theme coverage.
@@ -258,24 +248,13 @@ for (const [family, shade] of ACCENT_TEXT_SHADES) {
     `.text-${family}-${shade} must not resolve to the translucent surface token`
   );
 }
-// The admin console keeps the light-on-dark values for every pinned token.
-const adminShell = globals.slice(globals.indexOf('.admin-shell {'));
-assert.match(adminShell, /--c-emerald-200-text: #a7f3d0;/, 'admin shell: accent text pin missing');
-assert.match(adminShell, /--c-red-200-text: #fecaca;/, 'admin shell: accent text pin missing');
-assert.match(adminShell, /--c-red-100-text: #fca5a5;/, 'admin shell: accent text pin missing');
-
-// `.text-slate-400` resolves to `--c-slate-400-text`, which used to be the
-// literal #94a3b8 in both themes — 2.5:1 on white. The light block must pin a
-// darker value, and the admin shell (always dark) must keep the light one.
-assert.match(globals, /--c-slate-400-text: #64748b;/);
-assert.match(adminShell, /--c-slate-400-text: #94a3b8;/);
-
-// The saved theme must be applied from the shared provider, not only from
-// ThemeToggle: /login, /register and /admin/login render no toggle, so a
-// visitor who chose the dark theme elsewhere used to land on a light auth
-// screen even though the auth stylesheet is theme-aware.
-assert.match(providers, /intern-az-theme/);
-assert.match(providers, /classList\.add\(theme\)/);
+// Admin follows the same theme as the public site instead of pinning dark colours.
+assert.match(designSystem, /--admin-page:\s*var\(--page\)/);
+assert.match(designSystem, /--admin-ink:\s*var\(--ink\)/);
+assert.match(adminLoginLayout, /useTheme/);
+assert.match(providers, /initializeTheme/);
+assert.match(themeController, /intern-az-theme/); // Migrates the previous preference.
+assert.match(themeController, /talora-theme/);
 
 /* ---------------------------------------------------------------------------
  * The dashboard/admin shell must not let the *page* scroll: the sidebar is one

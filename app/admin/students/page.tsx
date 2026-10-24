@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { isSupabaseConfigured } from '@/lib/supabase/config';
@@ -48,12 +50,11 @@ export default function AdminStudentsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">
+          <PageHeading embedded title={<>
             Qeydiyyatdan Keçmiş Tələbələr
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          </>} description={<>
             Platformada qeydiyyatdan keçmiş bütün tələbə profilləri
-          </p>
+          </>} />
         </div>
         <Badge variant="default" className="bg-amber-400/20 text-amber-300 border-amber-400/30 w-fit">
           {students.length} Tələbə

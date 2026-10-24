@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -182,15 +184,14 @@ export default function AdminSubmissionsPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
+          <PageHeading embedded title={<>
             <CheckCircle className="w-6 h-6 text-amber-400" />
             <span>{isAz ? 'Tapşırıq Təqdimatları və Qiymətləndirmə' : 'Task Submissions & Grading'}</span>
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          </>} description={<>
             {isAz
               ? 'Tələbələrin göndərdiyi həlləri yoxlayın, təsdiqləyin və ya ətraflı düzəliş rəyi bildirin'
               : 'Review submitted task solutions, approve milestones, or request code revisions'}
-          </p>
+          </>} />
         </div>
       </div>
 

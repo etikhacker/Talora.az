@@ -41,7 +41,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
             className={cn(
               'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all',
               isActive
-                ? 'bg-white text-emerald-700 shadow-2xs'
+                ? 'bg-white text-blue-700 shadow-2xs'
                 : 'text-slate-500 hover:text-slate-800'
             )}
           >

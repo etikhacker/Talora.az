@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/auth-context';
@@ -185,12 +187,11 @@ export default function AdminOverviewPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+          <PageHeading embedded title={<>
             İnzibatçı Paneli
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          </>} description={<>
             Platforma idarəetməsi, tələbə qeydiyyatları və təcrübə proqramları göstəriciləri.
-          </p>
+          </>} />
         </div>
 
         <div className="flex items-center gap-2">

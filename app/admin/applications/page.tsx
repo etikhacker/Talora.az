@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
@@ -117,12 +119,11 @@ export default function AdminApplicationsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">
+          <PageHeading embedded title={<>
             {t('adminApplicationsTitle')}
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          </>} description={<>
             {t('adminApplicationsSubtitle')}
-          </p>
+          </>} />
         </div>
         <div className="flex items-center gap-2">
           {pendingCount > 0 && (

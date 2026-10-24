@@ -1,5 +1,7 @@
 'use client';
 
+import { AuthBrand } from '@/components/layout/auth-brand';
+import { ThemeToggle } from '@/components/layout/theme-toggle';
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -33,115 +35,9 @@ import {
 /* ---------------------------------------------------------------------------
  * Brand panel — same gradient identity as login.
  * ------------------------------------------------------------------------ */
-function BrandPanel() {
-  const { t } = useLanguage();
+function BrandPanel() { return <AuthBrand />; }
 
-  return (
-    <div className="auth-login-brand relative hidden overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 text-white lg:flex lg:flex-col lg:justify-between lg:p-12 xl:p-16">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-emerald-300/40 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-32 -right-20 h-[28rem] w-[28rem] rounded-full bg-cyan-300/30 blur-3xl"
-      />
-
-      <TaloraLogo inverted className="relative z-10" />
-
-      <div className="relative z-10 max-w-md space-y-6">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] backdrop-blur-md">
-          <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-          {t('authRegisterBadge')}
-        </div>
-        <h2 className="text-4xl font-black leading-[1.05] tracking-tight xl:text-5xl">
-          {t('authRegisterHeadline')}
-        </h2>
-        <p className="text-base leading-relaxed text-emerald-50/90">
-          {t('authRegisterSubline')}
-        </p>
-        <ul className="space-y-2.5 pt-2 text-sm text-emerald-50/90">
-          {[
-            t('authRegisterBullet1'),
-            t('authRegisterBullet2'),
-            t('authRegisterBullet3'),
-          ].map((bullet) => (
-            <li key={bullet} className="flex items-center gap-2.5">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/15">
-                <Check className="h-3 w-3" aria-hidden="true" />
-              </span>
-              {bullet}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="relative z-10 grid grid-cols-3 gap-3">
-        <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-md">
-          <Users className="h-4 w-4 text-emerald-50" aria-hidden="true" />
-          <p className="mt-3 text-2xl font-black tracking-tight">8</p>
-          <p className="text-[10px] uppercase tracking-wider text-emerald-50/80">
-            {t('authStatPrograms')}
-          </p>
-        </div>
-        <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-md">
-          <Briefcase className="h-4 w-4 text-amber-200" aria-hidden="true" />
-          <p className="mt-3 text-2xl font-black tracking-tight">80</p>
-          <p className="text-[10px] uppercase tracking-wider text-emerald-50/80">
-            {t('authStatTasks')}
-          </p>
-        </div>
-        <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-md">
-          <Award className="h-4 w-4 text-cyan-200" aria-hidden="true" />
-          <p className="mt-3 text-2xl font-black tracking-tight">8</p>
-          <p className="text-[10px] uppercase tracking-wider text-emerald-50/80">
-            {t('authStatWeeks')}
-          </p>
-        </div>
-      </div>
-
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-60 right-6 hidden -rotate-3 rounded-2xl border border-white/20 bg-white/95 p-4 text-slate-900 opacity-95 shadow-2xl shadow-emerald-900/30 backdrop-blur-md 2xl:block"
-      >
-        <div className="flex items-center gap-1 text-amber-500">
-          {[...Array(5)].map((_, i) => (
-            <Star key={i} className="h-3.5 w-3.5 fill-current" />
-          ))}
-        </div>
-        <p className="mt-2 max-w-[13rem] text-xs font-medium leading-snug">
-          &ldquo;{t('authQuote')}&rdquo;
-        </p>
-        <div className="mt-3 flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white">
-            RA
-          </div>
-          <div>
-            <p className="text-[11px] font-bold">{t('authQuoteAuthor')}</p>
-            <p className="text-[9px] text-slate-500">{t('authQuoteMeta')}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function MobileBrand() {
-  const { t } = useLanguage();
-
-  return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 px-6 py-7 text-white lg:hidden">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-emerald-300/40 blur-3xl"
-      />
-      <TaloraLogo inverted compact className="relative z-10" />
-      <h2 className="relative z-10 mt-5 text-2xl font-black leading-tight">
-        {t('authRegisterHeadline')}
-      </h2>
-    </div>
-  );
-}
+function MobileBrand() { return <AuthBrand mobile />; }
 
 function Field({
   id,
@@ -155,6 +51,7 @@ function Field({
   disabled,
   error,
   trailing,
+  autoComplete,
 }: {
   id: string;
   name: string;
@@ -167,6 +64,7 @@ function Field({
   disabled?: boolean;
   error?: string;
   trailing?: React.ReactNode;
+  autoComplete?: string;
 }) {
   return (
     <div className="space-y-1.5">
@@ -184,6 +82,7 @@ function Field({
           id={id}
           name={name}
           type={type}
+          autoComplete={autoComplete}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
@@ -201,7 +100,7 @@ function Field({
 export default function RegisterPage() {
   const router = useRouter();
   const { signUp } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const [formData, setFormData] = useState<RegisterFormData>({
     fullName: '',
@@ -302,7 +201,7 @@ export default function RegisterPage() {
               <span>{t('authBackHome')}</span>
             </Link>
             <div className="flex items-center gap-4">
-              <LanguageSwitcher />
+              <div className="flex items-center gap-2"><ThemeToggle /><LanguageSwitcher /></div>
               <Link
                 href="/login"
                 className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline"
@@ -375,6 +274,7 @@ export default function RegisterPage() {
                 <Field
                   id="email"
                   name="email"
+                      autoComplete="email"
                   label={t('authEmail')}
                   type="email"
                   placeholder="ad.soyad@universitet.edu.az"
@@ -385,7 +285,7 @@ export default function RegisterPage() {
                   error={errors.email}
                 />
 
-                <div role="note" className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+                <div role="note" className="auth-email-note flex items-start gap-2 rounded-xl border p-3 text-xs">
                   <Mail className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                   <p className="leading-relaxed">{t('emailSpamFolderNotice')}</p>
                 </div>
@@ -393,6 +293,7 @@ export default function RegisterPage() {
                 <Field
                   id="password"
                   name="password"
+                      autoComplete="new-password"
                   label={t('authPasswordMin')}
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
@@ -441,20 +342,21 @@ export default function RegisterPage() {
                     />
                   </span>
                   <span>
+                    {language === 'en' && 'I agree to the '}
                     <Link
                       href="/terms"
                       className="font-semibold text-emerald-600 hover:underline"
                     >
                       {t('authTerms')}
                     </Link>{' '}
-                    <span className="sr-only">,</span>
+                    {language === 'az' ? 'və ' : 'and '}
                     <Link
                       href="/privacy"
                       className="font-semibold text-emerald-600 hover:underline"
                     >
                       {t('authPrivacy')}
                     </Link>{' '}
-                    {t('authAgreeSuffix')}
+                    {language === 'az' ? 'ilə razıyam.' : '.'}
                   </span>
                 </label>
 

@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -68,15 +70,14 @@ export default function AdminTasksPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
+          <PageHeading embedded title={<>
             <ListTodo className="w-6 h-6 text-amber-400" />
             <span>{isAz ? 'Tapşırıqlar İdarəetməsi' : 'Task Management'}</span>
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          </>} description={<>
             {isAz
               ? 'Təcrübə proqramları üzrə həftəlik praktiki tapşırıqların hazırlanması və idarə edilməsi'
               : 'Manage and curate weekly hands-on tasks across all internship cohorts'}
-          </p>
+          </>} />
         </div>
       </div>
 

@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/auth-context';
+import { WorkspaceTopbar } from '@/components/dashboard/workspace-topbar';
 import { StudentSidebar } from '@/components/dashboard/student-sidebar';
 import { Loader2 } from 'lucide-react';
 
@@ -44,10 +45,10 @@ export default function DashboardLayout({
        — the shell then grew to the content height, the document scrolled and
        the sidebar was cut into a half-height ("yarımqıq") bar. The shell sizes
        itself with `md:h-[100dvh]`, `main` is the only scroll container. */
-    <div className="flex flex-col overflow-x-clip bg-slate-50 md:h-[100dvh] md:flex-row md:overflow-hidden">
+    <div className="workspace-shell flex flex-col overflow-x-clip bg-slate-50 md:h-[100dvh] md:flex-row md:overflow-hidden">
       <StudentSidebar />
-      <main className="min-w-0 flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto max-w-6xl">
+      <main id="main-content" className="workspace-main min-w-0 flex-1 overflow-y-auto">
+        <div className="workspace-content"><WorkspaceTopbar />
           {children}
         </div>
       </main>

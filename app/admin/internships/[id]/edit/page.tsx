@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -198,12 +200,11 @@ export default function AdminEditInternshipPage({ params }: Props) {
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">
+            <PageHeading embedded title={<>
               {isAz ? 'Təcrübə Proqramını Redaktə Et' : 'Edit Internship'}
-            </h1>
-            <p className="text-xs text-slate-400 mt-0.5 font-mono">
+            </>} description={<>
               ID: {id}
-            </p>
+            </>} />
           </div>
         </div>
 

@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -184,12 +186,11 @@ export default function AdminSingleSubmissionPage({
             <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">
               {isAz ? 'Tələbə Həlli Qiymətləndirməsi' : 'Submission Evaluation'}
             </span>
-            <h1 className="text-xl font-bold text-white mt-1">
+            <PageHeading embedded title={<>
               {submission.task?.title}
-            </h1>
-            <p className="text-xs text-slate-400">
+            </>} description={<>
               {isAz ? 'Həftə' : 'Week'} {submission.task?.week_number} • {isAz ? 'Tapşırıq' : 'Task'} #{submission.task?.task_number}
-            </p>
+            </>} />
           </div>
           <div>
             {getStatusBadge(submission.status)}

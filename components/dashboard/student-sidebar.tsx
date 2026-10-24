@@ -1,12 +1,11 @@
-'use client';
-
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useAuth } from '@/lib/auth/auth-context';
-import { useLanguage, type Translations } from '@/lib/i18n/language-context';
-import { TaloraLogo } from '@/components/layout/talora-logo';
-import { cn } from '@/lib/utils';
+"use client";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useAuth } from "@/lib/auth/auth-context";
+import { useLanguage, type Translations } from "@/lib/i18n/language-context";
+import { TaloraLogo } from "@/components/layout/talora-logo";
+import { Avatar } from "@/components/ui/avatar";
 import {
   LayoutDashboard,
   Search,
@@ -22,155 +21,142 @@ import {
   ChevronRight,
   Menu,
   X,
-} from 'lucide-react';
-import { Avatar } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-
-interface NavItem {
-  key: keyof Translations;
-  href: string;
-  icon: React.ElementType;
-}
-
-/* Labels are resolved through `t()` inside the component, so the menu follows
-   the active interface language instead of staying fixed to Azerbaijani. */
-const navItems: NavItem[] = [
-  { key: 'sideDashboard', href: '/dashboard', icon: LayoutDashboard },
-  { key: 'sideInternships', href: '/dashboard/internships', icon: Search },
-  { key: 'sideMyApplications', href: '/dashboard/applications', icon: FileText },
-  { key: 'sideMyInternship', href: '/dashboard/internship', icon: Briefcase },
-  { key: 'sideTasks', href: '/dashboard/tasks', icon: CheckSquare },
-  { key: 'sideSubmissions', href: '/dashboard/submissions', icon: UploadCloud },
-  { key: 'sideCertificate', href: '/dashboard/certificate', icon: Award },
-  { key: 'sideNotifications', href: '/dashboard/notifications', icon: Bell },
-  { key: 'sideProfile', href: '/dashboard/profile', icon: User },
-  { key: 'sideSettings', href: '/dashboard/settings', icon: Settings },
+} from "lucide-react";
+const items: { key: keyof Translations; href: string; icon: typeof User }[] = [
+  { key: "sideDashboard", href: "/dashboard", icon: LayoutDashboard },
+  { key: "sideInternships", href: "/dashboard/internships", icon: Search },
+  {
+    key: "sideMyApplications",
+    href: "/dashboard/applications",
+    icon: FileText,
+  },
+  { key: "sideMyInternship", href: "/dashboard/internship", icon: Briefcase },
+  { key: "sideTasks", href: "/dashboard/tasks", icon: CheckSquare },
+  { key: "sideSubmissions", href: "/dashboard/submissions", icon: UploadCloud },
+  { key: "sideCertificate", href: "/dashboard/certificate", icon: Award },
+  { key: "sideNotifications", href: "/dashboard/notifications", icon: Bell },
+  { key: "sideProfile", href: "/dashboard/profile", icon: User },
+  { key: "sideSettings", href: "/dashboard/settings", icon: Settings },
 ];
-
 export function StudentSidebar() {
-  const pathname = usePathname();
+  const path = usePathname();
   const { profile, signOut } = useAuth();
-  const { t } = useLanguage();
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const sidebarContent = (
-    <div className="flex flex-col h-full bg-white border-r border-slate-200">
-      {/* Brand Header */}
-      <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-        <div className="flex flex-col items-start gap-1">
-          <TaloraLogo compact />
-          <span className="pl-11 text-[10px] font-medium text-slate-500">{t('sideStudentPortal')}</span>
-        </div>
-        <button
-          onClick={() => setMobileOpen(false)}
-          className="md:hidden p-1 text-slate-400 hover:text-slate-600"
-        >
-          <X className="w-5 h-5" />
-        </button>
+  const { t, language } = useLanguage();
+  const [open, setOpen] = useState(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    closeRef.current?.focus();
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previous;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+  const content = (
+    <div className="workspace-sidebar">
+      <div className="workspace-sidebar__brand">
+        <TaloraLogo compact />
+        <small>{t("sideStudentPortal")}</small>
       </div>
-
-      {/* User Info Capsule */}
-      <div className="p-3.5 mx-3 my-3 rounded-xl bg-slate-50 border border-slate-100">
-        <div className="flex items-center gap-3">
-          <Avatar
-            src={profile?.avatar_url}
-            fallback={profile?.full_name || 'ST'}
-            size="md"
-          />
-          <div className="min-w-0 flex-1">
-            <p className="text-xs font-semibold text-slate-900 truncate">
-              {profile?.full_name || t('sideStudentFallback')}
-            </p>
-            <p className="text-[11px] text-slate-500 truncate">
-              {profile?.university || t('sideStudentUniversityFallback')}
-            </p>
-            <div className="mt-1 flex items-center gap-1.5">
-              <Badge variant="default" className="text-[9px] py-0 px-1.5">
-                {t('sideStudentBadge')}
-              </Badge>
-            </div>
-          </div>
+      <div className="workspace-sidebar__profile">
+        <Avatar
+          src={profile?.avatar_url}
+          fallback={profile?.full_name || "ST"}
+          size="md"
+        />
+        <div className="min-w-0">
+          <p className="truncate">
+            {profile?.full_name || t("sideStudentFallback")}
+          </p>
+          <small className="block truncate">
+            {profile?.university || t("sideStudentUniversityFallback")}
+          </small>
         </div>
       </div>
-
-      {/* Navigation List */}
-      <div className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
-        <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-          {t('sideStudentMenu')}
-        </div>
-        {navItems.map((item) => {
+      <nav aria-label={t("sideStudentMenu")}>
+        {items.map((item, index) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href;
+          const active =
+            path === item.href ||
+            (item.href === "/dashboard/tasks" && path.includes("/tasks/"));
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
-              className={cn(
-                'flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all group',
-                isActive
-                  ? 'bg-emerald-50 text-emerald-900 font-semibold shadow-2xs'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            <div key={item.href}>
+              {index === 0 && (
+                <p className="eyebrow px-3 py-3">
+                  {language === "az" ? "İNKİŞAF YOLUN" : "YOUR JOURNEY"}
+                </p>
               )}
-            >
-              <div className="flex items-center gap-2.5">
-                <Icon
-                  className={cn(
-                    'w-4 h-4 transition-colors',
-                    isActive
-                      ? 'text-emerald-600'
-                      : 'text-slate-400 group-hover:text-slate-600'
-                  )}
-                />
+              {index === 7 && (
+                <p className="eyebrow px-3 pt-6 pb-3">
+                  {language === "az" ? "ŞƏXSİ KABİNET" : "YOUR ACCOUNT"}
+                </p>
+              )}
+              <Link
+                className="workspace-nav-link"
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                onClick={() => setOpen(false)}
+              >
+                <Icon size={18} />
                 <span>{t(item.key)}</span>
-              </div>
-              {isActive && <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />}
-            </Link>
+                {active && <ChevronRight size={14} />}
+              </Link>
+            </div>
           );
         })}
-      </div>
-
-      {/* Footer / Sign Out */}
-      <div className="p-3 border-t border-slate-100">
-        <button
-          onClick={() => signOut()}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
-        >
-          <LogOut className="w-4 h-4" />
-          <span>{t('sideStudentSignOut')}</span>
+      </nav>
+      <div className="workspace-sidebar__footer">
+        <button onClick={() => void signOut()}>
+          <LogOut size={18} />
+          {t("sideStudentSignOut")}
         </button>
       </div>
     </div>
   );
-
   return (
     <>
-      {/* Mobile top bar */}
-      <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
+      <div className="workspace-mobile-bar">
         <TaloraLogo compact />
         <button
-          onClick={() => setMobileOpen(true)}
-          className="p-1.5 rounded-lg border border-slate-200 text-slate-600"
-          aria-label="Open sidebar"
+          className="icon-button"
+          onClick={() => setOpen(true)}
+          aria-label={language === "az" ? "Menyunu aç" : "Open menu"}
+          aria-expanded={open}
         >
-          <Menu className="w-5 h-5" />
+          <Menu size={20} />
         </button>
       </div>
-
-      {/* Desktop static sidebar — dvh so it matches the layout shell exactly. */}
-      <aside className="hidden md:block w-64 shrink-0 h-[100dvh] sticky top-0">
-        {sidebarContent}
+      <aside className="sticky top-0 hidden md:block w-[272px] shrink-0 h-[100dvh]">
+        {content}
       </aside>
-
-      {/* Mobile drawer */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-50 md:hidden flex">
-          <div
-            className="fixed inset-0 bg-slate-950/50 backdrop-blur-2xs"
-            onClick={() => setMobileOpen(false)}
+      {open && (
+        <div
+          className="fixed inset-0 z-50 md:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label={t("sideStudentMenu")}
+        >
+          <button
+            className="workspace-drawer-backdrop"
+            onClick={() => setOpen(false)}
+            aria-label={language === "az" ? "Menyunu bağla" : "Close menu"}
           />
-          <div className="relative w-64 max-w-full h-full bg-white shadow-xl z-10">
-            {sidebarContent}
+          <div className="workspace-drawer">
+            {content}
+            <button
+              ref={closeRef}
+              className="icon-button workspace-drawer-close"
+              onClick={() => setOpen(false)}
+              aria-label={language === "az" ? "Menyunu bağla" : "Close menu"}
+            >
+              <X size={18} />
+            </button>
           </div>
         </div>
       )}

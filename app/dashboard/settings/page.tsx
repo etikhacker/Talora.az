@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -128,10 +130,9 @@ export default function StudentSettingsPage() {
           `border-slate-300` keeps it legible in both themes. `w-full` makes the
           divider span the content column instead of the text block. */}
       <header className="w-full border-b border-slate-300 pb-4">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+        <PageHeading embedded title={<>
           {t('settingsTitle')}
-        </h1>
-        <p className="text-xs text-slate-500 mt-1">{t('settingsSubtitle')}</p>
+        </>} description={<>{t('settingsSubtitle')}</>} />
       </header>
 
       {feedback && (

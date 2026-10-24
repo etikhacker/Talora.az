@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -96,7 +98,7 @@ export default function InternshipDetailsPage({ params }: Props) {
     return (
       <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
         <Navbar />
-        <main className="flex-1 py-16 flex items-center justify-center">
+        <main id="main-content" className="flex-1 py-16 flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
         </main>
         <Footer />
@@ -108,19 +110,18 @@ export default function InternshipDetailsPage({ params }: Props) {
     return (
       <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
         <Navbar />
-        <main className="flex-1 py-16">
+        <main id="main-content" className="flex-1 py-16">
           <div className="max-w-2xl mx-auto px-4 text-center">
             <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-4 border border-amber-200">
               <AlertCircle className="w-8 h-8" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">
+            <PageHeading embedded title={<>
               {isAz ? 'Təcrübə proqramı tapılmadı' : 'Internship Not Found'}
-            </h1>
-            <p className="text-sm text-slate-600 mb-6">
+            </>} description={<>
               {isAz
                 ? 'Axtardığınız təcrübə proqramı mövcud deyil və ya dərc olunmayıb.'
                 : 'The internship program you are looking for does not exist or has been unpublished.'}
-            </p>
+            </>} />
             <Link href="/internships">
               <Button variant="outline" className="gap-2">
                 <ArrowLeft className="w-4 h-4" />
@@ -162,7 +163,7 @@ export default function InternshipDetailsPage({ params }: Props) {
     <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
       <Navbar />
 
-      <main className="flex-1 py-8 sm:py-12">
+      <main id="main-content" className="flex-1 public-main">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
           <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-500 mb-6">
@@ -199,13 +200,11 @@ export default function InternshipDetailsPage({ params }: Props) {
               </Badge>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+            <PageHeading embedded title={<>
               {internship.title}
-            </h1>
-
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-3xl mb-6">
+            </>} description={<>
               {internship.short_description}
-            </p>
+            </>} />
 
             {/* Quick Spec Pills */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-slate-100">

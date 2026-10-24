@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/auth-context';
@@ -159,14 +161,13 @@ export default function StudentTasksPage() {
         <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
           {isAz ? 'Öyrənmə planı' : 'Learning path'}
         </p>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <PageHeading embedded title={<>
           {isAz ? 'Tapşırıqlarım' : 'My tasks'}
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        </>} description={<>
           {isAz
             ? 'Həftələr üzrə tapşırıqları izləyin, təlimatı açın və həllinizi təqdim edin.'
             : 'Track weekly assignments, open the instructions, and submit your work.'}
-        </p>
+        </>} />
       </header>
 
       {loading ? (

@@ -40,7 +40,9 @@ export async function updateSession(request: NextRequest) {
   const isDashboardArea = isArea(pathname, '/dashboard');
   const isStudentAuthPage =
     pathname.toLowerCase() === '/login' || pathname.toLowerCase() === '/register';
-  const isProtectedArea = isAdminArea || isDashboardArea;
+  // The public sign-in screen must remain reachable even when auth is unavailable.
+  // Redirecting /admin/login to itself otherwise causes an infinite redirect loop.
+  const isProtectedArea = (isAdminArea && !isAdminLogin) || isDashboardArea;
 
   /* ---------------------------------------------------------------------
    * Fail CLOSED.

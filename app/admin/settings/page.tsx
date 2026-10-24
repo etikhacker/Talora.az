@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -78,12 +80,11 @@ export default function AdminSettingsPage() {
   return (
     <div className="space-y-6 max-w-3xl">
       <div className="pb-4 border-b border-slate-800">
-        <h1 className="text-2xl font-bold text-white tracking-tight">
+        <PageHeading embedded title={<>
           İnzibatçı Parametrləri
-        </h1>
-        <p className="text-xs text-slate-400 mt-1">
+        </>} description={<>
           Platforma qlobal parametrləri və əlaqə tənzimləmələri
-        </p>
+        </>} />
       </div>
 
       {saved && (

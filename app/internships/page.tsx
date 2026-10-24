@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { PageHeading } from '@/components/layout/page-heading';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
@@ -143,25 +144,12 @@ function InternshipsContent({
     <div className="flex-1 flex flex-col min-h-screen bg-[var(--page)]">
       <Navbar />
 
-      <main className="flex-1 py-10 sm:py-14">
+      <main id="main-content" className="flex-1 py-10 sm:py-14">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="max-w-3xl mb-8">
-            <p className="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-2">
-              {isAz ? 'Açıq Vakansiyalar' : 'Open Cohorts & Programs'}
-            </p>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              {isAz ? 'Təcrübə Proqramları' : 'Explore Internships'}
-            </h1>
-            <p className="text-sm sm:text-base text-slate-600 mt-2 leading-relaxed">
-              {isAz
-                ? 'Karyeranıza inamla başlamaq üçün strukturlaşdırılmış və yoxlanılmış açıq təcrübə vakansiyaları.'
-                : 'Discover structured internship opportunities curated for ambitious candidates worldwide.'}
-            </p>
-          </div>
+          <PageHeading eyebrow={isAz ? 'İSTİQAMƏTİNİ TAP' : 'FIND YOUR DIRECTION'} title={isAz ? 'Növbəti addımını seç.' : 'Choose your next step.'} description={isAz ? 'Real tapşırıqlar üzərində çalışacağın proqramı tap. İstiqamət, səviyyə və müddətə görə öz yolunu seç.' : 'Find a program built around real assignments. Choose your path by track, level and duration.'} />
 
           {/* Search, Filter and Sort Controls */}
-          <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-xs mb-8 space-y-4">
+          <div className="catalogue-filter space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
               {/* Search input */}
               <div className="relative md:col-span-6">
@@ -268,7 +256,7 @@ function InternshipsContent({
                   <div
                     key={internship.id}
                     id={`internship-card-${internship.slug}`}
-                    className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs hover:border-blue-300 hover:shadow-sm transition-all flex flex-col justify-between group"
+                    className="catalogue-card bg-white rounded-xl border border-slate-200 p-6 shadow-xs hover:border-blue-300 hover:shadow-sm transition-all flex flex-col justify-between group"
                   >
                     <div>
                       {/* Zero-pill metadata row */}
@@ -288,7 +276,7 @@ function InternshipsContent({
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1 mb-2">
+                      <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2 mb-2">
                         {internship.title}
                       </h3>
 

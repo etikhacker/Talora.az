@@ -1,4 +1,5 @@
 'use client';
+import { PageHeading } from '@/components/layout/page-heading';
 
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth/auth-context';
@@ -192,17 +193,11 @@ export default function AdminCertificateSettingsPage() {
       {/* Header */}
       <div className="pb-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-white tracking-tight">
+          <PageHeading embedded title={<>
               Sertifikat Parametrləri
-            </h1>
-            <Badge variant="admin" className="bg-amber-400/20 text-amber-300 border-amber-400/30 text-[10px]">
-              Phase 4
-            </Badge>
-          </div>
-          <p className="text-xs text-slate-400 mt-1">
+            </>} description={<>
             Hər bir təcrübə proqramı üçün sertifikat qiyməti, ödəniş kartı və aktivlik statusunu tənzimləyin.
-          </p>
+          </>} />
         </div>
 
         <Button

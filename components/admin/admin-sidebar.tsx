@@ -1,33 +1,333 @@
-'use client';
-import React,{useState} from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import {usePathname} from 'next/navigation';
-import {useAuth} from '@/lib/auth/auth-context';
-import {useLanguage,type Translations} from '@/lib/i18n/language-context';
-import {cn} from '@/lib/utils';
-import {LayoutDashboard,BriefcaseBusiness,FileCheck2,Users,ListTodo,CheckCircle2,FileBadge,CreditCard,Award,Bell,Mail,Settings,LogOut,ChevronRight,Menu,X,PanelLeftClose,PanelLeftOpen} from 'lucide-react';
-import {Avatar} from '@/components/ui/avatar';
-import {Badge} from '@/components/ui/badge';
-type Item={key?:keyof Translations;href:string;icon:React.ElementType;az?:string;en?:string};
-const groups:{az:string;en:string;items:Item[]}[]=[
-{az:'İCMAL',en:'OVERVIEW',items:[{key:'sideAdminOverview',href:'/admin',icon:LayoutDashboard}]},
-{az:'TƏCRÜBƏ PROQRAMLARI',en:'INTERNSHIPS',items:[{key:'sideAdminInternships',href:'/admin/internships',icon:BriefcaseBusiness},{key:'sideAdminApplications',href:'/admin/applications',icon:FileCheck2},{key:'sideTasks',href:'/admin/tasks',icon:ListTodo},{key:'sideSubmissions',href:'/admin/submissions',icon:CheckCircle2}]},
-{az:'İSTİFADƏÇİLƏR',en:'USERS',items:[{key:'sideAdminStudents',href:'/admin/students',icon:Users}]},
-{az:'SERTİFİKATLAR',en:'CERTIFICATES',items:[{key:'sideAdminCompleted',href:'/admin/completed',icon:FileBadge},{key:'sideAdminCertOrders',href:'/admin/certificate-orders',icon:CreditCard},{key:'sideAdminCertificates',href:'/admin/certificates',icon:Award},{key:'sideAdminCertSettings',href:'/admin/certificate-settings',icon:Settings}]},
-{az:'SİSTEM',en:'SYSTEM',items:[{key:'sideNotifications',href:'/admin/notifications',icon:Bell},{key:'sideAdminContact',href:'/admin/contact-messages',icon:Mail},{az:'Tənzimləmələr',en:'Settings',href:'/admin/settings',icon:Settings}]}
+"use client";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useAuth } from "@/lib/auth/auth-context";
+import { useLanguage, type Translations } from "@/lib/i18n/language-context";
+import { cn } from "@/lib/utils";
+import {
+  LayoutDashboard,
+  BriefcaseBusiness,
+  FileCheck2,
+  Users,
+  ListTodo,
+  CheckCircle2,
+  FileBadge,
+  CreditCard,
+  Award,
+  Bell,
+  Mail,
+  Settings,
+  LogOut,
+  ChevronRight,
+  Menu,
+  X,
+  PanelLeftClose,
+  PanelLeftOpen,
+} from "lucide-react";
+import { Avatar } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+type Item = {
+  key?: keyof Translations;
+  href: string;
+  icon: React.ElementType;
+  az?: string;
+  en?: string;
+};
+const groups: { az: string; en: string; items: Item[] }[] = [
+  {
+    az: "İCMAL",
+    en: "OVERVIEW",
+    items: [
+      { key: "sideAdminOverview", href: "/admin", icon: LayoutDashboard },
+    ],
+  },
+  {
+    az: "TƏCRÜBƏ PROQRAMLARI",
+    en: "INTERNSHIPS",
+    items: [
+      {
+        key: "sideAdminInternships",
+        href: "/admin/internships",
+        icon: BriefcaseBusiness,
+      },
+      {
+        key: "sideAdminApplications",
+        href: "/admin/applications",
+        icon: FileCheck2,
+      },
+      { key: "sideTasks", href: "/admin/tasks", icon: ListTodo },
+      {
+        key: "sideSubmissions",
+        href: "/admin/submissions",
+        icon: CheckCircle2,
+      },
+    ],
+  },
+  {
+    az: "İSTİFADƏÇİLƏR",
+    en: "USERS",
+    items: [{ key: "sideAdminStudents", href: "/admin/students", icon: Users }],
+  },
+  {
+    az: "SERTİFİKATLAR",
+    en: "CERTIFICATES",
+    items: [
+      { key: "sideAdminCompleted", href: "/admin/completed", icon: FileBadge },
+      {
+        key: "sideAdminCertOrders",
+        href: "/admin/certificate-orders",
+        icon: CreditCard,
+      },
+      {
+        key: "sideAdminCertificates",
+        href: "/admin/certificates",
+        icon: Award,
+      },
+      {
+        key: "sideAdminCertSettings",
+        href: "/admin/certificate-settings",
+        icon: Settings,
+      },
+    ],
+  },
+  {
+    az: "SİSTEM",
+    en: "SYSTEM",
+    items: [
+      { key: "sideNotifications", href: "/admin/notifications", icon: Bell },
+      { key: "sideAdminContact", href: "/admin/contact-messages", icon: Mail },
+      {
+        az: "Tənzimləmələr",
+        en: "Settings",
+        href: "/admin/settings",
+        icon: Settings,
+      },
+    ],
+  },
 ];
-export function AdminSidebar({collapsed=false,onToggleCollapse}:{collapsed?:boolean;onToggleCollapse?:()=>void}){
- const pathname=usePathname();const {profile,signOut}=useAuth();const {t,language}=useLanguage();const [mobileOpen,setMobileOpen]=useState(false);const isAz=language==='az';
- const content=<div className={cn('flex h-full flex-col border-r border-slate-800 bg-slate-900 text-slate-300',collapsed&&'items-center')}>
-  <div className={cn('flex min-h-[76px] items-center justify-between border-b border-slate-800 px-4 py-4',collapsed&&'w-full justify-center px-2')}>
-   <Link href="/admin" className="flex min-w-0 items-center gap-3" title="Talora admin"><Image src="/talora-mark.svg" width={40} height={40} alt="" className="shrink-0"/>{!collapsed&&<span><b className="block text-lg leading-tight text-white">Talora</b><small className="mt-1 block text-[10px] font-semibold uppercase tracking-[.16em] text-amber-400">{t('sideAdminPanel')}</small></span>}</Link>
-   {!collapsed&&onToggleCollapse&&<button onClick={onToggleCollapse} className="hidden rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white md:inline-flex" aria-label="Menyunu yığ"><PanelLeftClose className="h-4 w-4"/></button>}
-   <button onClick={()=>setMobileOpen(false)} className="rounded-lg p-1 text-slate-400 md:hidden" aria-label="Bağla"><X className="h-5 w-5"/></button>
-  </div>
-  {!collapsed&&<div className="mx-3 my-3 rounded-xl border border-slate-700/60 bg-slate-800/70 p-3"><div className="flex items-center gap-3"><Avatar src={profile?.avatar_url} fallback={profile?.full_name||'AD'} size="md"/><div className="min-w-0"><p className="truncate text-xs font-semibold text-white">{profile?.full_name||t('sideAdminFallback')}</p><p className="truncate text-[10px] text-slate-400">{profile?.email||'admin@talora.az'}</p><Badge variant="admin" className="mt-1 border-amber-400/40 bg-amber-400/15 px-1.5 py-0 text-[9px] text-amber-300">{t('sideAdminBadge')}</Badge></div></div></div>}
-  <nav className="min-h-0 flex-1 space-y-4 overflow-y-auto px-2 py-3">{groups.map(g=><section key={g.en}>{!collapsed&&<p className="mb-2 px-3 text-[9px] font-bold tracking-[.16em] text-slate-500">{isAz?g.az:g.en}</p>}<div className="space-y-1">{g.items.map(item=>{const Icon=item.icon;const active=pathname===item.href||(item.href!='/admin'&&pathname.startsWith(item.href+'/'));const label=item.az?(isAz?item.az:item.en||item.az):item.key?t(item.key):'';return <Link key={item.href} href={item.href} onClick={()=>setMobileOpen(false)} title={collapsed?label:undefined} aria-current={active?'page':undefined} className={cn('group flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium transition-all',collapsed&&'justify-center px-2',active?'bg-amber-400 font-semibold text-slate-950 shadow-sm':'text-slate-300 hover:bg-slate-800 hover:text-white')}><Icon className={cn('h-[17px] w-[17px] shrink-0',active?'text-slate-950':'text-slate-400 group-hover:text-slate-200')}/>{!collapsed&&<span className="min-w-0 flex-1">{label}</span>}{!collapsed&&active&&<ChevronRight className="h-3.5 w-3.5"/>}</Link>})}</div></section>)}</nav>
-  <div className="w-full border-t border-slate-800 p-3">{collapsed&&<button onClick={onToggleCollapse} className="mb-2 flex w-full justify-center rounded-lg p-2 text-slate-400 hover:bg-slate-800 md:flex" aria-label="Menyunu genişləndir"><PanelLeftOpen className="h-4 w-4"/></button>}<button onClick={()=>signOut()} title={collapsed?t('sideAdminSignOut'):undefined} className={cn('flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium text-red-400 hover:bg-red-950/40',collapsed&&'justify-center px-2')}><LogOut className="h-4 w-4"/>{!collapsed&&t('sideAdminSignOut')}</button></div>
- </div>;
- return <><div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-3 md:hidden"><Link href="/admin" className="flex items-center gap-2"><Image src="/talora-mark.svg" width={32} height={32} alt=""/><span className="text-sm font-bold text-white">Talora <span className="font-medium text-slate-400">Admin</span></span></Link><button onClick={()=>setMobileOpen(true)} className="rounded-lg border border-slate-700 p-2 text-slate-300" aria-label="Admin menyusunu aç"><Menu className="h-5 w-5"/></button></div><aside className={cn('sticky top-0 hidden h-[100dvh] shrink-0 transition-[width] duration-200 md:block',collapsed?'w-[76px]':'w-[260px]')}>{content}</aside>{mobileOpen&&<div className="fixed inset-0 z-50 flex md:hidden"><button className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm" onClick={()=>setMobileOpen(false)} aria-label="Menyunu bağla"/><div className="relative z-10 h-full w-[280px] max-w-[88vw] shadow-2xl">{content}</div></div>}</>;
+export function AdminSidebar({
+  collapsed = false,
+  onToggleCollapse,
+}: {
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
+}) {
+  const pathname = usePathname();
+  const { profile, signOut } = useAuth();
+  const { t, language } = useLanguage();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const isAz = language === "az";
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", close);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", close);
+    };
+  }, [mobileOpen]);
+  const content = (
+    <div
+      className={cn(
+        "workspace-sidebar flex h-full flex-col",
+        collapsed && "items-center",
+      )}
+    >
+      <div
+        className={cn(
+          "flex min-h-[76px] items-center justify-between border-b border-slate-800 px-4 py-4",
+          collapsed && "w-full justify-center px-2",
+        )}
+      >
+        <Link
+          href="/admin"
+          className="flex min-w-0 items-center gap-3"
+          title="Talora admin"
+        >
+          <Image
+            src="/design/talora-mark.svg"
+            width={40}
+            height={40}
+            alt=""
+            className="shrink-0"
+          />
+          {!collapsed && (
+            <span>
+              <b className="block text-lg leading-tight text-white">Talora</b>
+              <small className="mt-1 block text-[10px] font-semibold uppercase tracking-[.16em] text-blue-400">
+                {t("sideAdminPanel")}
+              </small>
+            </span>
+          )}
+        </Link>
+        {!collapsed && onToggleCollapse && (
+          <button
+            onClick={onToggleCollapse}
+            className="hidden rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white md:inline-flex"
+            aria-label="Menyunu yığ"
+          >
+            <PanelLeftClose className="h-4 w-4" />
+          </button>
+        )}
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="rounded-lg p-1 text-slate-400 md:hidden"
+          aria-label="Bağla"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </div>
+      {!collapsed && (
+        <div className="mx-3 my-3 rounded-xl border border-slate-700/60 bg-slate-800/70 p-3">
+          <div className="flex items-center gap-3">
+            <Avatar
+              src={profile?.avatar_url}
+              fallback={profile?.full_name || "AD"}
+              size="md"
+            />
+            <div className="min-w-0">
+              <p className="truncate text-xs font-semibold text-white">
+                {profile?.full_name || t("sideAdminFallback")}
+              </p>
+              <p className="truncate text-[10px] text-slate-400">
+                {profile?.email || ""}
+              </p>
+              <Badge
+                variant="admin"
+                className="mt-1 border-blue-400/40 bg-blue-400/15 px-1.5 py-0 text-[9px] text-blue-300"
+              >
+                {t("sideAdminBadge")}
+              </Badge>
+            </div>
+          </div>
+        </div>
+      )}
+      <nav className="min-h-0 flex-1 space-y-4 overflow-y-auto px-2 py-3">
+        {groups.map((g) => (
+          <section key={g.en}>
+            {!collapsed && (
+              <p className="mb-2 px-3 text-[9px] font-bold tracking-[.16em] text-slate-500">
+                {isAz ? g.az : g.en}
+              </p>
+            )}
+            <div className="space-y-1">
+              {g.items.map((item) => {
+                const Icon = item.icon;
+                const active =
+                  pathname === item.href ||
+                  (item.href != "/admin" &&
+                    pathname.startsWith(item.href + "/"));
+                const label = item.az
+                  ? isAz
+                    ? item.az
+                    : item.en || item.az
+                  : item.key
+                    ? t(item.key)
+                    : "";
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    title={collapsed ? label : undefined}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "workspace-nav-link group",
+                      collapsed && "justify-center px-2",
+                      active ? "font-semibold" : "",
+                    )}
+                  >
+                    <Icon
+                      className={cn(
+                        "h-[17px] w-[17px] shrink-0",
+                        active ? "text-blue-400" : "text-slate-400",
+                      )}
+                    />
+                    {!collapsed && (
+                      <span className="min-w-0 flex-1">{label}</span>
+                    )}
+                    {!collapsed && active && (
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        ))}
+      </nav>
+      <div className="w-full border-t border-slate-800 p-3">
+        {collapsed && (
+          <button
+            onClick={onToggleCollapse}
+            className="mb-2 flex w-full justify-center rounded-lg p-2 text-slate-400 hover:bg-slate-800 md:flex"
+            aria-label="Menyunu genişləndir"
+          >
+            <PanelLeftOpen className="h-4 w-4" />
+          </button>
+        )}
+        <button
+          onClick={() => signOut()}
+          title={collapsed ? t("sideAdminSignOut") : undefined}
+          className={cn(
+            "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium text-red-400 hover:bg-red-950/40",
+            collapsed && "justify-center px-2",
+          )}
+        >
+          <LogOut className="h-4 w-4" />
+          {!collapsed && t("sideAdminSignOut")}
+        </button>
+      </div>
+    </div>
+  );
+  return (
+    <>
+      <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-3 md:hidden">
+        <Link href="/admin" className="flex items-center gap-2">
+          <Image src="/design/talora-mark.svg" width={32} height={32} alt="" />
+          <span className="text-sm font-bold text-white">
+            Talora <span className="font-medium text-slate-400">Admin</span>
+          </span>
+        </Link>
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="rounded-lg border border-slate-700 p-2 text-slate-300"
+          aria-label="Admin menyusunu aç"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+      </div>
+      <aside
+        className={cn(
+          "sticky top-0 hidden h-[100dvh] shrink-0 transition-[width] duration-200 md:block",
+          collapsed ? "w-[76px]" : "w-[272px]",
+        )}
+      >
+        {content}
+      </aside>
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <button
+            className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Menyunu bağla"
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={isAz ? "Admin menyusu" : "Admin navigation"}
+            className="relative z-10 h-full w-[280px] max-w-[88vw] shadow-2xl"
+          >
+            {content}
+          </div>
+        </div>
+      )}
+    </>
+  );
 }

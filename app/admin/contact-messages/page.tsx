@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useCallback, useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -94,10 +96,9 @@ export default function AdminContactMessagesPage() {
     <div className="space-y-6 max-w-5xl">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Əlaqə Mesajları</h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <PageHeading embedded title={<>Əlaqə Mesajları</>} description={<>
             Saytdakı əlaqə formasından göndərilən mesajlar burada görünür.
-          </p>
+          </>} />
         </div>
         <div className="flex items-center gap-3">
           <Badge className="bg-amber-400/20 text-amber-300 border-amber-400/30">

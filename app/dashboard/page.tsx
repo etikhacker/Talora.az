@@ -1,5 +1,6 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/auth-context';
@@ -65,28 +66,7 @@ export default function StudentDashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner / Welcome */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/80">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-            {isAz ? 'Tələbə İdarəetmə Paneli' : 'Student Dashboard'}
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            {isAz
-              ? `Xoş gəldiniz, ${profile?.full_name || 'Tələbə'}. Təcrübə müraciətləriniz və profil statusunuz.`
-              : `Welcome, ${profile?.full_name || 'Student'}. Your applications and enrollment overview.`}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Link href="/dashboard/profile">
-            <Button variant="outline" size="sm" className="gap-1.5 text-xs">
-              <User className="w-3.5 h-3.5 text-emerald-600" />
-              {isAz ? 'Profili redaktə et' : 'Edit Profile'}
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <PageHeading eyebrow={isAz ? 'SƏNİN İNKİŞAF YOLUN' : 'YOUR LEARNING JOURNEY'} title={isAz ? 'Növbəti addımına hazırsan?' : 'Ready for your next step?'} description={isAz ? `Xoş gəldin, ${profile?.full_name || 'Tələbə'}. Müraciətlərini, proqramlarını və gördüyün işləri bir yerdən izlə.` : `Welcome, ${profile?.full_name || 'Student'}. Follow your applications, programs and work in one place.`} actions={<Link href="/dashboard/tasks"><Button className="gap-2">{isAz ? 'Tapşırıqlarıma keç' : 'Open assignments'}<ArrowRight size={16} /></Button></Link>} />
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

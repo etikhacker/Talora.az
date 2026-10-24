@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Bell } from 'lucide-react';
@@ -8,12 +10,11 @@ export default function StudentNotificationsPage() {
   return (
     <div className="space-y-6">
       <div className="pb-4 border-b border-slate-200">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+        <PageHeading embedded title={<>
           Bildirişlər
-        </h1>
-        <p className="text-xs text-slate-500 mt-1">
+        </>} description={<>
           Müraciət nəticələri, tapşırıq rəyləri və sistem elanları
-        </p>
+        </>} />
       </div>
 
       <Card className="border-slate-200 shadow-2xs">

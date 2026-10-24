@@ -96,7 +96,7 @@ export default function PublicCertificateVerificationPage() {
       </header>
 
       {/* Content Container */}
-      <main className="flex-1 max-w-3xl w-full mx-auto px-4 py-8 sm:py-12 flex flex-col justify-center">
+      <main id="main-content" className="flex-1 max-w-3xl w-full mx-auto px-4 py-8 sm:py-12 flex flex-col justify-center">
         {loading ? (
           <div className="text-center py-16 space-y-3">
             <div className="w-10 h-10 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />

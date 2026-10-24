@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -110,10 +112,9 @@ export default function AdminCompletedInternshipsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 border-b border-slate-800 pb-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Tamamlanmış Təcrübələr</h1>
-          <p className="mt-1 text-xs text-slate-400">
+          <PageHeading embedded title={<>Tamamlanmış Təcrübələr</>} description={<>
             Bütün tələb olunan tapşırıqları təsdiqlənmiş və tamamlanma statusu verilmiş təcrübəçilər.
-          </p>
+          </>} />
         </div>
         <Button onClick={() => void loadRows()} disabled={loading} variant="outline" className="border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800">
           <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />

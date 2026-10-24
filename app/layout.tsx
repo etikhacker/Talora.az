@@ -1,5 +1,6 @@
 import type {Metadata, Viewport} from 'next';
-import './globals.css'; // Global styles
+import './globals.css';
+import './design-system.css';
 import { Providers } from '@/components/layout/providers';
 
 export const metadata: Metadata = {
@@ -32,12 +33,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="az" className="light" suppressHydrationWarning>
+    <html lang="az" className="dark" suppressHydrationWarning>
       <body
         suppressHydrationWarning
         className="min-h-screen bg-[var(--page)] antialiased flex flex-col"
         style={{ color: 'var(--ink)' }}
       >
+        <a className="skip-link" href="#main-content">Əsas məzmuna keç / Skip to content</a>
         <Providers>
           {children}
         </Providers>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useSyncExternalStore } from 'react';
 
 export type Language = 'az' | 'en';
 
@@ -830,31 +830,27 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+const languageEvent = 'talora:language';
+let fallbackLanguage: Language = 'az';
+function readLanguage(): Language {
+  try {
+    const saved = localStorage.getItem('talora_lang') || localStorage.getItem('intern_az_lang');
+    if (saved === 'az' || saved === 'en') return saved;
+  } catch { /* Storage is optional. */ }
+  return fallbackLanguage;
+}
+function subscribeLanguage(callback: () => void) {
+  window.addEventListener(languageEvent, callback);
+  window.addEventListener('storage', callback);
+  return () => { window.removeEventListener(languageEvent, callback); window.removeEventListener('storage', callback); };
+}
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLangState] = useState<Language>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = (localStorage.getItem('talora_lang') || localStorage.getItem('intern_az_lang')) as Language;
-        if (saved === 'az' || saved === 'en') {
-          return saved;
-        }
-      } catch {
-        // ignore
-      }
-    }
-    return 'en';
-  });
-
+  const language = useSyncExternalStore(subscribeLanguage, readLanguage, () => 'az' as Language);
+  useEffect(() => { document.documentElement.lang = language; }, [language]);
   const setLanguage = (lang: Language) => {
-    setLangState(lang);
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem('talora_lang', lang);
-        localStorage.setItem('intern_az_lang', lang);
-      } catch {
-        // ignore
-      }
-    }
+    fallbackLanguage = lang;
+    try { localStorage.setItem('talora_lang', lang); } catch { /* Storage is optional. */ }
+    window.dispatchEvent(new Event(languageEvent));
   };
 
   const t = (key: keyof Translations): string => {

@@ -1,5 +1,7 @@
 'use client';
 
+import { AuthBrand } from '@/components/layout/auth-brand';
+import { ThemeToggle } from '@/components/layout/theme-toggle';
 import React, { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -53,116 +55,6 @@ function readAttempts(): AttemptState {
   } catch {
     return { count: 0, firstAt: 0, lockedUntil: 0 };
   }
-}
-
-function BrandPanel() {
-  return (
-    <div className="auth-login-brand relative hidden overflow-hidden bg-gradient-to-br from-amber-500 via-amber-600 to-orange-700 text-white lg:flex lg:flex-col lg:justify-between lg:gap-8 lg:p-12 xl:p-16">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-amber-300/40 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-32 -right-20 h-[28rem] w-[28rem] rounded-full bg-orange-300/30 blur-3xl"
-      />
-
-      <Link href="/" className="relative z-10 inline-flex items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-amber-700 shadow-lg shadow-amber-900/20">
-          <ShieldAlert className="h-6 w-6" aria-hidden="true" />
-        </div>
-        <div>
-          <p className="text-lg font-bold tracking-tight">Talora Admin</p>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-amber-50/80">
-            Administrator Portal
-          </p>
-        </div>
-      </Link>
-
-      <div className="relative z-10 max-w-md space-y-6">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] backdrop-blur-md">
-          <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-          Məhdud giriş
-        </div>
-        <h2 className="text-4xl font-black leading-[1.05] tracking-tight xl:text-5xl">
-          Yalnız{' '}
-          <span className="bg-gradient-to-r from-white via-amber-100 to-orange-100 bg-clip-text text-transparent">
-            səlahiyyətli
-          </span>{' '}
-          administratorlar.
-        </h2>
-        <p className="text-base leading-relaxed text-amber-50/90">
-          Platform nəzarətçiləri, tapşırıq koordinatorları və sertifikat
-          verifikatorları üçün məhdud giriş sahəsi.
-        </p>
-        <ul className="space-y-2.5 pt-2 text-sm text-amber-50/90">
-          <li className="flex items-center gap-2.5">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/15">
-              <Check className="h-3 w-3" aria-hidden="true" />
-            </span>
-            Giriş yalnız təsdiqlənmiş admin hesabı üçün mümkündür
-          </li>
-          <li className="flex items-center gap-2.5">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/15">
-              <Check className="h-3 w-3" aria-hidden="true" />
-            </span>
-            Hər admin səhifəsi server tərəfdə yenidən yoxlanılır
-          </li>
-          <li className="flex items-center gap-2.5">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/15">
-              <Check className="h-3 w-3" aria-hidden="true" />
-            </span>
-            Uğursuz cəhdlərdən sonra müvəqqəti bloklama tətbiq olunur
-          </li>
-        </ul>
-
-        {/* Session policy chip — in normal flow, so it can never overlap the
-            headline or the copyright on short screens. */}
-        <div className="flex items-center gap-2.5 rounded-2xl border border-white/20 bg-white/10 p-3 backdrop-blur-md">
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
-            <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-          </div>
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-amber-50/80">
-              Sessiya siyasəti
-            </p>
-            <p className="text-xs font-bold leading-tight">
-              Cəhdlər jurnalın yazılır · IP maskalanır
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <p className="relative z-10 text-[10px] uppercase tracking-[0.18em] text-amber-50/70">
-        © {new Date().getFullYear()} Talora — Administrator Console
-      </p>
-    </div>
-  );
-}
-
-function MobileBrand() {
-  return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 via-amber-600 to-orange-700 px-6 py-7 text-white lg:hidden">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-amber-300/40 blur-3xl"
-      />
-      <Link href="/" className="relative z-10 inline-flex items-center gap-2.5">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-amber-700 shadow-lg shadow-amber-900/20">
-          <ShieldAlert className="h-5 w-5" aria-hidden="true" />
-        </div>
-        <div>
-          <p className="text-lg font-bold tracking-tight">Talora Admin</p>
-          <p className="text-[9px] uppercase tracking-[0.18em] text-amber-50/80">
-            Administrator Portal
-          </p>
-        </div>
-      </Link>
-      <h2 className="relative z-10 mt-5 text-2xl font-black leading-tight">
-        Yalnız səlahiyyətli administratorlar.
-      </h2>
-    </div>
-  );
 }
 
 export default function AdminLoginPage() {
@@ -300,18 +192,18 @@ export default function AdminLoginPage() {
 
   return (
     <div className="auth-login-page flex min-h-[100dvh] w-full flex-col overflow-x-clip bg-white">
-      <BrandPanel />
+      <AuthBrand admin />
       <div className="auth-login-panel flex w-full min-w-0 flex-col">
-        <MobileBrand />
+        <AuthBrand mobile admin />
 
         <div className="relative flex w-full flex-1 flex-col bg-white">
           {/* Top bar */}
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 sm:px-10">
             <Link
               href="/"
-              className="group inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition-colors hover:text-amber-600"
+              className="group inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition-colors hover:text-blue-600"
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-all group-hover:-translate-x-0.5 group-hover:border-amber-300 group-hover:text-amber-600">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-all group-hover:-translate-x-0.5 group-hover:border-blue-300 group-hover:text-blue-600">
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               </span>
               <span>Ana səhifə</span>
@@ -323,14 +215,15 @@ export default function AdminLoginPage() {
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
               Tələbə girişi
             </Link>
+            <ThemeToggle />
           </div>
 
           {/* Form — the only scrolling region on desktop */}
           <div className="auth-login-scroll flex flex-1 items-center px-6 py-8 sm:px-10 sm:py-10 lg:px-14 xl:px-20">
             <div className="mx-auto w-full max-w-md">
               <div className="space-y-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-amber-700">
-                  <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-blue-700">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
                   Administrator girişi
                 </span>
                 <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
@@ -364,18 +257,19 @@ export default function AdminLoginPage() {
                     Administrator e-poçtu
                   </Label>
                   <div className="group relative">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex w-11 items-center justify-center text-slate-400 transition-colors group-focus-within:text-amber-600">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex w-11 items-center justify-center text-slate-400 transition-colors group-focus-within:text-blue-600">
                       <Mail className="h-4 w-4" aria-hidden="true" />
                     </div>
                     <Input
                       id="email"
                       name="email"
+                      autoComplete="email"
                       type="email"
                       placeholder="admin hesabının e-poçt ünvanı"
                       value={formData.email}
                       onChange={handleChange}
                       disabled={isSubmitting}
-                      className="h-12 rounded-xl border-slate-200 bg-slate-50 pl-11 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                      className="h-12 rounded-xl border-slate-200 bg-slate-50 pl-11 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                       required
                     />
                   </div>
@@ -392,18 +286,19 @@ export default function AdminLoginPage() {
                     Administrator şifrəsi
                   </Label>
                   <div className="group relative">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex w-11 items-center justify-center text-slate-400 transition-colors group-focus-within:text-amber-600">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex w-11 items-center justify-center text-slate-400 transition-colors group-focus-within:text-blue-600">
                       <Lock className="h-4 w-4" aria-hidden="true" />
                     </div>
                     <Input
                       id="password"
                       name="password"
+                      autoComplete="current-password"
                       type={showPassword ? 'text' : 'password'}
                       placeholder="••••••••"
                       value={formData.password}
                       onChange={handleChange}
                       disabled={isSubmitting}
-                      className="h-12 rounded-xl border-slate-200 bg-slate-50 pl-11 pr-11 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                      className="h-12 rounded-xl border-slate-200 bg-slate-50 pl-11 pr-11 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                       required
                     />
                     <button
@@ -430,7 +325,7 @@ export default function AdminLoginPage() {
                   type="submit"
                   id="admin-login-submit-btn"
                   disabled={isSubmitting}
-                  className="group h-12 w-full gap-2 rounded-xl bg-amber-500 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/25 hover:bg-amber-600 hover:shadow-amber-600/30"
+                  className="group h-12 w-full gap-2 rounded-xl bg-blue-500 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/25 hover:bg-blue-600 hover:shadow-amber-600/30"
                 >
                   {isSubmitting ? (
                     <>
@@ -452,9 +347,9 @@ export default function AdminLoginPage() {
                 </Button>
               </form>
 
-              <div className="mt-8 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[11px] text-amber-800">
+              <div className="mt-8 flex items-start gap-2 rounded-xl border border-blue-200 bg-blue-50 p-3 text-[11px] text-blue-800">
                 <ShieldCheck
-                  className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-700"
+                  className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-700"
                   aria-hidden="true"
                 />
                 <p className="leading-relaxed">

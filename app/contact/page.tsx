@@ -1,5 +1,6 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
 import React, { useState } from 'react';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
@@ -51,20 +52,11 @@ export default function ContactPage() {
     <div className="flex-1 flex flex-col min-h-screen bg-slate-50">
       <Navbar />
 
-      <main className="flex-1 py-14">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              {isAz ? 'Bizimlə Əlaqə' : 'Contact Talora'}
-            </h1>
-            <p className="mt-3 text-sm text-slate-600">
-              {isAz
-                ? 'Təcrübə proqramları, tələbə qeydiyyatı və ya tərəfdaşlıq ilə bağlı suallarınızı bizə ünvanlayın.'
-                : 'Questions regarding student applications, cohorts, or enterprise partnerships? Get in touch.'}
-            </p>
-          </div>
+      <main id="main-content" className="flex-1 public-main">
+        <div className="content-width">
+          <PageHeading eyebrow={isAz ? 'BİZİMLƏ ƏLAQƏ' : 'GET IN TOUCH'} title={isAz ? 'Səni dinləyirik.' : 'We’re here to listen.'} description={isAz ? 'Proqram, müraciət və ya platforma haqqında sualın var? Bizə yaz.' : 'Have a question about a program, your application or the platform? Send us a message.'} />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+          <div className="contact-columns">
             {/* Contact Details */}
             <div className="space-y-4">
               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs">
@@ -115,7 +107,7 @@ export default function ContactPage() {
             </div>
 
             {/* Form */}
-            <div className="md:col-span-2 bg-white p-8 rounded-2xl border border-slate-200 shadow-2xs">
+            <div className="public-panel contact-form">
               {serverError && (
                 <Alert variant="destructive" className="mb-4 text-xs">
                   <AlertDescription>{serverError}</AlertDescription>
@@ -131,8 +123,8 @@ export default function ContactPage() {
                   </h3>
                   <p className="text-xs text-slate-500 max-w-sm mx-auto">
                     {isAz
-                      ? 'Mesajınız uğurla göndərildi. Administrator panelində görünür və tezliklə cavablanacaq.'
-                      : 'Your message was submitted and is now visible in the administrator panel. We will respond shortly.'}
+                      ? 'Mesajınız uğurla göndərildi. Tezliklə cavablandıracağıq.'
+                      : 'Your message was submitted successfully. We will respond shortly.'}
                   </p>
                   <Button
                     variant="outline"

@@ -1,5 +1,7 @@
 'use client';
 
+import { PageHeading } from '@/components/layout/page-heading';
+
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/auth-context';
@@ -280,12 +282,11 @@ export default function StudentCertificatePage() {
     return (
       <div className="space-y-6 max-w-5xl">
         <div className="pb-4 border-b border-slate-200">
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <PageHeading embedded title={<>
             {t('certificate')}
-          </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          </>} description={<>
             {t('certificateSubtitle')}
-          </p>
+          </>} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -605,12 +606,11 @@ export default function StudentCertificatePage() {
     return (
       <div className="space-y-6 max-w-4xl">
         <div className="pb-4 border-b border-slate-200">
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <PageHeading embedded title={<>
             {t('certificate')}
-          </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          </>} description={<>
             {t('certificateSubtitle')}
-          </p>
+          </>} />
         </div>
 
         <Card className="border-blue-200 bg-blue-50/30 shadow-2xs">
@@ -673,12 +673,11 @@ export default function StudentCertificatePage() {
     return (
       <div className="space-y-6 max-w-4xl">
         <div className="pb-4 border-b border-slate-200">
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <PageHeading embedded title={<>
             {t('certificate')}
-          </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          </>} description={<>
             {t('certificateSubtitle')}
-          </p>
+          </>} />
         </div>
 
         <Card className="border-amber-200 bg-amber-50/20 shadow-2xs">
@@ -768,12 +767,11 @@ export default function StudentCertificatePage() {
   return (
     <div className="space-y-6 max-w-5xl">
       <div className="pb-4 border-b border-slate-200">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+        <PageHeading embedded title={<>
           {t('certificate')}
-        </h1>
-        <p className="text-xs text-slate-500 mt-1">
+        </>} description={<>
           {t('certificateSubtitle')}
-        </p>
+        </>} />
       </div>
 
       {/* If previous payment was rejected, show notice */}

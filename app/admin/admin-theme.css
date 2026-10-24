@@ -5,19 +5,19 @@
  */
 .admin-shell[data-admin-theme="light"] {
   color-scheme: light;
-  --admin-page: #f4f6fb;
-  --admin-surface: #ffffff;
-  --admin-surface-soft: #f7f8fc;
-  --admin-surface-muted: #eef2f8;
-  --admin-hover: #e8edf6;
-  --admin-ink: #172033;
-  --admin-copy: #34415a;
-  --admin-muted: #64748b;
-  --admin-faint: #8290a5;
-  --admin-line: #e1e7f0;
-  --admin-accent: #435fd1;
-  --admin-accent-hover: #344ba9;
-  --admin-accent-soft: #edf0ff;
+  --admin-page: var(--page);
+  --admin-surface: var(--surface);
+  --admin-surface-soft: var(--surface-soft);
+  --admin-surface-muted: var(--surface-raised);
+  --admin-hover: var(--surface-soft);
+  --admin-ink: var(--ink);
+  --admin-copy: var(--muted);
+  --admin-muted: var(--muted);
+  --admin-faint: var(--muted);
+  --admin-line: var(--line);
+  --admin-accent: var(--action);
+  --admin-accent-hover: var(--action-hover);
+  --admin-accent-soft: var(--accent-soft);
   --admin-success: #047857;
   --admin-success-soft: #ecfdf3;
   --admin-warning: #925b00;
@@ -363,18 +363,18 @@
 }
 
 .admin-shell[data-admin-theme="dark"] header {
-  background: #0d121d !important;
-  border-color: #293449 !important;
-  color: #f1f3fa !important;
+  background: var(--page) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
 }
 
 .admin-shell[data-admin-theme="dark"] nav a[aria-current="page"] {
-  background-color: #435fd1 !important;
-  color: #ffffff !important;
+  background-color: var(--accent-soft) !important;
+  color: var(--accent) !important;
 }
 
 .admin-shell[data-admin-theme="dark"] nav a[aria-current="page"] :is(span, svg) {
-  color: #ffffff !important;
+  color: var(--accent) !important;
 }
 
 .admin-shell[data-admin-theme="light"] :is(.rounded-xl, .rounded-2xl) {
