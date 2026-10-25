@@ -2,6 +2,7 @@ import {
   normalizeNotificationPreferences,
   type NotificationPreferences,
 } from '../notification-preferences.ts';
+import { renderApplicationStatusHtml } from './application-status-template.ts';
 
 export interface GmailSettings {
   host: 'smtp.gmail.com';
@@ -15,10 +16,11 @@ export interface GmailSettings {
 export interface EmailMessage {
   subject: string;
   text: string;
+  html?: string;
 }
 
 export interface GmailMessageTransport {
-  sendMail(message: { from: string; to: string; subject: string; text: string }): Promise<unknown>;
+  sendMail(message: { from: string; to: string; subject: string; text: string; html?: string }): Promise<unknown>;
 }
 
 export function sendGmailMessage(
@@ -32,11 +34,12 @@ export function sendGmailMessage(
     to: recipient,
     subject: message.subject,
     text: message.text,
+    ...(message.html ? { html: message.html } : {}),
   });
 }
 
 export interface GmailBatchMessageTransport {
-  sendMail(message: { from: string; to: string; bcc: string[]; subject: string; text: string }): Promise<unknown>;
+  sendMail(message: { from: string; to: string; bcc: string[]; subject: string; text: string; html?: string }): Promise<unknown>;
 }
 
 export function sendGmailBatch(
@@ -51,6 +54,7 @@ export function sendGmailBatch(
     bcc: recipients,
     subject: message.subject,
     text: message.text,
+    ...(message.html ? { html: message.html } : {}),
   });
 }
 
@@ -109,6 +113,7 @@ export function buildApplicationStatusEmail(input: {
   return {
     subject: `Müraciət statusu: ${statusLabel}`,
     text,
+    html: renderApplicationStatusHtml(input),
   };
 }
 

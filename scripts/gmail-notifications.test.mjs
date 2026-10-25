@@ -31,7 +31,7 @@ test('Gmail settings use the configured sender and normalize the spaced Google a
       secure: true,
       user: 'internaz.notification@gmail.com',
       password: 'abcdefghijklmnop',
-      from: 'Intern.az Bildirişləri <internaz.notification@gmail.com>',
+      from: 'Talora Bildirişləri <internaz.notification@gmail.com>',
     }
   );
 });
@@ -107,7 +107,7 @@ test('the Gmail sender sends the configured sender, recipient, subject, and body
   );
 
   assert.deepEqual(captured, [{
-    from: 'Intern.az Bildirişləri <internaz.notification@gmail.com>',
+    from: 'Talora Bildirişləri <internaz.notification@gmail.com>',
     to: 'student@example.com',
     subject: 'Müraciət statusu: qəbul edildi',
     text: 'Müraciətiniz qəbul edildi.',
@@ -132,10 +132,37 @@ test('broadcast batches hide every student address in BCC rather than exposing r
   );
 
   assert.deepEqual(captured, [{
-    from: 'Intern.az Bildirişləri <internaz.notification@gmail.com>',
+    from: 'Talora Bildirişləri <internaz.notification@gmail.com>',
     to: 'undisclosed-recipients:;',
     bcc: ['student-one@example.com', 'student-two@example.com'],
     subject: 'Yeni proqram',
     text: 'Proqram linki.',
   }]);
+});
+
+test('application HTML escapes user content, preserves the decision, and sends both email formats', async () => {
+  const { buildApplicationStatusEmail, sendGmailMessage, getGmailSettings } = await loadEmailHelpers();
+  for (const status of ['accepted', 'rejected']) {
+    const message = buildApplicationStatusEmail({
+      fullName: '<img src=x onerror=alert(1)>',
+      internshipTitle: 'API <script>alert(1)</script> & Automation',
+      status,
+      adminNote: 'PRIVATE_ADMIN_NOTE',
+      applicationUrl: 'https://talora-az.vercel.app/dashboard/applications?a=1&b=2',
+    });
+    assert.match(message.html, /&lt;img src=x onerror=alert\(1\)&gt;/);
+    assert.doesNotMatch(message.html, /<script>|PRIVATE_ADMIN_NOTE/);
+    assert.match(message.html, /href="https:\/\/talora-az\.vercel\.app\/dashboard\/applications\?a=1&amp;b=2"/);
+    assert.ok(message.html.includes(status === 'accepted' ? 'Qəbul edildi' : 'Qəbul edilmədi'));
+    if (status === 'rejected') assert.doesNotMatch(message.html, /Təbrik edirik/);
+    const settings = getGmailSettings({GMAIL_USER:'sender@example.com',GMAIL_APP_PASSWORD:'abcdefghijklmnop'});
+    let sent;
+    await sendGmailMessage({sendMail: async (options) => { sent = options; }}, settings, 'student@example.com', message);
+    assert.equal(sent.html, message.html);
+    assert.equal(sent.text, message.text);
+    assert.equal(sent.to, 'student@example.com');
+  }
+  assert.throws(() => buildApplicationStatusEmail({
+    fullName:'Student', internshipTitle:'Program', status:'accepted', applicationUrl:'javascript:alert(1)',
+  }), /INVALID_APPLICATION_URL/);
 });
