@@ -1,0 +1,22 @@
+.program-artwork { display:block; position:relative; width:100%; aspect-ratio:3/2; overflow:hidden; background:#f4f0e9; }
+.program-artwork__image { object-fit:cover; transition:transform 350ms ease; }
+.direction-grid.direction-grid--illustrated { grid-template-columns:repeat(4,minmax(0,1fr)); gap:24px; }
+.direction-card.direction-card--illustrated { display:flex; flex-direction:column; align-items:stretch; gap:0; padding:0; overflow:hidden; background:var(--page); }
+.direction-card--illustrated .direction-card__body { display:flex; flex-direction:column; align-items:flex-start; gap:12px; padding:22px; flex:1; }
+.direction-card--illustrated h3 { font-size:20px; line-height:1.35; }
+.direction-card--illustrated p { margin:0; line-height:1.6; font-size:14px; }
+.direction-card__link { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; padding-top:20px; margin-top:auto; color:var(--accent); font-size:13px; font-weight:600; }
+.direction-card--illustrated:hover .program-artwork__image,.live-program--illustrated:hover .program-artwork__image,.catalogue-card:hover .program-artwork__image { transform:scale(1.025); }
+.live-program.live-program--illustrated { overflow:hidden; padding:0; gap:0; }
+.live-program__body { padding:24px; display:flex; flex-direction:column; gap:20px; flex:1; }
+.live-program__body .live-program__meta { margin-top:auto; }
+.catalogue-card .program-artwork { border-radius:10px; margin-bottom:24px; }
+.landing-faq .landing-faq__fees { grid-column:1 / -1; padding:26px; background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:12px; }
+.landing-faq__fees p { max-width:940px; }
+@media(max-width:1100px) { .direction-grid.direction-grid--illustrated { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:600px) {
+  .direction-grid.direction-grid--illustrated { grid-template-columns:1fr; gap:20px; }
+  .direction-card--illustrated .direction-card__body,.live-program__body { padding:22px; }
+  .landing-faq .landing-faq__fees { padding:22px; }
+}
+@media(prefers-reduced-motion:reduce) { .program-artwork__image { transition:none; transform:none !important; } }

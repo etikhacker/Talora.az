@@ -15,6 +15,7 @@ import { Footer } from "@/components/layout/footer";
 import { DevelopmentNotice } from "@/components/landing/development-notice";
 import { ExperienceArt } from "@/components/landing/experience-art";
 import { useLandingMotion } from "@/components/landing/use-landing-motion";
+import { ProgramArtwork } from "@/components/internships/program-artwork";
 import { buttonVariants } from "@/components/ui/button";
 import { useLanguage } from "@/lib/i18n/language-context";
 import type { Internship } from "@/types/database";
@@ -237,21 +238,19 @@ export default function HomePage() {
                   : "Choose a program to develop your skills through real assignments."}
               </p>
             </div>
-            <div className="direction-grid">
-              {directions.map(([title, query, az, en], index) => (
+            <div className="direction-grid direction-grid--illustrated">
+              {directions.map(([title, query, az, en]) => (
                 <Link
                   key={title}
                   href={"/internships?search=" + encodeURIComponent(query)}
-                  className="direction-card"
+                  className="direction-card direction-card--illustrated"
                 >
-                  <span className="direction-card__number">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <div>
+                  <ProgramArtwork title={title} />
+                  <div className="direction-card__body">
                     <h3>{title}</h3>
                     <p>{isAz ? az : en}</p>
+                    <span className="direction-card__link">{isAz ? "Proqrama bax" : "Explore program"}<ArrowUpRight size={18} aria-hidden /></span>
                   </div>
-                  <ArrowUpRight size={22} aria-hidden />
                 </Link>
               ))}
             </div>
@@ -404,11 +403,12 @@ export default function HomePage() {
               ) : (
                 internships.map((item) => (
                   <Link
-                    className="live-program"
+                    className="live-program live-program--illustrated"
                     href={"/internships/" + item.id}
                     key={item.id}
                   >
-                    <div>
+                    <ProgramArtwork title={item.title} category={item.category} sizes="(max-width: 640px) 100vw, 50vw" />
+                    <div className="live-program__body"><div>
                       <span className="eyebrow">{item.category}</span>
                       <h3>{item.title}</h3>
                       <p>{item.short_description || item.description}</p>
@@ -420,6 +420,7 @@ export default function HomePage() {
                       </span>
                       <ArrowRight size={20} />
                     </span>
+                    </div>
                   </Link>
                 ))
               )}
@@ -434,6 +435,12 @@ export default function HomePage() {
             <h2>{isAz ? "Başlamazdan əvvəl." : "Before you get started."}</h2>
           </div>
           <div className="landing-faq">
+            <article className="landing-faq__fees">
+              <h3>{isAz ? "Sertifikat ödənişlidirmi?" : "Is there a certificate fee?"}</h3>
+              <p>{isAz
+                ? "Bəli, sertifikatın hazırlanması və verilməsi üçün ayrıca ödəniş tələb olunur. Məbləğ seçdiyiniz proqramdan asılıdır və sifarişdən əvvəl şəxsi kabinetinizdə göstərilir. Sertifikatı proqramın tələb olunan tapşırıqları və nəticələri təsdiqləndikdən sonra sifariş edə bilərsiniz."
+                : "Yes. A separate fee applies to certificate preparation and issuance. The amount depends on your program and is displayed in your dashboard before you order. You can order a certificate after the program’s required assignments and results have been approved."}</p>
+            </article>
             <article>
               <h3>
                 {isAz

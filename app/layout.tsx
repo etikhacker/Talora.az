@@ -2,6 +2,7 @@ import type {Metadata, Viewport} from 'next';
 import './globals.css';
 import './design-system.css';
 import '@/components/landing/motion.css';
+import '@/components/internships/program-artwork.css';
 import { Providers } from '@/components/layout/providers';
 
 export const metadata: Metadata = {

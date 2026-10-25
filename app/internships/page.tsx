@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { PageHeading } from '@/components/layout/page-heading';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
+import { ProgramArtwork } from '@/components/internships/program-artwork';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
@@ -259,6 +260,7 @@ function InternshipsContent({
                     className="catalogue-card bg-white rounded-xl border border-slate-200 p-6 shadow-xs hover:border-blue-300 hover:shadow-sm transition-all flex flex-col justify-between group"
                   >
                     <div>
+                      <ProgramArtwork title={internship.title} category={internship.category} sizes="(max-width: 767px) 100vw, 50vw" />
                       {/* Zero-pill metadata row */}
                       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 font-medium mb-2.5">
                         <span className="text-blue-600 font-semibold">{internship.category || 'General Track'}</span>
