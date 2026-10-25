@@ -29,7 +29,7 @@ export function Footer() {
           }
         >
           <a
-            href="https://www.linkedin.com/company/talora-az."
+            href="https://www.linkedin.com/company/talora-az"
             target="_blank"
             rel="noopener noreferrer"
             aria-label={
