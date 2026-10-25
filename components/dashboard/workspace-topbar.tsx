@@ -5,6 +5,7 @@ import { ChevronRight, Bell, ArrowUpRight } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { useLanguage } from "@/lib/i18n/language-context";
+import { useNotifications } from "./notification-provider";
 const titles: Record<string, [string, string]> = {
   dashboard: ["Ümumi baxış", "Overview"],
   internships: ["Proqramlar", "Programs"],
@@ -20,6 +21,7 @@ const titles: Record<string, [string, string]> = {
 export function WorkspaceTopbar() {
   const pathname = usePathname();
   const { language } = useLanguage();
+  const { unreadCount } = useNotifications();
   const isAz = language === "az";
   const key = pathname.includes("/tasks/")
     ? "tasks"
@@ -40,10 +42,11 @@ export function WorkspaceTopbar() {
         <ThemeToggle />
         <Link
           href="/dashboard/notifications"
-          className="icon-button"
-          aria-label={isAz ? "Bildirişlər" : "Notifications"}
+          className="icon-button relative"
+          aria-label={`${isAz ? "Bildirişlər, oxunmamış:" : "Notifications, unread:"} ${unreadCount}`}
         >
           <Bell size={17} />
+          {unreadCount > 0 && <span className="notification-count" aria-hidden="true">{unreadCount > 99 ? '99+' : unreadCount}</span>}
         </Link>
       </div>
     </header>

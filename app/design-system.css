@@ -874,6 +874,20 @@ a.landing-button {
   align-items: center;
   gap: 10px;
 }
+.workspace-topbar__tools .notification-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  padding: 2px 5px;
+  border-radius: 20px;
+  background: var(--action);
+  color: #fff;
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 700;
+  text-align: center;
+}
 .workspace-topbar__tools a {
   display: inline-flex;
   gap: 8px;
@@ -1342,7 +1356,7 @@ a.landing-button {
     min-height: 76px;
     margin-bottom: 28px;
   }
-  .workspace-topbar__tools a span {
+  .workspace-topbar__tools a span:not(.notification-count) {
     display: none;
   }
   .workspace-mobile-bar {

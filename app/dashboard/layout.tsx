@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/auth-context';
 import { WorkspaceTopbar } from '@/components/dashboard/workspace-topbar';
 import { StudentSidebar } from '@/components/dashboard/student-sidebar';
+import { NotificationProvider } from '@/components/dashboard/notification-provider';
 import { Loader2 } from 'lucide-react';
 
 export default function DashboardLayout({
@@ -45,13 +46,13 @@ export default function DashboardLayout({
        — the shell then grew to the content height, the document scrolled and
        the sidebar was cut into a half-height ("yarımqıq") bar. The shell sizes
        itself with `md:h-[100dvh]`, `main` is the only scroll container. */
-    <div className="workspace-shell flex flex-col overflow-x-clip bg-slate-50 md:h-[100dvh] md:flex-row md:overflow-hidden">
+    <NotificationProvider key={user.id} userId={user.id}><div className="workspace-shell flex flex-col overflow-x-clip bg-slate-50 md:h-[100dvh] md:flex-row md:overflow-hidden">
       <StudentSidebar />
       <main id="main-content" className="workspace-main min-w-0 flex-1 overflow-y-auto">
         <div className="workspace-content"><WorkspaceTopbar />
           {children}
         </div>
       </main>
-    </div>
+    </div></NotificationProvider>
   );
 }
