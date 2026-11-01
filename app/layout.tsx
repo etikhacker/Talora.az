@@ -4,6 +4,7 @@ import './design-system.css';
 import '@/components/landing/motion.css';
 import '@/components/internships/program-artwork.css';
 import { Providers } from '@/components/layout/providers';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
   title: 'Talora — İlk peşəkar təcrübənə başla',
@@ -45,6 +46,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <Providers>
           {children}
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
