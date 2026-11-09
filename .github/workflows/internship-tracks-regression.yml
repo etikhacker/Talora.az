@@ -1,0 +1,21 @@
+name: Internship tracks regression
+
+on:
+  push:
+    branches: [feat/internship-tracks-free-20261109]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  internship-tracks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify taxonomy, admin forms, and public catalogue
+        run: node --test scripts/internship-tracks.test.mjs
