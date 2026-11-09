@@ -61,13 +61,61 @@ $$;
 INSERT INTO public.course_modules(id,course_id,title,position,status) VALUES
  ('00000000-0000-4000-8000-0000000000d1','00000000-0000-4000-8000-0000000000c1','Introduction',1,'published'),
  ('00000000-0000-4000-8000-0000000000d3','00000000-0000-4000-8000-0000000000c3','Other content',1,'published');
-INSERT INTO public.course_lessons(id,module_id,title,position,status) VALUES
- ('00000000-0000-4000-8000-0000000000e1','00000000-0000-4000-8000-0000000000d1','What is a prompt?',1,'published'),
- ('00000000-0000-4000-8000-0000000000e2','00000000-0000-4000-8000-0000000000d1','Writing prompts',2,'published'),
- ('00000000-0000-4000-8000-0000000000e4','00000000-0000-4000-8000-0000000000d1','Draft lesson',3,'draft'),
- ('00000000-0000-4000-8000-0000000000e3','00000000-0000-4000-8000-0000000000d3','Other lesson',1,'published');
+INSERT INTO public.course_lessons(id,module_id,title,position,status,content_md) VALUES
+ ('00000000-0000-4000-8000-0000000000e1','00000000-0000-4000-8000-0000000000d1','What is a prompt?',1,'published','Test lesson material'),
+ ('00000000-0000-4000-8000-0000000000e2','00000000-0000-4000-8000-0000000000d1','Writing prompts',2,'published','Test lesson material'),
+ ('00000000-0000-4000-8000-0000000000e4','00000000-0000-4000-8000-0000000000d1','Draft lesson',3,'draft',''),
+ ('00000000-0000-4000-8000-0000000000e3','00000000-0000-4000-8000-0000000000d3','Other lesson',1,'published','Test lesson material');
 UPDATE public.courses SET status='published' WHERE id IN
  ('00000000-0000-4000-8000-0000000000c1','00000000-0000-4000-8000-0000000000c3');
+COMMIT;
+
+-- Publishing an empty text lesson is not allowed.
+BEGIN;
+SET LOCAL ROLE authenticated;
+SELECT set_config('request.jwt.claim.sub','00000000-0000-4000-8000-0000000000a3',true);
+DO $
+DECLARE rejected boolean := false;
+BEGIN
+ BEGIN
+  UPDATE public.course_lessons SET status='published'
+    WHERE id='00000000-0000-4000-8000-0000000000e4';
+ EXCEPTION WHEN check_violation THEN rejected:=true;
+ END;
+ IF NOT rejected THEN RAISE EXCEPTION 'Empty published lesson was accepted'; END IF;
+END;
+$;
+COMMIT;
+
+-- A live course cannot lose its published curriculum.
+BEGIN;
+SET LOCAL ROLE authenticated;
+SELECT set_config('request.jwt.claim.sub','00000000-0000-4000-8000-0000000000a3',true);
+DO $
+DECLARE blocked boolean;
+BEGIN
+ blocked := false;
+ BEGIN
+  UPDATE public.course_modules SET status='draft'
+   WHERE id='00000000-0000-4000-8000-0000000000d1';
+ EXCEPTION WHEN check_violation THEN blocked:=true;
+ END;
+ IF NOT blocked THEN RAISE EXCEPTION 'Published course module was hidden'; END IF;
+ blocked := false;
+ BEGIN
+  UPDATE public.course_lessons SET status='draft'
+   WHERE id='00000000-0000-4000-8000-0000000000e1';
+ EXCEPTION WHEN check_violation THEN blocked:=true;
+ END;
+ IF NOT blocked THEN RAISE EXCEPTION 'Published course lesson was hidden'; END IF;
+ blocked := false;
+ BEGIN
+  DELETE FROM public.course_lessons WHERE id='00000000-0000-4000-8000-0000000000e1';
+ EXCEPTION WHEN check_violation THEN blocked:=true;
+ END;
+ IF NOT blocked THEN RAISE EXCEPTION 'Published lesson was deleted'; END IF;
+END;
+$;
 COMMIT;
 
 -- Student A cannot read lesson bodies before enrollment.
