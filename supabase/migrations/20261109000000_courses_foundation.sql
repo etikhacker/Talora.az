@@ -132,7 +132,12 @@ CREATE TABLE public.course_lessons (
  status text NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','published')),
  created_at timestamptz NOT NULL DEFAULT now(),
  updated_at timestamptz NOT NULL DEFAULT now(),
- UNIQUE (module_id,position)
+ UNIQUE (module_id,position),
+ CONSTRAINT course_lessons_published_content CHECK (
+  status <> 'published' OR
+  (lesson_type='text' AND length(btrim(content_md)) > 0) OR
+  (lesson_type IN ('video','link') AND resource_url IS NOT NULL)
+ )
 );
 CREATE INDEX course_lessons_module_idx ON public.course_lessons(module_id);
 
@@ -215,6 +220,63 @@ $$;
 REVOKE ALL ON FUNCTION private.course_require_publishable() FROM PUBLIC;
 CREATE TRIGGER courses_publish_guard BEFORE INSERT OR UPDATE OF status ON public.courses
  FOR EACH ROW EXECUTE FUNCTION private.course_require_publishable();
+
+
+-- Once a course is published, a published module/lesson cannot be hidden,
+-- deleted, or moved out until the course has been unpublished first.
+-- This prevents a course from losing all published lessons after launch.
+CREATE FUNCTION private.course_protect_published_module()
+RETURNS trigger LANGUAGE plpgsql SET search_path=pg_catalog AS $module_guard$
+DECLARE removes_visible_content boolean := false;
+BEGIN
+ IF TG_OP='DELETE' THEN
+  removes_visible_content := true;
+ ELSE
+  removes_visible_content := NEW.status <> 'published'
+    OR NEW.course_id IS DISTINCT FROM OLD.course_id;
+ END IF;
+ IF OLD.status='published' AND removes_visible_content AND EXISTS (
+  SELECT 1 FROM public.courses c
+  WHERE c.id=OLD.course_id AND c.status='published'
+ ) THEN
+  RAISE EXCEPTION 'Unpublish course before hiding or moving a published module'
+   USING ERRCODE='23514';
+ END IF;
+ IF TG_OP='DELETE' THEN RETURN OLD; END IF;
+ RETURN NEW;
+END;
+$module_guard$;
+REVOKE ALL ON FUNCTION private.course_protect_published_module() FROM PUBLIC;
+CREATE TRIGGER course_modules_protect_published
+ BEFORE UPDATE OR DELETE ON public.course_modules
+ FOR EACH ROW EXECUTE FUNCTION private.course_protect_published_module();
+
+CREATE FUNCTION private.course_protect_published_lesson()
+RETURNS trigger LANGUAGE plpgsql SET search_path=pg_catalog AS $lesson_guard$
+DECLARE removes_visible_content boolean := false;
+BEGIN
+ IF TG_OP='DELETE' THEN
+  removes_visible_content := true;
+ ELSE
+  removes_visible_content := NEW.status <> 'published'
+    OR NEW.module_id IS DISTINCT FROM OLD.module_id;
+ END IF;
+ IF OLD.status='published' AND removes_visible_content AND EXISTS (
+  SELECT 1 FROM public.course_modules m
+  JOIN public.courses c ON c.id=m.course_id
+  WHERE m.id=OLD.module_id AND m.status='published' AND c.status='published'
+ ) THEN
+  RAISE EXCEPTION 'Unpublish course before hiding or moving a published lesson'
+   USING ERRCODE='23514';
+ END IF;
+ IF TG_OP='DELETE' THEN RETURN OLD; END IF;
+ RETURN NEW;
+END;
+$lesson_guard$;
+REVOKE ALL ON FUNCTION private.course_protect_published_lesson() FROM PUBLIC;
+CREATE TRIGGER course_lessons_protect_published
+ BEFORE UPDATE OR DELETE ON public.course_lessons
+ FOR EACH ROW EXECUTE FUNCTION private.course_protect_published_lesson();
 
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
