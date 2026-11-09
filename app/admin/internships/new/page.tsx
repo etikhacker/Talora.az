@@ -258,6 +258,16 @@ export default function AdminNewInternshipPage() {
                 <option value="Kibertəhlükəsizlik">Kibertəhlükəsizlik</option>
                 <option value="UI/UX Dizayn">UI/UX Dizayn</option>
                 <option value="Rəqəmsal Marketinq">Rəqəmsal Marketinq</option>
+                <option value="Business Analysis">Business Analysis</option>
+                <option value="Business & Management">Business & Management</option>
+                <option value="Digital Marketing">Digital Marketing</option>
+                <option value="Marketing & Communication">Marketing & Communication</option>
+                <option value="Graphic Design">Graphic Design</option>
+                <option value="Design & Creativity">Design & Creativity</option>
+                <option value="Instructional Design">Instructional Design</option>
+                <option value="Education & Learning">Education & Learning</option>
+                <option value="Prompt Engineering">Prompt Engineering</option>
+                <option value="AI Engineering">AI Engineering</option>
                 <option value="custom">{isAz ? 'Fərqli qeyd et...' : 'Custom...'}</option>
               </select>
               {category === 'custom' && (
