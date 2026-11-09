@@ -24,7 +24,8 @@ export function Navbar() {
     return () => window.removeEventListener("keydown", close);
   }, [open]);
   const links = [
-    ["/internships", isAz ? "Proqramlar" : "Programs"],
+    ["/internships", isAz ? "Təcrübələr" : "Internships"],
+    ["/courses", isAz ? "Kurslar" : "Courses"],
     ["/how-it-works", isAz ? "Necə işləyir?" : "How it works"],
     ["/about", isAz ? "Haqqımızda" : "About"],
     ["/contact", isAz ? "Əlaqə" : "Contact"],
