@@ -1,0 +1,62 @@
+name: Detailed free curricula content regression
+
+on:
+  push:
+    branches: [content/detailed-free-tools-100-internships-20261109]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - run: node --test scripts/career-guides-v2.test.mjs
+  postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: talora_test
+          POSTGRES_DB: talora_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d talora_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify all 100 updates against original seeded data in Postgres 17
+        env:
+          PGPASSWORD: talora_test
+        run: |
+          set -euo pipefail
+          for file in \
+            scripts/internship-curricula-fixture.sql \
+            scripts/seed-new-career-internships-2026.sql \
+            scripts/career-guides-v2/talora-business-analysis-2026.sql \
+            scripts/career-guides-v2/talora-project-management-2026.sql \
+            scripts/career-guides-v2/talora-human-resources-2026.sql \
+            scripts/career-guides-v2/talora-digital-marketing-2026.sql \
+            scripts/career-guides-v2/talora-content-writing-2026.sql \
+            scripts/career-guides-v2/talora-social-media-management-2026.sql \
+            scripts/career-guides-v2/talora-graphic-design-2026.sql \
+            scripts/career-guides-v2/talora-video-editing-2026.sql \
+            scripts/career-guides-v2/talora-instructional-design-2026.sql \
+            scripts/career-guides-v2/talora-prompt-engineering-2026.sql \
+            scripts/career-guides-v2-verify.sql; do
+            docker run --rm --network host -e PGPASSWORD \
+              -v "$PWD:/workspace:ro" postgres:17 \
+              psql -X -h 127.0.0.1 -U postgres -d talora_test \
+                -v ON_ERROR_STOP=1 -f "/workspace/$file"
+          done
