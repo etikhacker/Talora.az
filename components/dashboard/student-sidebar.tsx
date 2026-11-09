@@ -42,7 +42,7 @@ const items: { key: keyof Translations; href: string; icon: typeof User }[] = [
 export function StudentSidebar() {
   const path = usePathname();
   const { profile, signOut } = useAuth();
-  const { unreadCount } = useNotifications();
+  const { unreadCount, dismissNewArrivals } = useNotifications();
   const { t, language } = useLanguage();
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -103,7 +103,10 @@ export function StudentSidebar() {
                 className="workspace-nav-link"
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  if (item.href === "/dashboard/notifications") dismissNewArrivals();
+                }}
               >
                 <Icon size={18} />
                 <span className="min-w-0 flex-1">{t(item.key)}</span>
