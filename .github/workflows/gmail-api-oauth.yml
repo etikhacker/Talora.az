@@ -26,5 +26,7 @@ jobs:
         run: npm install --no-package-lock --no-audit --no-fund
       - name: Test simulated Gmail API requests (no real emails, no secrets)
         run: node --test scripts/gmail-api-regression.test.mjs
+      - name: Test application email receipt and manual retry safeguards
+        run: node --test scripts/application-email-delivery.test.mjs
       - name: Type-check Next.js application
         run: npx tsc --noEmit

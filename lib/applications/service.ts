@@ -231,6 +231,25 @@ export async function reviewApplication({
     return { success: false, error: 'Müraciət tapılmadı.' };
   }
 
+  // Never mutate reviewed_at or create another enrollment for the same decision.
+  // Re-sending its email is an independent, explicitly confirmed admin action.
+  if (app.status === (action === 'accept' ? 'accepted' : 'rejected')) {
+    // A previous acceptance may have persisted before enrollment creation failed.
+    // Repair that enrollment idempotently, without creating another email event.
+    if (app.status === 'accepted') {
+      const repaired = await createEnrollment({
+        internshipId: app.internship_id,
+        studentId: app.student_id,
+        applicationId: app.id,
+      });
+      if (!repaired.success) return { success: false, error: repaired.error };
+    }
+    return {
+      success: false,
+      error: 'Bu qərar artıq qeyd edilib. E-poçtu təkrar göndərmək üçün ayrıca “Yenidən göndər” düyməsindən istifadə edin.',
+    };
+  }
+
   // 2. Fetch internship
   const internship = await getInternshipById(app.internship_id);
   if (!internship) {
@@ -262,7 +281,7 @@ export async function reviewApplication({
 
   try {
     // Update application
-    const { error: updateError } = await supabase
+    const { data: updatedDecision, error: updateError } = await supabase
       .from('applications')
       .update({
         status: newStatus,
@@ -271,10 +290,16 @@ export async function reviewApplication({
         reviewed_at: now,
         updated_at: now,
       })
-      .eq('id', applicationId);
+      .eq('id', applicationId)
+      .eq('status', app.status)
+      .select('id')
+      .maybeSingle();
 
     if (updateError) {
       return { success: false, error: updateError.message };
+    }
+    if (!updatedDecision) {
+      return { success: false, error: 'Müraciət artıq başqa əməliyyat tərəfindən yenilənib. Səhifəni yeniləyin.' };
     }
 
     // If accepted, create enrollment

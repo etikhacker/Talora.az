@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, use } from 'react';
+import React, { useCallback, useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
@@ -36,6 +36,15 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
+interface DeliveryStatus {
+  state: 'sending' | 'sent' | 'failed' | 'uncertain' | 'skipped';
+  attempts: number;
+  lastAttemptAt: string;
+  sentAt: string | null;
+  errorCode: string | null;
+  requiresManualCheck: boolean;
+}
+
 export default function AdminApplicationReviewPage({ params }: Props) {
   const resolvedParams = use(params);
   const id = resolvedParams.id;
@@ -51,6 +60,28 @@ export default function AdminApplicationReviewPage({ params }: Props) {
   const [adminNote, setAdminNote] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successNotice, setSuccessNotice] = useState<string | null>(null);
+  const [delivery, setDelivery] = useState<DeliveryStatus | null>(null);
+  const [deliveryLoading, setDeliveryLoading] = useState(true);
+  const [deliveryError, setDeliveryError] = useState<string | null>(null);
+  const [resendLoading, setResendLoading] = useState(false);
+
+  const refreshDeliveryStatus = useCallback(async () => {
+    setDeliveryLoading(true);
+    try {
+      const response = await fetch(`/api/notifications/send?id=${encodeURIComponent(id)}`, {
+        credentials: 'same-origin',
+        cache: 'no-store',
+      });
+      if (!response.ok) throw new Error('email_status_unavailable');
+      const payload = await response.json() as { delivery?: DeliveryStatus | null };
+      setDelivery(payload.delivery || null);
+      setDeliveryError(null);
+    } catch {
+      setDeliveryError(isAz ? 'E-poçt statusu oxunmadı.' : 'Could not load email status.');
+    } finally {
+      setDeliveryLoading(false);
+    }
+  }, [id, isAz]);
 
   const refreshData = async () => {
     try {
@@ -86,10 +117,11 @@ export default function AdminApplicationReviewPage({ params }: Props) {
       }
     }
     load();
+    void refreshDeliveryStatus();
     return () => {
       isMounted = false;
     };
-  }, [id]);
+  }, [id, refreshDeliveryStatus]);
 
   const handleDecision = async (decision: 'accepted' | 'rejected') => {
     if (!application) return;
@@ -139,11 +171,46 @@ export default function AdminApplicationReviewPage({ params }: Props) {
           : successMessage
       );
       await refreshData();
+      await refreshDeliveryStatus();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : t('generalError');
       setErrorMessage(msg);
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  const handleResendEmail = async () => {
+    if (!application || (application.status !== 'accepted' && application.status !== 'rejected')) return;
+    const warning = delivery?.state === 'uncertain' || delivery?.requiresManualCheck
+      ? (isAz
+        ? 'Əvvəlki göndərişin nəticəsi qeyri-müəyyəndir. Gmail Sent qovluğunu yoxladın? Davam etsən tələbə eyni məktubu iki dəfə ala bilər. Təsdiqləyirsən?'
+        : 'Previous delivery is uncertain. Have you checked Gmail Sent? The student may receive a duplicate. Continue?')
+      : (isAz
+        ? 'Bu qərara aid məktubun tələbəyə yenidən göndərilməsini təsdiqləyirsən? Eyni məktub təkrar çata bilər.'
+        : 'Send this decision email again? The student may receive a duplicate.');
+    if (!window.confirm(warning)) return;
+
+    setResendLoading(true);
+    setErrorMessage(null);
+    setSuccessNotice(null);
+    try {
+      const response = await fetch('/api/notifications/send', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event: 'application-status', id, resend: true, confirmDuplicate: true }),
+      });
+      const result = await response.json().catch(() => null) as { error?: string } | null;
+      if (!response.ok) throw new Error(result?.error || (isAz ? 'E-poçt göndərilmədi.' : 'Email was not sent.'));
+      setSuccessNotice(isAz
+        ? 'Gmail API məktubu qəbul etdi. Alıcının Inbox qovluğuna çatdırılma ayrıca təsdiqlənmir.'
+        : 'Gmail API accepted the message. Inbox delivery is not independently confirmed.');
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : (isAz ? 'E-poçt göndərilmədi.' : 'Email was not sent.'));
+    } finally {
+      await refreshDeliveryStatus();
+      setResendLoading(false);
     }
   };
 
@@ -247,6 +314,63 @@ export default function AdminApplicationReviewPage({ params }: Props) {
         <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-400 flex items-start gap-2">
           <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
           <span>{errorMessage}</span>
+        </div>
+      )}
+
+      {/* Admin-only delivery receipt: Gmail API acceptance is not mailbox delivery. */}
+      {(application.status === 'accepted' || application.status === 'rejected') && (
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-5 space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                <Mail className="w-4 h-4 text-amber-400" />
+                {isAz ? 'E-poçt bildirişinin vəziyyəti' : 'Email notification status'}
+              </h2>
+              <p className="text-xs text-slate-400 mt-1">
+                {deliveryLoading
+                  ? (isAz ? 'Yoxlanılır...' : 'Checking...')
+                  : deliveryError
+                    ? deliveryError
+                    : delivery?.state === 'sent'
+                      ? (isAz ? 'Göndərildi — Gmail API qəbul etdi (Inbox təsdiqlənmir)' : 'Sent — accepted by Gmail API (inbox unconfirmed)')
+                      : delivery?.state === 'failed'
+                        ? (isAz ? 'Göndərilmədi — son cəhd uğursuzdur' : 'Not sent — last attempt failed')
+                        : delivery?.state === 'uncertain'
+                          ? (isAz ? 'Nəticə qeyri-müəyyəndir — Gmail Sent qovluğunu yoxlayın' : 'Uncertain — check Gmail Sent')
+                          : delivery?.state === 'sending'
+                            ? (isAz ? 'Göndəriş icra olunur...' : 'Sending in progress...')
+                            : delivery?.state === 'skipped'
+                              ? (isAz ? 'Göndərilmədi — bildiriş buraxılıb' : 'Not sent — notification skipped')
+                              : (isAz
+                                ? 'Əvvəlki göndərişlər üzrə qeyd yoxdur; bu, məktubun göndərilmədiyini sübut etmir.'
+                                : 'No record for earlier sends; this does not prove the email was not sent.')}
+              </p>
+              {delivery && (
+                <p className="text-2xs text-slate-500 mt-2">
+                  {isAz ? 'Cəhd sayı' : 'Attempts'}: {delivery.attempts}
+                  {' • '}
+                  {isAz ? 'Son cəhd' : 'Last attempt'}: {new Date(delivery.lastAttemptAt).toLocaleString(isAz ? 'az-AZ' : 'en-US')}
+                  {delivery.errorCode ? ` • ${delivery.errorCode}` : ''}
+                </p>
+              )}
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={actionLoading || resendLoading || deliveryLoading || !!deliveryError || delivery?.state === 'sending'}
+              onClick={handleResendEmail}
+              className="border-amber-500/30 text-amber-300 hover:bg-amber-500/10 text-xs shrink-0"
+            >
+              {resendLoading
+                ? (isAz ? 'Göndərilir...' : 'Sending...')
+                : (isAz ? 'Yenidən göndər' : 'Resend email')}
+            </Button>
+          </div>
+          <p className="text-2xs text-slate-500">
+            {isAz
+              ? 'Təkrar göndəriş yalnız admin təsdiqi ilə, 60 saniyəlik interval və paralel göndəriş bloklanması ilə icra edilir.'
+              : 'Resending requires admin confirmation, a 60-second cooldown, and protection against parallel sends.'}
+          </p>
         </div>
       )}
 
@@ -393,7 +517,7 @@ export default function AdminApplicationReviewPage({ params }: Props) {
             <Button
               type="button"
               variant="outline"
-              disabled={actionLoading}
+              disabled={actionLoading || application.status === 'rejected'}
               onClick={() => handleDecision('rejected')}
               className="flex-1 sm:flex-none border-rose-500/30 text-rose-400 hover:bg-rose-500/20 hover:text-rose-300 gap-1.5"
             >
@@ -403,7 +527,7 @@ export default function AdminApplicationReviewPage({ params }: Props) {
 
             <Button
               type="button"
-              disabled={actionLoading}
+              disabled={actionLoading || application.status === 'accepted'}
               onClick={() => handleDecision('accepted')}
               className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold gap-1.5 shadow-xs"
             >
