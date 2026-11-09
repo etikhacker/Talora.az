@@ -272,14 +272,14 @@ function InternshipsContent({
                     disabled={loading || available === 0}
                     aria-pressed={active}
                     onClick={() => { setSelectedGroup(active ? null : group.key); setSelectedCategory('all'); }}
-                    className={\`rounded-xl border p-3 text-left transition-colors \${active
+                    className={`rounded-xl border p-3 text-left transition-colors ${active
                       ? 'border-blue-600 bg-blue-50 text-blue-900'
-                      : 'border-slate-200 bg-white text-slate-900 hover:border-blue-300'} disabled:cursor-default disabled:opacity-65\`}
+                      : 'border-slate-200 bg-white text-slate-900 hover:border-blue-300'} disabled:cursor-default disabled:opacity-65`}
                   >
                     <span className="block text-xs font-semibold leading-snug">{isAz ? group.az : group.en}</span>
                     <span className="mt-2 block text-[11px] text-slate-500">
                       {loading ? (isAz ? 'Yoxlanılır...' : 'Checking...') : available
-                        ? (isAz ? \`\${available} proqram\` : \`\${available} programs\`)
+                        ? (isAz ? `${available} proqram` : `${available} programs`)
                         : (isAz ? 'Tezliklə' : 'Coming soon')}
                     </span>
                   </button>
