@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth/auth-context";
+import { useNotifications } from "@/components/dashboard/notification-provider";
 import { useLanguage, type Translations } from "@/lib/i18n/language-context";
 import { TaloraLogo } from "@/components/layout/talora-logo";
 import { Avatar } from "@/components/ui/avatar";
@@ -41,6 +42,7 @@ const items: { key: keyof Translations; href: string; icon: typeof User }[] = [
 export function StudentSidebar() {
   const path = usePathname();
   const { profile, signOut } = useAuth();
+  const { unreadCount } = useNotifications();
   const { t, language } = useLanguage();
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -104,7 +106,18 @@ export function StudentSidebar() {
                 onClick={() => setOpen(false)}
               >
                 <Icon size={18} />
-                <span>{t(item.key)}</span>
+                <span className="min-w-0 flex-1">{t(item.key)}</span>
+                {item.href === "/dashboard/notifications" && unreadCount > 0 && (
+                  <span
+                    role="status"
+                    aria-label={language === "az"
+                      ? unreadCount + " oxunmamış bildiriş"
+                      : unreadCount + " unread notifications"}
+                    className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-rose-500 px-1.5 text-[10px] font-bold tabular-nums text-white"
+                  >
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
                 {active && <ChevronRight size={14} />}
               </Link>
             </div>
