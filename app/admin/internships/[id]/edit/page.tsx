@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { getInternshipById, updateInternship } from '@/lib/internships/service';
+import { InternshipCategoryField } from '@/components/admin/internship-category-field';
 import { internshipSchema, InternshipFormData } from '@/lib/validations/internship';
 import { InternshipDifficulty, InternshipStatus, Internship } from '@/types/database';
 import {
@@ -262,11 +263,7 @@ export default function AdminEditInternshipPage({ params }: Props) {
               <label className="block text-xs font-semibold text-slate-300 mb-1">
                 {isAz ? 'İstiqamət / Kateqoriya' : 'Category / Track'}
               </label>
-              <Input
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="bg-slate-950 border-slate-800 text-white text-xs"
-              />
+              <InternshipCategoryField value={category} onChange={setCategory} isAz={isAz} />
               {fieldErrors.category && <p className="text-xs text-rose-400 mt-1">{fieldErrors.category}</p>}
             </div>
 
