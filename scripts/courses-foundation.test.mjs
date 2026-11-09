@@ -104,3 +104,21 @@ test('feature flag is disabled by default across navigation and direct routes', 
     'components/dashboard/student-sidebar.tsx',
   ]) assert.ok(source(file).includes('isCoursesEnabled'), file);
 });
+
+test('published lessons contain real material and published curricula are immutable until unpublished', () => {
+  assert.ok(sql.includes('course_lessons_published_content'));
+  assert.ok(sql.includes("length(btrim(content_md)) > 0"));
+  for (const marker of [
+    'course_modules_protect_published',
+    'course_lessons_protect_published',
+    'Unpublish course before hiding or moving a published module',
+    'Unpublish course before hiding or moving a published lesson',
+  ]) assert.ok(sql.includes(marker), marker);
+  const integration = source('scripts/courses-foundation-integration.sql');
+  for (const check of [
+    'Empty published lesson was accepted',
+    'Published course module was hidden',
+    'Published course lesson was hidden',
+    'Published lesson was deleted',
+  ]) assert.ok(integration.includes(check), check);
+});
