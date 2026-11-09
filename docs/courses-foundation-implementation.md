@@ -40,3 +40,13 @@ Status: GitHub feature branch only; production migration NOT applied.
 - No production write, deployment, payment flow change, certificate schema modification or deletion of internship data.
 - No new instructor or community-admin role, and no seed courses that have not been reviewed.
 - No migration to remove the legacy internships.category string.
+## Free-plan-only validation policy (2026-11-09)
+- The owner rejected chargeable Supabase development branching. Do not create a paid branch, project, compute instance or subscription.
+- GitHub Actions runs actual PostgreSQL 17 tests using synthetic users (scripts/courses-foundation-fixture.sql and scripts/courses-foundation-integration.sql). Migration and RLS assertions passed in run 42580110171.
+- For closer Supabase Auth/Storage parity, use Supabase CLI + Docker locally with sanitized fixtures. This requires adequate local RAM/CPU but avoids paid cloud branching.
+- A separate Free project is only acceptable if an eligible, zero-charge slot is available. Do not delete or reuse existing projects as testing environments.
+- Vercel metadata shows Preview has Supabase URL and SUPABASE_SERVICE_ROLE_KEY variable names. Values were not examined; database isolation is NOT verified. Avoid Preview test writes to unknown destinations.
+- NEXT_PUBLIC_COURSES_ENABLED defaults to false. The Next.js middleware blocks public, student and admin Courses routes when off, and navigation hides links.
+- This is a feature rollout switch, NOT authorization. RLS and privilege checks are always required.
+- Do not enable Preview against production Supabase until database schema, auth rules and rollout sequence are explicitly reviewed.
+- Production migration, deployment and PR merge remain blocked pending non-billable validation and a separate rollout decision.
