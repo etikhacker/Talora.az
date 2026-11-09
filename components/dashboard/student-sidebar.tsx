@@ -11,6 +11,7 @@ import {
   Search,
   FileText,
   Briefcase,
+  BookOpen,
   CheckSquare,
   UploadCloud,
   Award,
@@ -22,7 +23,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-const items: { key: keyof Translations; href: string; icon: typeof User }[] = [
+const items: { key?: keyof Translations; az?: string; en?: string; href: string; icon: typeof User }[] = [
   { key: "sideDashboard", href: "/dashboard", icon: LayoutDashboard },
   { key: "sideInternships", href: "/dashboard/internships", icon: Search },
   {
@@ -31,6 +32,7 @@ const items: { key: keyof Translations; href: string; icon: typeof User }[] = [
     icon: FileText,
   },
   { key: "sideMyInternship", href: "/dashboard/internship", icon: Briefcase },
+  { href: "/dashboard/courses", icon: BookOpen, az: "Kurslarım", en: "My courses" },
   { key: "sideTasks", href: "/dashboard/tasks", icon: CheckSquare },
   { key: "sideSubmissions", href: "/dashboard/submissions", icon: UploadCloud },
   { key: "sideCertificate", href: "/dashboard/certificate", icon: Award },
@@ -92,7 +94,7 @@ export function StudentSidebar() {
                   {language === "az" ? "İNKİŞAF YOLUN" : "YOUR JOURNEY"}
                 </p>
               )}
-              {index === 7 && (
+              {index === 8 && (
                 <p className="eyebrow px-3 pt-6 pb-3">
                   {language === "az" ? "ŞƏXSİ KABİNET" : "YOUR ACCOUNT"}
                 </p>
@@ -104,7 +106,7 @@ export function StudentSidebar() {
                 onClick={() => setOpen(false)}
               >
                 <Icon size={18} />
-                <span>{t(item.key)}</span>
+                <span>{item.key ? t(item.key) : language === "az" ? item.az : item.en}</span>
                 {active && <ChevronRight size={14} />}
               </Link>
             </div>
