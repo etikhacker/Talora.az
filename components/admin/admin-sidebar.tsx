@@ -4,6 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth/auth-context";
+import { createClient } from "@/lib/supabase/client";
+import {
+  adminBadgeSectionForPath,
+  normalizeAdminBadgeCounts,
+  EMPTY_ADMIN_BADGES,
+  type AdminBadgeCounts,
+  type AdminBadgeSection,
+} from "@/lib/admin/sidebar-badges";
 import { useLanguage, type Translations } from "@/lib/i18n/language-context";
 import { cn } from "@/lib/utils";
 import {
@@ -115,10 +123,55 @@ export function AdminSidebar({
   onToggleCollapse?: () => void;
 }) {
   const pathname = usePathname();
-  const { profile, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const { t, language } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [badgeCounts, setBadgeCounts] = useState<AdminBadgeCounts>(EMPTY_ADMIN_BADGES);
   const isAz = language === "az";
+
+  // A single RPC fetches the unread counts for all sections; a second RPC
+  // marks only the visited section as seen for the signed-in admin.
+  useEffect(() => {
+    if (!user?.id || profile?.role !== "admin") return;
+    const supabase = createClient();
+    if (!supabase) return;
+    let active = true;
+
+    const loadCounts = async () => {
+      const { data, error } = await supabase.rpc("get_admin_sidebar_counts");
+      if (error) {
+        console.warn("Admin sidebar counts unavailable:", error.code);
+        return;
+      }
+      if (active) setBadgeCounts(normalizeAdminBadgeCounts(data));
+    };
+
+    const syncNavigation = async () => {
+      const section = adminBadgeSectionForPath(pathname);
+      if (section) {
+        const { error } = await supabase.rpc("mark_admin_sidebar_seen", {
+          p_section: section,
+        });
+        if (error) console.warn("Admin section read state unavailable:", error.code);
+      }
+      if (active) await loadCounts();
+    };
+    void syncNavigation();
+
+    const onFocus = () => { if (active) void loadCounts(); };
+    const onVisibilityChange = () => {
+      if (active && document.visibilityState === "visible") void loadCounts();
+    };
+    const timer = window.setInterval(onFocus, 60_000);
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [pathname, profile?.role, user?.id]);
   useEffect(() => {
     if (!mobileOpen) return;
     const prev = document.body.style.overflow;
@@ -230,6 +283,8 @@ export function AdminSidebar({
                   : item.key
                     ? t(item.key)
                     : "";
+                const section = adminBadgeSectionForPath(item.href);
+                const unread = section ? badgeCounts[section as AdminBadgeSection] : 0;
                 return (
                   <Link
                     key={item.href}
@@ -238,7 +293,7 @@ export function AdminSidebar({
                     title={collapsed ? label : undefined}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "workspace-nav-link group",
+                      "workspace-nav-link group relative",
                       collapsed && "justify-center px-2",
                       active ? "font-semibold" : "",
                     )}
@@ -251,6 +306,18 @@ export function AdminSidebar({
                     />
                     {!collapsed && (
                       <span className="min-w-0 flex-1">{label}</span>
+                    )}
+                    {unread > 0 && (
+                      <span
+                        aria-label={isAz ? unread + " yeni qeyd: " + label : unread + " new items: " + label}
+                        title={isAz ? unread + " yeni qeyd" : unread + " new items"}
+                        className={cn(
+                          "inline-flex min-w-[20px] h-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[10px] font-bold tabular-nums text-white",
+                          collapsed && "absolute -right-0.5 -top-1 min-w-[18px] h-[18px] px-1 text-[9px]",
+                        )}
+                      >
+                        {unread > 99 ? "99+" : unread}
+                      </span>
                     )}
                     {!collapsed && active && (
                       <ChevronRight className="h-3.5 w-3.5" />

@@ -13,7 +13,8 @@ import { Select } from '@/components/ui/select';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { localizedInternshipText } from '@/lib/internships/localized-content';
 import { INTERNSHIP_CATEGORY_GROUPS } from '@/lib/internships/categories';
-import type { Internship } from '@/types/database';
+import type { PublicInternship } from '@/lib/internships/seats';
+import { InternshipSeatIndicator } from '@/components/internships/seat-indicator';
 import { formatDate as formatDisplayDate } from '@/lib/utils/date';
 import {
   Briefcase,
@@ -23,7 +24,6 @@ import {
   Clock,
   ArrowRight,
   Sparkles,
-  Users,
   RotateCcw,
 } from 'lucide-react';
 
@@ -38,7 +38,7 @@ function InternshipsContent({
   const { language, t } = useLanguage();
   const isAz = language === 'az';
 
-  const [internships, setInternships] = useState<Internship[]>([]);
+  const [internships, setInternships] = useState<PublicInternship[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentTimestamp, setCurrentTimestamp] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
@@ -55,7 +55,7 @@ function InternshipsContent({
         if (!response.ok) {
           throw new Error(`Failed to load internships (${response.status})`);
         }
-        const data = (await response.json()) as Internship[];
+        const data = (await response.json()) as PublicInternship[];
         if (isMounted) {
           setInternships(data);
           setCurrentTimestamp(Date.now());
@@ -375,14 +375,11 @@ function InternshipsContent({
                             </span>
                           </div>
                         )}
-                        {internship.max_students && (
-                          <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                            <Users className="w-3.5 h-3.5 shrink-0 text-slate-400" />
-                            <span>
-                              {t('maxStudents')}: {internship.max_students}
-                            </span>
-                          </div>
-                        )}
+                        <InternshipSeatIndicator
+                          availability={internship.seat_availability}
+                          isAz={isAz}
+                          compact
+                        />
                       </div>
 
                       <Link href={`/internships/${internship.slug}`}>
