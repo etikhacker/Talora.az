@@ -54,6 +54,41 @@ WHERE i.category_id IS NULL AND c.slug=CASE i.category
  WHEN 'UI/UX Design' THEN 'ui-ux-design'
  ELSE NULL END;
 
+
+-- Keep the optional normalized ID in sync for legacy internship writes.
+CREATE FUNCTION private.course_map_internship_category()
+RETURNS trigger LANGUAGE plpgsql SET search_path=pg_catalog AS $
+DECLARE target_slug text;
+BEGIN
+  target_slug := CASE trim(NEW.category)
+    WHEN 'AI' THEN 'ai-engineering'
+    WHEN 'Automation' THEN 'automation'
+    WHEN 'Backend' THEN 'backend'
+    WHEN 'Cybersecurity' THEN 'cybersecurity'
+    WHEN 'Data' THEN 'data-analytics'
+    WHEN 'Frontend' THEN 'frontend'
+    WHEN 'Mobile Development' THEN 'mobile-development'
+    WHEN 'UI/UX Design' THEN 'ui-ux-design'
+    WHEN 'Proqramlaşdırma və Veb' THEN 'software-technology'
+    WHEN 'Məlumat Analitikası' THEN 'data-analytics'
+    WHEN 'Məhsul İdarəetməsi' THEN 'business-management'
+    WHEN 'Kibertəhlükəsizlik' THEN 'cybersecurity'
+    WHEN 'UI/UX Dizayn' THEN 'ui-ux-design'
+    WHEN 'Rəqəmsal Marketinq' THEN 'digital-marketing'
+    ELSE lower(replace(trim(NEW.category),' ','-'))
+  END;
+  SELECT c.id INTO NEW.category_id FROM public.categories c
+   WHERE c.slug=target_slug OR lower(c.name_en)=lower(trim(NEW.category))
+     OR lower(c.name_az)=lower(trim(NEW.category))
+   ORDER BY CASE WHEN c.slug=target_slug THEN 0 ELSE 1 END LIMIT 1;
+  RETURN NEW;
+END;
+$;
+REVOKE ALL ON FUNCTION private.course_map_internship_category() FROM PUBLIC;
+CREATE TRIGGER internships_category_normalize
+  BEFORE INSERT OR UPDATE OF category ON public.internships
+  FOR EACH ROW EXECUTE FUNCTION private.course_map_internship_category();
+
 CREATE TABLE public.courses (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
  slug text NOT NULL UNIQUE CHECK (slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'),
@@ -153,6 +188,28 @@ REVOKE ALL ON FUNCTION private.course_validate_progress() FROM PUBLIC;
 CREATE TRIGGER lesson_progress_validate BEFORE INSERT OR UPDATE ON public.lesson_progress
  FOR EACH ROW EXECUTE FUNCTION private.course_validate_progress();
 
+
+-- A course cannot become published without at least one visible lesson.
+CREATE FUNCTION private.course_require_publishable()
+RETURNS trigger LANGUAGE plpgsql SET search_path=pg_catalog AS $
+BEGIN
+ IF NEW.status='published' AND (TG_OP='INSERT' OR OLD.status IS DISTINCT FROM NEW.status) THEN
+  IF NOT EXISTS (
+   SELECT 1 FROM public.course_modules m
+   JOIN public.course_lessons l ON l.module_id=m.id
+   WHERE m.course_id=NEW.id AND m.status='published' AND l.status='published'
+  ) THEN
+   RAISE EXCEPTION 'A published course requires at least one published module and lesson'
+    USING ERRCODE='23514';
+  END IF;
+ END IF;
+ RETURN NEW;
+END;
+$;
+REVOKE ALL ON FUNCTION private.course_require_publishable() FROM PUBLIC;
+CREATE TRIGGER courses_publish_guard BEFORE INSERT OR UPDATE OF status ON public.courses
+ FOR EACH ROW EXECUTE FUNCTION private.course_require_publishable();
+
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.course_modules ENABLE ROW LEVEL SECURITY;
@@ -221,7 +278,8 @@ CREATE POLICY lesson_progress_student_insert ON public.lesson_progress FOR INSER
  JOIN public.course_modules m ON m.course_id=e.course_id
  JOIN public.course_lessons l ON l.module_id=m.id
  WHERE e.id=enrollment_id AND l.id=lesson_id AND p.user_id=(SELECT auth.uid())
- AND e.status='active' AND m.status='published' AND l.status='published'));
+ AND e.status='active' AND m.status='published' AND l.status='published'
+ AND EXISTS(SELECT 1 FROM public.courses c WHERE c.id=e.course_id AND c.status='published')));
 
 COMMENT ON COLUMN public.internships.category_id IS 'Optional normalization: legacy category text remains unchanged.';
 COMMENT ON TABLE public.lesson_progress IS 'Learner-declared completion; no verified video watch tracking in MVP.';
