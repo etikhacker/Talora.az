@@ -37,11 +37,33 @@ function validateRecipient(email: string): string {
   return normalized;
 }
 
+function encodeMimeHeader(value: string): string {
+  // RFC 2047 encoded-words must be <= 75 characters each. Chunk at
+  // Unicode code-point boundaries and fold long headers using CRLF + space.
+  const chunks: string[] = [];
+  let chunk = '';
+  let bytes = 0;
+  for (const character of value) {
+    const characterBytes = Buffer.byteLength(character, 'utf8');
+    if (chunk && bytes + characterBytes > 42) {
+      chunks.push(chunk);
+      chunk = '';
+      bytes = 0;
+    }
+    chunk += character;
+    bytes += characterBytes;
+  }
+  if (chunk) chunks.push(chunk);
+  return chunks
+    .map(part => '=?UTF-8?B?' + Buffer.from(part, 'utf8').toString('base64') + '?=')
+    .join('\r\n ');
+}
+
 function safeSubject(value: string): string {
   if (!value || value.length > 300 || /[\r\n]/.test(value)) {
     throw new Error('GMAIL_API_INVALID_SUBJECT');
   }
-  return '=?UTF-8?B?' + Buffer.from(value, 'utf8').toString('base64') + '?=';
+  return encodeMimeHeader(value);
 }
 
 function wrapBase64(value: string): string {
@@ -72,9 +94,9 @@ export function encodeGmailMessage(
   }
 
   const headers = [
-    'From: =?UTF-8?B?' + Buffer.from('Talora Bildirişləri', 'utf8').toString('base64') + '?= <' + from + '>',
+    'From: ' + encodeMimeHeader('Talora Bildirişləri') + ' <' + from + '>',
     'To: ' + (emails.length === 1 ? emails[0] : 'undisclosed-recipients:;'),
-    ...(emails.length > 1 ? ['Bcc: ' + emails.join(', ')] : []),
+    ...(emails.length > 1 ? ['Bcc: ' + emails.join(',\r\n ')] : []),
     'Subject: ' + safeSubject(message.subject),
     'MIME-Version: 1.0',
   ];
