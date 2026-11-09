@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { isSoleAdminEmail } from '@/lib/auth/admin';
 import { createAdminClient, createClient } from '@/lib/supabase/server';
 import { isGmailConfigured, sendGmailBatchEmail, sendGmailEmail } from '@/lib/email/gmail';
+import { claimDecisionDelivery, classifyDeliveryFailure, completeDecisionDelivery, findDecisionDelivery, publicDeliverySummary, recordSkippedDecisionDelivery } from '@/lib/email/application-delivery';
 import {
   buildApplicationStatusEmail,
   buildInternshipAnnouncementEmail,
@@ -35,10 +36,10 @@ function jsonError(message: string, status: number) {
   return NextResponse.json({ error: message }, { status });
 }
 
-async function sendApplicationStatusEmail(admin: NonNullable<Awaited<ReturnType<typeof createAdminClient>>>, id: string) {
+async function sendApplicationStatusEmail(admin: NonNullable<Awaited<ReturnType<typeof createAdminClient>>>, id: string, manual = false, confirmed = false) {
   const { data: application, error: applicationError } = await admin
     .from('applications')
-    .select('id,status,student_id,internship_id')
+    .select('id,status,student_id,internship_id,reviewed_at,updated_at,created_at')
     .eq('id', id)
     .maybeSingle();
 
@@ -46,6 +47,10 @@ async function sendApplicationStatusEmail(admin: NonNullable<Awaited<ReturnType<
   if (!application) return { sent: 0, skipped: 1, failed: 0, reason: 'application_not_found' };
   if (application.status !== 'accepted' && application.status !== 'rejected') {
     return { sent: 0, skipped: 1, failed: 0, reason: 'application_not_reviewed' };
+  }
+  async function skip(reason: string) {
+    if (!manual) await recordSkippedDecisionDelivery(admin, application, reason);
+    return { sent: 0, skipped: 1, failed: 0, reason };
   }
 
   const { data: profile, error: profileError } = await admin
@@ -55,15 +60,15 @@ async function sendApplicationStatusEmail(admin: NonNullable<Awaited<ReturnType<
     .maybeSingle();
 
   if (profileError) throw new Error('STUDENT_PROFILE_LOOKUP_FAILED');
-  if (!profile?.user_id) return { sent: 0, skipped: 1, failed: 0, reason: 'student_profile_missing' };
+  if (!profile?.user_id) return skip('student_profile_missing');
 
   const { data: authUserData, error: authUserError } = await admin.auth.admin.getUserById(profile.user_id);
   if (authUserError) throw new Error('STUDENT_AUTH_LOOKUP_FAILED');
   const recipient = authUserData.user;
   const email = recipient?.email;
-  if (!recipient || !email) return { sent: 0, skipped: 1, failed: 0, reason: 'student_email_missing' };
+  if (!recipient || !email) return skip('student_email_missing');
   if (!shouldSendNotification(recipient.user_metadata, 'application_status_updates')) {
-    return { sent: 0, skipped: 1, failed: 0, reason: 'preference_disabled' };
+    return skip('preference_disabled');
   }
 
   const { data: internship, error: internshipError } = await admin
@@ -73,15 +78,29 @@ async function sendApplicationStatusEmail(admin: NonNullable<Awaited<ReturnType<
     .maybeSingle();
 
   if (internshipError) throw new Error('INTERNSHIP_LOOKUP_FAILED');
-  if (!internship) return { sent: 0, skipped: 1, failed: 0, reason: 'internship_missing' };
+  if (!internship) return skip('internship_missing');
 
-  await sendGmailEmail(email, buildApplicationStatusEmail({
-    fullName: profile.full_name || 'Tələbə',
-    internshipTitle: internship.title,
-    status: application.status,
-    applicationUrl: `${getAppBaseUrl()}/dashboard/applications`,
-  }));
+  const claim = await claimDecisionDelivery(admin, application, manual, confirmed);
+  if (!claim.allowed || !claim.receipt) {
+    return { sent: 0, skipped: 1, failed: 0, reason: claim.reason || 'concurrent_request' };
+  }
 
+  try {
+    if (!isGmailConfigured()) throw new Error('GMAIL_API_NOT_CONFIGURED');
+    await sendGmailEmail(email, buildApplicationStatusEmail({
+      fullName: profile.full_name || 'Tələbə',
+      internshipTitle: internship.title,
+      status: application.status,
+      applicationUrl: `${getAppBaseUrl()}/dashboard/applications`,
+    }));
+  } catch (error) {
+    const failure = classifyDeliveryFailure(error);
+    await completeDecisionDelivery(admin, claim.receipt, failure.state, failure.code);
+    throw new Error(failure.code);
+  }
+
+  // Gmail API acceptance is NOT proof of inbox delivery.
+  await completeDecisionDelivery(admin, claim.receipt, 'sent');
   return { sent: 1, skipped: 0, failed: 0 };
 }
 
@@ -193,7 +212,7 @@ export async function POST(request: NextRequest) {
     return jsonError('Bildiriş hadisəsi və ID düzgün deyil.', 400);
   }
 
-  if (!isGmailConfigured()) {
+  if (event === 'new-internship' && !isGmailConfigured()) {
     return jsonError('Gmail göndərişi hələ konfiqurasiya edilməyib.', 503);
   }
 
@@ -201,13 +220,60 @@ export async function POST(request: NextRequest) {
   if (!admin) return jsonError('Supabase server key konfiqurasiya edilməyib.', 503);
 
   try {
+    const manual = (body as Record<string, unknown>).resend === true;
+    const confirmed = (body as Record<string, unknown>).confirmDuplicate === true;
+    if (manual && event !== 'application-status') {
+      return jsonError('Təkrar göndəriş yalnız müraciət bildirişləri üçün mövcuddur.', 400);
+    }
+    if (manual && !confirmed) {
+      return jsonError('Təkrar göndəriş üçün açıq təsdiq tələb olunur.', 400);
+    }
     const result = event === 'application-status'
-      ? await sendApplicationStatusEmail(admin, id)
+      ? await sendApplicationStatusEmail(admin, id, manual, confirmed)
       : await sendNewInternshipEmails(admin, id);
 
-    return NextResponse.json(result);
+    if (manual && result.sent !== 1) {
+      const reason = typeof result.reason === 'string' ? result.reason : 'not_sent';
+      const message = reason === 'cooldown'
+        ? 'Təkrar göndərmə üçün ən azı 60 saniyə keçməlidir.'
+        : reason === 'sending' || reason === 'concurrent_request'
+          ? 'Bu məktub üçün başqa göndəriş artıq icra olunur.'
+          : reason === 'preference_disabled'
+            ? 'Tələbənin e-poçt bildirişləri deaktivdir.'
+            : 'Göndəriş icra edilmədi: ' + reason;
+      return jsonError(message, reason === 'cooldown' ? 429 : 409);
+    }
+    return NextResponse.json(result, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     console.error('Email notification request failed:', error instanceof Error ? error.message : 'Unknown notification error');
     return jsonError('Bildiriş e-poçtunu göndərmək mümkün olmadı.', 502);
+  }
+}
+
+/** Admin-only read of one application's current decision's email receipt. */
+export async function GET(request: NextRequest) {
+  const sessionClient = await createClient();
+  if (!sessionClient) return jsonError('Supabase konfiqurasiya edilməyib.', 503);
+  const { data: { user }, error: authError } = await sessionClient.auth.getUser();
+  if (authError || !user) return jsonError('Sessiya tapılmadı.', 401);
+  if (!isSoleAdminEmail(user.email)) return jsonError('Bu əməliyyat üçün icazə yoxdur.', 403);
+  const id = request.nextUrl.searchParams.get('id');
+  if (!id || !UUID_PATTERN.test(id)) return jsonError('Müraciət ID-si düzgün deyil.', 400);
+  const admin = await createAdminClient();
+  if (!admin) return jsonError('Supabase server key konfiqurasiya edilməyib.', 503);
+  try {
+    const { data: application, error } = await admin.from('applications')
+      .select('id,status,reviewed_at,updated_at,created_at')
+      .eq('id', id).maybeSingle();
+    if (error) throw new Error('APPLICATION_LOOKUP_FAILED');
+    if (!application) return jsonError('Müraciət tapılmadı.', 404);
+    if (application.status !== 'accepted' && application.status !== 'rejected') {
+      return NextResponse.json({ delivery: null }, { headers: { 'Cache-Control': 'no-store' } });
+    }
+    const receipt = await findDecisionDelivery(admin, application);
+    return NextResponse.json({ delivery: publicDeliverySummary(receipt) }, { headers: { 'Cache-Control': 'no-store' } });
+  } catch (error) {
+    console.error('Email delivery status read failed:', error instanceof Error ? error.message : 'Unknown');
+    return jsonError('E-poçt statusunu oxumaq mümkün olmadı.', 500);
   }
 }
