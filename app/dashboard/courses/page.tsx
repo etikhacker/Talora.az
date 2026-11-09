@@ -53,8 +53,8 @@ export default function MyCoursesPage() {
               <p className="mb-2 text-xs uppercase tracking-wider opacity-60">{status}</p>
               <h2 className="text-xl font-semibold">{course?.title ?? (az ? 'Kurs əlçatan deyil' : 'Course unavailable')}</h2>
               <p className="my-3 text-sm opacity-70">{course?.short_description}</p>
-              {course && <Link className="inline-flex items-center gap-2 font-medium text-blue-600 hover:underline" href={'/courses/' + encodeURIComponent(course.slug)}>
-                {az ? 'Kursa bax' : 'View course'} <ArrowRight size={16}/>
+              {course && <Link className="inline-flex items-center gap-2 font-medium text-blue-600 hover:underline" href={'/learn/' + encodeURIComponent(course.slug)}>
+                {az ? 'Öyrənməyə başla' : 'Start learning'} <ArrowRight size={16}/>
               </Link>}
             </article>
           ))}
