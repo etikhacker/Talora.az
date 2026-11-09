@@ -48,8 +48,9 @@ async function sendApplicationStatusEmail(admin: NonNullable<Awaited<ReturnType<
   if (application.status !== 'accepted' && application.status !== 'rejected') {
     return { sent: 0, skipped: 1, failed: 0, reason: 'application_not_reviewed' };
   }
+  const reviewedApplication = application;
   async function skip(reason: string) {
-    if (!manual) await recordSkippedDecisionDelivery(admin, application, reason);
+    if (!manual) await recordSkippedDecisionDelivery(admin, reviewedApplication, reason);
     return { sent: 0, skipped: 1, failed: 0, reason };
   }
 
