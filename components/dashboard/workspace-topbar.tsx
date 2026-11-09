@@ -44,6 +44,7 @@ export function WorkspaceTopbar() {
         <Link
           href="/dashboard/notifications"
           className="icon-button relative"
+          onClick={dismissNewArrivals}
           aria-label={`${isAz ? "Bildirişlər, oxunmamış:" : "Notifications, unread:"} ${unreadCount}`}
         >
           <Bell size={17} />
@@ -51,7 +52,7 @@ export function WorkspaceTopbar() {
         </Link>
       </div>
     </header>
-    {newArrivalCount > 0 && (
+    {newArrivalCount > 0 && !pathname.startsWith("/dashboard/notifications") && (
       <div role="status" aria-live="polite"
         className="fixed right-4 top-20 z-[90] flex max-w-[calc(100vw-2rem)] items-start gap-3 rounded-xl border border-blue-300 bg-white p-4 text-slate-900 shadow-xl sm:w-80">
         <Bell size={19} className="mt-0.5 shrink-0 text-blue-600" aria-hidden="true" />
