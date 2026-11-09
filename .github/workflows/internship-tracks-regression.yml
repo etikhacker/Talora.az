@@ -48,7 +48,10 @@ jobs:
           for script in \
             scripts/internship-curricula-fixture.sql \
             scripts/seed-new-career-internships-2026.sql \
-            scripts/internship-curricula-verify.sql; do
+            scripts/internship-curricula-verify.sql \
+            scripts/internship-admin-rls-fixture.sql \
+            scripts/internship-admin-select-policy.sql \
+            scripts/internship-admin-rls-verify.sql; do
             docker run --rm --network host -e PGPASSWORD \
               -v "$PWD:/workspace:ro" postgres:17 \
               psql -X -h 127.0.0.1 -U postgres -d talora_test \
