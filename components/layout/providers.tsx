@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { AuthProvider } from "@/lib/auth/auth-context";
+import { StudentPresence } from "./student-presence";
 import { LanguageProvider } from "@/lib/i18n/language-context";
 import { initializeTheme } from "@/lib/theme";
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -9,7 +10,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, []);
   return (
     <LanguageProvider>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider><StudentPresence />{children}</AuthProvider>
     </LanguageProvider>
   );
 }
