@@ -148,10 +148,15 @@ export default function AdminCourseEditor({ params }: { params: Promise<{ id: st
           </header>
           <section className="rounded-xl border border-slate-700 bg-slate-900 p-5">
             <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold"><BookOpen size={19}/>{az ? 'Modullar və dərslər' : 'Modules & lessons'}</h2>
+            {course.status === 'published' && (
+              <p className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">
+                {az ? 'Dərc edilmiş modul və dərsləri gizlətmək üçün əvvəl kursu qaralamaya keçirin.' : 'Unpublish the course before hiding existing published modules or lessons.'}
+              </p>
+            )}
             {modules.map((module) => <article key={module.id} className="mb-4 rounded-lg border border-slate-700 p-4">
               <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
                 <h3 className="font-semibold">{module.position}. {module.title} <span className="text-xs font-normal text-slate-400">({module.status})</span></h3>
-                <button disabled={working} onClick={() => void execute(async () => {
+                <button disabled={working || (course.status === 'published' && module.status === 'published')} title={course.status === 'published' && module.status === 'published' ? (az ? 'Əvvəl kursu qaralamaya keçirin' : 'Unpublish the course first') : undefined} onClick={() => void execute(async () => {
                   const db = createClient(); if (!db) throw new Error('Database is not configured.');
                   const { error: issue } = await db.from('course_modules').update({ status: module.status === 'published' ? 'draft' : 'published' }).eq('id', module.id);
                   if (issue) throw new Error(issue.message);
@@ -212,7 +217,7 @@ export default function AdminCourseEditor({ params }: { params: Promise<{ id: st
                 </select>
               </label>
               <label className="block text-sm">{az ? 'Status' : 'Status'}
-                <select value={lessonStatus} onChange={(e) => setLessonStatus(e.target.value as CourseLesson['status'])} className="mt-1 w-full rounded-lg border border-slate-600 bg-slate-800 p-3">
+                <select value={lessonStatus} disabled={course.status === 'published' && lessons.some((lesson) => lesson.id === selectedLesson && lesson.status === 'published')} onChange={(e) => setLessonStatus(e.target.value as CourseLesson['status'])} className="mt-1 w-full rounded-lg border border-slate-600 bg-slate-800 p-3 disabled:opacity-50">
                   <option value="draft">Draft</option><option value="published">Published</option>
                 </select>
               </label>
