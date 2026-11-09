@@ -233,7 +233,7 @@ export async function POST(request: NextRequest) {
       : await sendNewInternshipEmails(admin, id);
 
     if (manual && result.sent !== 1) {
-      const reason = typeof result.reason === 'string' ? result.reason : 'not_sent';
+      const reason = 'reason' in result && typeof result.reason === 'string' ? result.reason : 'not_sent';
       const message = reason === 'cooldown'
         ? 'Təkrar göndərmə üçün ən azı 60 saniyə keçməlidir.'
         : reason === 'sending' || reason === 'concurrent_request'
