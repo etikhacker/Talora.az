@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { useLanguage } from '@/lib/i18n/language-context';
+import { localizedInternshipText } from '@/lib/internships/localized-content';
 import { INTERNSHIP_CATEGORY_GROUPS } from '@/lib/internships/categories';
 import type { Internship } from '@/types/database';
 import { formatDate as formatDisplayDate } from '@/lib/utils/date';
@@ -340,7 +341,7 @@ function InternshipsContent({
 
                       {/* Short Description */}
                       <p className="text-xs sm:text-sm text-slate-600 line-clamp-3 leading-relaxed mb-4">
-                        {internship.short_description || internship.description}
+                        {localizedInternshipText(internship.short_description || internship.description, isAz ? 'az' : 'en')}
                       </p>
 
                       {/* Skills clean unboxed list */}
