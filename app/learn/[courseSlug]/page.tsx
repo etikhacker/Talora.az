@@ -29,8 +29,8 @@ export default function CourseLaunchPage({ params }: { params: Promise<{ courseS
         const enrollment = await getMyCourseEnrollment(course.id, profile!.id);
         if (!enrollment || !['active', 'completed'].includes(enrollment.status)) throw new Error('Enroll before starting this course.');
         const modules = await getPublishedModules(course.id);
-        for (const module of modules) {
-          const lessons = await getPublishedLessons(module.id);
+        for (const lessonModule of modules) {
+          const lessons = await getPublishedLessons(lessonModule.id);
           if (lessons.length) {
             router.replace('/learn/' + encodeURIComponent(courseSlug) + '/' + lessons[0].id);
             return;
@@ -41,7 +41,7 @@ export default function CourseLaunchPage({ params }: { params: Promise<{ courseS
     }
     void launch();
     return () => { active = false; };
-  }, [isLoading, user?.id, profile?.id, courseSlug, router]);
+  }, [isLoading, user, profile, courseSlug, router]);
 
   return (
     <main id="main-content" className="content-width public-main">
