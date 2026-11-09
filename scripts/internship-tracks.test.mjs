@@ -66,3 +66,13 @@ test('feature requires neither new course tables nor Supabase migrations', () =>
   assert.ok(!categories.includes('course_lessons'));
   assert.ok(!field.includes("from('categories')"));
 });
+
+test('bilingual internship descriptions use requested UI language', () => {
+  const helper = read('lib/internships/localized-content.ts');
+  const detail = read('app/internships/[slug]/page.tsx');
+  assert.ok(helper.includes('[[AZ]]') && helper.includes('[[EN]]'));
+  assert.ok(helper.includes("language === 'en'"));
+  assert.ok(publicCatalog.includes('localizedInternshipText(internship.short_description'));
+  assert.ok(detail.includes('localizedInternshipText(internship.short_description'));
+  assert.ok(detail.includes('localizedInternshipText(internship.description'));
+});
