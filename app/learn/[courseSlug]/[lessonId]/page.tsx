@@ -55,7 +55,7 @@ export default function LearnLessonPage({ params }: { params: Promise<{ courseSl
     }
     void load();
     return () => { active = false; };
-  }, [authLoading, user?.id, profile?.id, courseSlug, lessonId, router]);
+  }, [authLoading, user, profile, courseSlug, lessonId, router]);
 
   const current = rows.find(({ lesson }) => lesson.id === lessonId);
   const required = useMemo(() => rows.filter(({ lesson }) => lesson.is_required), [rows]);
