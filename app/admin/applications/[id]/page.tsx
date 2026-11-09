@@ -349,7 +349,7 @@ export default function AdminApplicationReviewPage({ params }: Props) {
                 <p className="text-2xs text-slate-500 mt-2">
                   {isAz ? 'Cəhd sayı' : 'Attempts'}: {delivery.attempts}
                   {' • '}
-                  {isAz ? 'Son cəhd' : 'Last attempt'}: {formatDate(delivery.lastAttemptAt)}
+                  {isAz ? 'Son cəhd' : 'Last attempt'}: {new Date(delivery.lastAttemptAt).toLocaleString(isAz ? 'az-AZ' : 'en-US')}
                   {delivery.errorCode ? ` • ${delivery.errorCode}` : ''}
                 </p>
               )}
@@ -517,7 +517,7 @@ export default function AdminApplicationReviewPage({ params }: Props) {
             <Button
               type="button"
               variant="outline"
-              disabled={actionLoading}
+              disabled={actionLoading || application.status === 'rejected'}
               onClick={() => handleDecision('rejected')}
               className="flex-1 sm:flex-none border-rose-500/30 text-rose-400 hover:bg-rose-500/20 hover:text-rose-300 gap-1.5"
             >
@@ -527,7 +527,7 @@ export default function AdminApplicationReviewPage({ params }: Props) {
 
             <Button
               type="button"
-              disabled={actionLoading}
+              disabled={actionLoading || application.status === 'accepted'}
               onClick={() => handleDecision('accepted')}
               className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold gap-1.5 shadow-xs"
             >
