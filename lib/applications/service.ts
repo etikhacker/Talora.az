@@ -231,6 +231,15 @@ export async function reviewApplication({
     return { success: false, error: 'Müraciət tapılmadı.' };
   }
 
+  // Never mutate reviewed_at or create another enrollment for the same decision.
+  // Re-sending its email is an independent, explicitly confirmed admin action.
+  if (app.status === (action === 'accept' ? 'accepted' : 'rejected')) {
+    return {
+      success: false,
+      error: 'Bu qərar artıq qeyd edilib. E-poçtu təkrar göndərmək üçün ayrıca “Yenidən göndər” düyməsindən istifadə edin.',
+    };
+  }
+
   // 2. Fetch internship
   const internship = await getInternshipById(app.internship_id);
   if (!internship) {
