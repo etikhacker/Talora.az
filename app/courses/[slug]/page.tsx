@@ -101,8 +101,8 @@ export default function CourseDetailsPage({ params }: { params: Promise<{ slug: 
               {enrollment ? (
                 <div className="mt-5 space-y-3">
                   <p className="flex items-center gap-2 text-sm text-emerald-500"><CheckCircle2 size={17}/>{az ? 'Qeydiyyatdan keçmisiniz' : 'You are enrolled'}</p>
-                  <Link className="inline-flex rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700" href="/dashboard/courses">
-                    {az ? 'Kurslarıma keç' : 'Go to my courses'}
+                  <Link className="inline-flex rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700" href={'/learn/' + encodeURIComponent(course.slug)}>
+                    {az ? 'Öyrənməyə davam et' : 'Continue learning'}
                   </Link>
                 </div>
               ) : (
