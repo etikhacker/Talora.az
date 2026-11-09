@@ -1,0 +1,152 @@
+[
+  [
+    "vscode,node,vite,github",
+    "Təcrübə proqramını tanıdan landing səhifədə başlıq, fayda, CTA və footer olsun; 360px və 1440px-də yoxla.",
+    "Build a landing page with a heading, benefits, CTA and footer tested at 360px and 1440px.",
+    [
+      "Vite React layihəsini qur, səhifənin HTML semantik elementlərini düzənlə.",
+      "Mobil bir sütun və desktop geniş layout üçün CSS media qaydaları qur.",
+      "Klaviatura ilə CTA-ya çatma və kontrast yoxlamasını screenshot-la göstər."
+    ],
+    [
+      "Create a Vite React project and semantic page structure.",
+      "Implement a one-column mobile and wider desktop layout.",
+      "Show keyboard CTA access and a contrast check with screenshots."
+    ]
+  ],
+  [
+    "vscode,node,vite,github",
+    "Button, TextField, StatusBadge və EmptyState komponentləri eyni prop qaydası ilə işləsin.",
+    "Implement consistent Button, TextField, StatusBadge and EmptyState components.",
+    [
+      "Hər komponent üçün TypeScript prop tipi və iki istifadə nümunəsi yaz.",
+      "Disabled, loading, error və boş vəziyyətləri ayrıca göstər.",
+      "Qısa demo səhifəsində reuse və keyboard focus davranışını test et."
+    ],
+    [
+      "Define typed props and two usage examples per component.",
+      "Show disabled, loading, error and empty states.",
+      "Test reuse and keyboard focus in a demo page."
+    ]
+  ],
+  [
+    "vscode,node,vite",
+    "Mock API-dən 5 müraciət göstərən dashboard-da loading, empty, success və 500 error halı olsun.",
+    "Create a five-application dashboard with loading, empty, success and server-error states.",
+    [
+      "Sintetik `applications.json` fixture hazırla, şəxsi məlumat istifadə etmə.",
+      "Mock fetch ilə dörd nəticə halını məcburi göstər.",
+      "Hər vəziyyət üçün başlıq, status və uyğun yenidən cəhd düyməsi əlavə et."
+    ],
+    [
+      "Create a fictional applications.json fixture without private data.",
+      "Use a mocked fetch function to simulate four response states.",
+      "Provide clear status and retry UI for each state."
+    ]
+  ],
+  [
+    "vscode,node,vite,vitest,github",
+    "Müraciət formu ilə admin siyahısını bir lokal demo-da birləşdir və backend-i mock saxla.",
+    "Connect a fictional application form and coordinator list using a mock backend.",
+    [
+      "Əvvəlki komponent, form və mock data hissələrini bir repository-də birləşdir.",
+      "Göndərilən müraciətin siyahıda görünməsini lokal state ilə simulyasiya et.",
+      "Mobil və desktop axınını testlə, mock data istifadə etdiyini README-də bildir."
+    ],
+    [
+      "Combine earlier components, forms and mock fixtures in one repository.",
+      "Simulate a submitted application appearing in the list via local state.",
+      "Test mobile/desktop flows and disclose mocked data in README."
+    ]
+  ],
+  [
+    "vscode,node,vite",
+    "Email, motivasiya və portfolio sahələrində label, field error və submit nəticəsi göstər.",
+    "Build a form with accessible email, motivation and portfolio fields.",
+    [
+      "Form sahələrini HTML label ilə bağla, boş və yanlış email yoxla.",
+      "Səhv mesajını konkret input altında göstər, focus-un düzgün keçməsini yoxla.",
+      "Girişlərin saxlanması və uğurlu submit maketini test et; real məlumat tələb etmə."
+    ],
+    [
+      "Associate labels, validate required fields and invalid email formats.",
+      "Display helpful inline errors and check keyboard focus.",
+      "Test state preservation and a mock success result with fictional data."
+    ]
+  ],
+  [
+    "vscode,node,vite,vitest",
+    "Status filter, axtarış və cari səhifə dəyişəndə siyahı uyğun yenilənsin.",
+    "Make filters, search and pagination update a task list predictably.",
+    [
+      "State modelini useState/useReducer ilə yaz və asılılıqları qeyd et.",
+      "Filter dəyişəndə səhifəni 1-ə qaytaran qayda qur.",
+      "Boş nəticə və ardıcıl kliklər üçün 3 test ssenarisi yaz."
+    ],
+    [
+      "Define state with useState/useReducer and document dependencies.",
+      "Reset pagination to page one whenever a filter changes.",
+      "Test empty results and repeated interactions."
+    ]
+  ],
+  [
+    "chrome,vscode,node",
+    "Lighthouse ilə mobil ölçüdə eyni səhifəni əvvəl/sonra ölç; əsas problemi düzəlt.",
+    "Measure a page before/after one performance optimization with Chrome Lighthouse.",
+    [
+      "Eyni cihaz/şəbəkə şəraitində iki ilkin ölçü apar.",
+      "Ən baha şəkil, JS bundle və ya font problemini tapıb düzəlt.",
+      "Sonra yenidən ölçərək fərqi və testin qeyri-dəqiqliyini qeyd et."
+    ],
+    [
+      "Capture baseline Lighthouse runs under similar conditions.",
+      "Optimize one expensive image, JavaScript bundle or font issue.",
+      "Re-measure and document the change and measurement variance."
+    ]
+  ],
+  [
+    "vscode,node,vitest",
+    "Formda boş email, status badge, loading və xəta üçün avtomatik UI testləri yaz.",
+    "Write automated tests for invalid email, status badges, loading and error states.",
+    [
+      "Vitest və Testing Library ilə sintetik fixture və sadə render testi qur.",
+      "İstifadəçinin input yazması və submit etməsini simulyasiya et.",
+      "Ən azı 6 test işə sal, test nəticəsini GitHub README-yə yaz."
+    ],
+    [
+      "Set up Vitest/Testing Library with deterministic fictional fixtures.",
+      "Simulate a user filling and submitting the form.",
+      "Run six tests and document the results."
+    ]
+  ],
+  [
+    "vscode,github,vitest",
+    "Code review zamanı tapılan 'mobil CTA gizlənir' problemini issue/test/fix ilə bağla.",
+    "Fix a review issue where a mobile CTA becomes hidden, with a regression test.",
+    [
+      "Üç müşahidə yaz, birini istifadəçi təsirinə görə prioritetləşdir.",
+      "Dəyişiklikdən əvvəl problem yaradan ekran ölçüsünü test et.",
+      "Düzəliş commit-i və əvvəl/sonra test nəticəsini göstər."
+    ],
+    [
+      "Record three findings and prioritize one based on impact.",
+      "Reproduce the failing mobile viewport before editing.",
+      "Show the fix commit and a before/after regression check."
+    ]
+  ],
+  [
+    "github,vscode,node",
+    "Yeni developer README ilə `npm install` → `npm run dev` → `npm test` işlədə bilsin.",
+    "Enable a new developer to run npm install, npm run dev and npm test from README.",
+    [
+      "Repo qovluqlarını və komponentlərin istifadə qaydasını izah et.",
+      "Env.example, mock data, test və build əmrlərini sənədləşdir.",
+      "Yeni klondan quraşdırma sınağı apar, açar/şifrə və real profil yükləmə."
+    ],
+    [
+      "Document repository layout and component usage.",
+      "Include env.example, mock fixtures and build/test commands.",
+      "Test a clean setup and avoid publishing secrets or real user profiles."
+    ]
+  ]
+]
