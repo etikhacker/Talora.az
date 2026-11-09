@@ -1,0 +1,152 @@
+[
+  [
+    "python,pandas,sheets",
+    "25 sintetik müraciət sətrində boş tarix, təkrar ID və səhv statusları təmizləyib `clean.csv` çıxart.",
+    "Clean missing dates, duplicate IDs and inconsistent statuses in 25 fictional applications.",
+    [
+      "`raw.csv` üçün ID, date, status, program sütunlarını hazırla və data dictionary yaz.",
+      "Dublikat və boş dəyərləri ayrıca say, hər düzəlişin səbəbini qeyd et.",
+      "`clean.csv`-ni ikinci dəfə açaraq sətir sayını və boş dəyər nisbətini müqayisə et."
+    ],
+    [
+      "Create a raw.csv with ID, date, status and program fields and a data dictionary.",
+      "Count duplicates and missing values; document each cleaning rule.",
+      "Reopen clean.csv and verify row counts and missing-value rates."
+    ]
+  ],
+  [
+    "sqlite,sheets",
+    "20 uydurma müraciətdə `approved / total` nisbətini SQL ilə hesabla; sıfır bölünməsini yoxla.",
+    "Calculate approval rate on 20 fictional applications using SQL and safe denominator handling.",
+    [
+      "SQLite-də kiçik `applications` cədvəli və sintetik INSERT nümunələri yarat.",
+      "COUNT və CASE ilə status üzrə say və qəbul faizini hesabla.",
+      "SQL nəticəsini Sheets-də ayrıca hesablayıb uyğunluğunu təsdiqlə."
+    ],
+    [
+      "Create a small applications table in local SQLite and populate fictional rows.",
+      "Use COUNT and CASE to compute status totals and approval rate.",
+      "Independently verify results in Sheets and document any discrepancies."
+    ]
+  ],
+  [
+    "python,pandas,matplotlib",
+    "Təcrübə kateqoriyaları üzrə say və müraciət faizi üçün iki diaqramlı lokal dashboard hazırla.",
+    "Build a local two-chart dashboard for internship counts and fictional application rates.",
+    [
+      "5 kateqoriyalı sintetik cədvəl seç və KPI təriflərini yaz.",
+      "Matplotlib və ya Sheets chart ilə sütun qrafiki və trend qur.",
+      "Ox adlarını, ölçü vahidini və mənbənin sintetik olduğunu göstər."
+    ],
+    [
+      "Define KPIs from a five-category fictional dataset.",
+      "Draw a bar chart and trend using Matplotlib or Sheets.",
+      "Label axes, units and synthetic data sources clearly."
+    ]
+  ],
+  [
+    "python,pandas,github",
+    "`raw.csv` → təmizləmə → SQL KPI → chart → nəticə cümləsi axınını README-də təsvir et.",
+    "Document raw data → cleaning → SQL metrics → charts → conclusions as a reproducible pipeline.",
+    [
+      "Əvvəlki analiz fayllarını bir `data/` və `notebooks/` strukturuna yığ.",
+      "İki ölçü hesabla və bir qrafikdə müqayisə et; ən azı 2 istisna halı yoxla.",
+      "5 cümləlik nəticə və istifadə olunan sintetik məlumat limitini yaz."
+    ],
+    [
+      "Organize earlier analysis into data/ and notebooks/ directories.",
+      "Compute two metrics and compare them in a chart with edge-case checks.",
+      "Summarize findings and fictional-data limitations in five sentences."
+    ]
+  ],
+  [
+    "python,pandas,sheets",
+    "`age` boş və `status='unknown'` olan sintetik sətrlər üçün validation qaydaları qur.",
+    "Add missing-value and category validation rules to a fictional dataset.",
+    [
+      "Hər sütunun tipi, icazəli dəyərləri və boş ola bilməsini data dictionary-də yaz.",
+      "Yanlış tarix, mənfi say və naməlum statusu aşkarlayan üç test hazırla.",
+      "Hər xəta üçün düzəltmə və ya imtina qərarını əsaslandır."
+    ],
+    [
+      "Define type, allowed values and nullability for each field.",
+      "Test invalid dates, negative counts and unknown statuses.",
+      "Explain whether each failure should be corrected or rejected."
+    ]
+  ],
+  [
+    "python,pandas,matplotlib",
+    "30 sintetik qeyddə median müraciət yaşı, kateqoriya payı və outlier-ləri araşdır.",
+    "Explore medians, category proportions and outliers from thirty synthetic records.",
+    [
+      "Describe, median və value_counts nəticələrini ayrıca yaz.",
+      "Histogram və boxplot ilə paylanmanı müqayisə et.",
+      "Görünən fərqi fakt, səbəb izahını isə fərziyyə kimi ayır."
+    ],
+    [
+      "Compute descriptive summaries, median and category counts.",
+      "Plot a histogram and boxplot to inspect distributions.",
+      "Distinguish observed patterns from unverified causal explanations."
+    ]
+  ],
+  [
+    "python,sheets",
+    "Yanvar və fevralda qəbul olan iki sintetik cohort-un 4 həftəlik tamamlanma faizlərini müqayisə et.",
+    "Compare four-week completion rates for fictional January and February enrollment cohorts.",
+    [
+      "Cohort-u qeydiyyat ayı kimi dəqiq tərif et.",
+      "Hər cohort-un 1–4-cü həftə aktiv sayını və faizini cədvəldə göstər.",
+      "Kiçik nümunə və boş cohort hallarında nəticənin məhdudluğunu izah et."
+    ],
+    [
+      "Define cohorts by enrollment month.",
+      "Compute active counts and retention percentages for weeks one through four.",
+      "Discuss small-sample and empty-cohort limitations."
+    ]
+  ],
+  [
+    "sheets,matplotlib,docs",
+    "Dashboard-da yanlış faiz məxrəci, oxunması çətin rəng və itən filtr halları üçün audit yaz.",
+    "Audit a fictional dashboard for wrong denominators, unreadable colors and broken filters.",
+    [
+      "Hər vizual üçün mənbə, metrikanın düsturu və filtr təsirini yoxla.",
+      "Ən azı 5 problem üçün risk, təsir və düzəliş sütunu hazırla.",
+      "Bir qrafiki düzəldib əvvəl/sonra görüntüsünü təqdim et."
+    ],
+    [
+      "Check source data, metric formulas and filter effects for each visual.",
+      "Record five issues with risks, impact and proposed remedies.",
+      "Correct one chart and provide a before/after comparison."
+    ]
+  ],
+  [
+    "slides,docs,matplotlib",
+    "'Müraciətlər hansı həftədə azalır?' sualına 2 qrafik, 3 fakt və 1 tövsiyə ilə cavab yaz.",
+    "Answer why applications dip using two charts, three observations and one recommendation.",
+    [
+      "Oxucu auditoriyasını təyin et və bir əsas qərar sualı yaz.",
+      "Qrafiklərdə ölçülən faktları eyni vahidlə izah et.",
+      "Sübut olmayan səbəb iddiasını ehtimal kimi qeyd et."
+    ],
+    [
+      "Specify the audience and the decision question.",
+      "Explain charts using consistent units and verified calculations.",
+      "Label possible causes as hypotheses unless there is evidence."
+    ]
+  ],
+  [
+    "python,github,docs",
+    "Repo klonlandıqda `requirements.txt`, `clean.py` və `README.md` ilə eyni nəticə yenidən alınsın.",
+    "Make cleaning and analysis reproducible from requirements.txt, clean.py and README.",
+    [
+      "Yalnız sintetik və ya icazəli dataset, versiyalı kod və requirements fayllarını saxla.",
+      "Lokal sıfırdan işə salma əmrlərini README-də yaz.",
+      "Nəticə CSV-si ilə qrafikin uyğunluğunu təkrar test et və limitləri qeyd et."
+    ],
+    [
+      "Version fictional/licensed data, scripts and dependency requirements.",
+      "Document commands for a clean local rerun.",
+      "Verify outputs and charts match expectations and disclose limitations."
+    ]
+  ]
+]
