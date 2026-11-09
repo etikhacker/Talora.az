@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   BriefcaseBusiness,
+  BookOpen,
   FileCheck2,
   Users,
   ListTodo,
@@ -64,6 +65,11 @@ const groups: { az: string; en: string; items: Item[] }[] = [
         icon: CheckCircle2,
       },
     ],
+  },
+  {
+    az: "TƏDRİS",
+    en: "COURSES",
+    items: [{ az: "Kurslar", en: "Courses", href: "/admin/courses", icon: BookOpen }],
   },
   {
     az: "İSTİFADƏÇİLƏR",
