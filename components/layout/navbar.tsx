@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X, User, LogOut } from "lucide-react";
 import { useAuth } from "@/lib/auth/auth-context";
 import { useLanguage } from "@/lib/i18n/language-context";
+import { isCoursesEnabled } from "@/lib/features/courses";
 import { TaloraLogo } from "./talora-logo";
 import { ThemeToggle } from "./theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
@@ -25,7 +26,7 @@ export function Navbar() {
   }, [open]);
   const links = [
     ["/internships", isAz ? "Təcrübələr" : "Internships"],
-    ["/courses", isAz ? "Kurslar" : "Courses"],
+    ...(isCoursesEnabled ? [["/courses", isAz ? "Kurslar" : "Courses"]] : []),
     ["/how-it-works", isAz ? "Necə işləyir?" : "How it works"],
     ["/about", isAz ? "Haqqımızda" : "About"],
     ["/contact", isAz ? "Əlaqə" : "Contact"],
