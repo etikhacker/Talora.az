@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/auth-context';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { createInternship } from '@/lib/internships/service';
+import { InternshipCategoryField } from '@/components/admin/internship-category-field';
 import { internshipSchema, InternshipFormData } from '@/lib/validations/internship';
 import { InternshipDifficulty, InternshipStatus } from '@/types/database';
 import {
@@ -58,7 +59,6 @@ export default function AdminNewInternshipPage() {
   const [slug, setSlug] = useState('');
   const [autoSlug, setAutoSlug] = useState(true);
   const [category, setCategory] = useState('Proqramlaşdırma və Veb');
-  const [customCategory, setCustomCategory] = useState('');
   const [durationWeeks, setDurationWeeks] = useState(8);
   const [difficulty, setDifficulty] = useState<InternshipDifficulty>('intermediate');
   const [shortDescription, setShortDescription] = useState('');
@@ -90,7 +90,6 @@ export default function AdminNewInternshipPage() {
     setErrorMessage(null);
     setFieldErrors({});
 
-    const selectedCategory = category === 'custom' ? customCategory.trim() : category;
 
     const parsedSkills = skillsRaw
       .split(',')
@@ -117,7 +116,7 @@ export default function AdminNewInternshipPage() {
       slug,
       short_description: shortDescription,
       description,
-      category: selectedCategory,
+      category: category.trim(),
       duration_weeks: Number(durationWeeks),
       difficulty,
       skills: parsedSkills,
@@ -242,32 +241,8 @@ export default function AdminNewInternshipPage() {
               <label className="block text-xs font-semibold text-slate-300 mb-1">
                 {isAz ? 'İstiqamət / Kateqoriya' : 'Category / Track'}
               </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-              >
-                <option value="Frontend">Frontend</option>
-                <option value="Backend">Backend</option>
-                <option value="Data">Data</option>
-                <option value="AI">AI</option>
-                <option value="Automation">Automation</option>
-                <option value="Proqramlaşdırma və Veb">Proqramlaşdırma və Veb</option>
-                <option value="Məlumat Analitikası">Məlumat Analitikası</option>
-                <option value="Məhsul İdarəetməsi">Məhsul İdarəetməsi</option>
-                <option value="Kibertəhlükəsizlik">Kibertəhlükəsizlik</option>
-                <option value="UI/UX Dizayn">UI/UX Dizayn</option>
-                <option value="Rəqəmsal Marketinq">Rəqəmsal Marketinq</option>
-                <option value="custom">{isAz ? 'Fərqli qeyd et...' : 'Custom...'}</option>
-              </select>
-              {category === 'custom' && (
-                <Input
-                  placeholder={isAz ? 'Kateqoriyanı yazın' : 'Enter category'}
-                  value={customCategory}
-                  onChange={(e) => setCustomCategory(e.target.value)}
-                  className="mt-2 bg-slate-950 border-slate-800 text-white text-xs"
-                />
-              )}
+              <InternshipCategoryField value={category} onChange={setCategory} isAz={isAz} />
+              {fieldErrors.category && <p className="text-xs text-rose-400 mt-1">{fieldErrors.category}</p>}
             </div>
 
             <div>

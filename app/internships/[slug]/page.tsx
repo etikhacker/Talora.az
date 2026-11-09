@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/lib/auth/auth-context';
 import { useLanguage } from '@/lib/i18n/language-context';
+import { localizedInternshipText } from '@/lib/internships/localized-content';
 import { getInternshipBySlug } from '@/lib/internships/service';
 import { getStudentApplications } from '@/lib/applications/service';
 import { getStudentEnrollments } from '@/lib/enrollments/service';
@@ -203,7 +204,7 @@ export default function InternshipDetailsPage({ params }: Props) {
             <PageHeading embedded title={<>
               {internship.title}
             </>} description={<>
-              {internship.short_description}
+              {localizedInternshipText(internship.short_description, isAz ? 'az' : 'en')}
             </>} />
 
             {/* Quick Spec Pills */}
@@ -243,7 +244,7 @@ export default function InternshipDetailsPage({ params }: Props) {
                   {t('programOverview')}
                 </h2>
                 <div className="text-sm text-slate-600 leading-relaxed whitespace-pre-line space-y-4">
-                  {internship.description}
+                  {localizedInternshipText(internship.description, isAz ? 'az' : 'en')}
                 </div>
               </div>
 
