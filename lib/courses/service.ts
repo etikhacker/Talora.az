@@ -191,8 +191,9 @@ export async function getMyCourseProgress(
     .eq('status', 'published');
   if (moduleError) throw new Error(moduleError.message);
 
-  const moduleToCourse = new Map(
-    (modules ?? []).map((module) => [module.id, module.course_id]),
+  const moduleRows = (modules ?? []) as Array<{ id: string; course_id: string }>;
+  const moduleToCourse = new Map<string, string>(
+    moduleRows.map((module) => [module.id, module.course_id]),
   );
   const courseRequired = new Map<string, Set<string>>();
   for (const courseId of courseIds) courseRequired.set(courseId, new Set());
@@ -205,7 +206,7 @@ export async function getMyCourseProgress(
       .eq('status', 'published')
       .eq('is_required', true);
     if (lessonError) throw new Error(lessonError.message);
-    for (const lesson of lessons ?? []) {
+    for (const lesson of (lessons ?? []) as Array<{ id: string; module_id: string }>) {
       const courseId = moduleToCourse.get(lesson.module_id);
       if (courseId) courseRequired.get(courseId)?.add(lesson.id);
     }
@@ -218,7 +219,7 @@ export async function getMyCourseProgress(
   if (progressError) throw new Error(progressError.message);
 
   const completionByEnrollment = new Map<string, Set<string>>();
-  for (const row of progress ?? []) {
+  for (const row of (progress ?? []) as Array<{ enrollment_id: string; lesson_id: string }>) {
     const done = completionByEnrollment.get(row.enrollment_id) ?? new Set<string>();
     done.add(row.lesson_id);
     completionByEnrollment.set(row.enrollment_id, done);
