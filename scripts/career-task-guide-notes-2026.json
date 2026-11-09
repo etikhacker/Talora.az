@@ -1,0 +1,562 @@
+{
+  "Business Analysis": {
+    "tools": [
+      "docs,sheets",
+      "sheets",
+      "draw,docs",
+      "docs",
+      "docs,sheets",
+      "draw",
+      "sheets",
+      "sheets",
+      "sheets",
+      "slides"
+    ],
+    "cases": [
+      [
+        "Müraciət cavabının gecikməsini (məsələn, 48 saat) problem kimi təsvir et; tələbə, admin və universitetin ehtiyaclarını ayır.",
+        "Describe a 48-hour application response delay and distinguish student, admin and university needs."
+      ],
+      [
+        "Tələbə, universitet koordinatoru və HR üçün maraq/səlahiyyət matrisi qur; hər rol üçün 2 müsahibə sualı əlavə et.",
+        "Build an interest/influence map for students, university coordinators and HR, with two interview questions per role."
+      ],
+      [
+        "Müraciət → yoxlama → admin qərarı → bildiriş axınını ən azı 6 addımla çək; gözləməni işarələ.",
+        "Draw a six-step application-to-decision workflow and clearly mark waiting points."
+      ],
+      [
+        "'Tez cavab' ifadəsini 'qərardan sonra 24 saat ərzində bildiriş' kimi ölçülə bilən tələbə çevir.",
+        "Replace 'respond quickly' with a verifiable 'notify within 24 hours of a decision' requirement."
+      ],
+      [
+        "'Tələbə olaraq müraciət statusunu görmək istəyirəm' hekayəsinə Given/When/Then və uğursuz hal əlavə et.",
+        "Write Given/When/Then criteria for a student checking application status, including a failure case."
+      ],
+      [
+        "Köhnə 6 addımlı prosesi 4 addımla müqayisə et, avtomatlaşan yoxlamanı və məsul şəxsi qeyd et.",
+        "Compare a six-step existing process with a four-step target and specify automation and ownership."
+      ],
+      [
+        "MVP üçün status izləməni Must, avtomatik tövsiyələri Could kimi prioritetləşdir; səbəb yaz.",
+        "Prioritize application status tracking as Must and automated suggestions as Could, with reasons."
+      ],
+      [
+        "Orta cavab vaxtı = qərar tarixi − müraciət tarixi; 5 sintetik müraciətlə hesablama apar.",
+        "Calculate average response time from five fictional application and decision timestamps."
+      ],
+      [
+        "Qəbul edilmiş və rədd edilmiş müraciət üçün 6 test yaz: giriş, addım, gözlənilən nəticə.",
+        "Write six acceptance tests for accepted/rejected applications with inputs, steps and expected results."
+      ],
+      [
+        "Problem, proses sxemləri, backlog və KPI-ları 5–6 slayda yığ, üç tövsiyəni əsaslandır.",
+        "Package the problem, workflows, backlog and KPIs in five or six slides with three recommendations."
+      ]
+    ]
+  },
+  "Project Management": {
+    "tools": [
+      "docs",
+      "sheets",
+      "sheets",
+      "sheets",
+      "sheets",
+      "trello",
+      "docs",
+      "sheets",
+      "sheets",
+      "slides"
+    ],
+    "cases": [
+      [
+        "Universitet tədbiri üçün 8 həftəlik qeydiyyat saytını nümunə götür, scope və nəticəni yaz.",
+        "Use an eight-week student-event registration website as a sample project and define scope."
+      ],
+      [
+        "Dizayn, forma, məlumat bazası və test üçün 4 deliverable və hərəsinin alt işlərini yaz.",
+        "Create a four-deliverable WBS covering design, forms, database and testing."
+      ],
+      [
+        "Dizayn bitmədən frontend başlamır kimi asılılıqları həftəlik plana sal.",
+        "Plot dependencies such as frontend work waiting on design in a weekly schedule."
+      ],
+      [
+        "API gecikməsi, komanda üzvünün olmaması və test problemi kimi 6 riski bal ilə qiymətləndir.",
+        "Score six risks such as API delays, team absence and test failures."
+      ],
+      [
+        "0 AZN hosting, 30 AZN çap kimi sintetik xərclə minimum/normal/yüksək ssenari qur.",
+        "Build low/base/high fictional budgets with free hosting and example printing costs."
+      ],
+      [
+        "Qeydiyyat forması, email və admin siyahısını iki sprintə böl, WIP limit göstər.",
+        "Split signup form, email and admin list into two sprints and set a WIP limit."
+      ],
+      [
+        "Plan 60%, fakt 45% fərqini status hesabatında göstər və bloklayıcı üçün qərar istə.",
+        "Explain a fictional planned 60% vs actual 45% completion gap and escalation."
+      ],
+      [
+        "Son anda SMS funksiyası tələb olunduğunu fərz et, scope/time/cost təsirini yaz.",
+        "Assess a late SMS feature request by its scope, time and cost impact."
+      ],
+      [
+        "Boş email, təkrar qeydiyyat, mobil ekran və səhv link üçün qəbul testləri hazırla.",
+        "Create acceptance tests for empty email, duplicate registration, mobile screens and broken links."
+      ],
+      [
+        "8 həftəlik layihə üçün plan/fakt hesabatı, 3 öyrənilən dərs və handoff hazırla.",
+        "Close an eight-week project with planned vs actual progress, three lessons and a handoff."
+      ]
+    ]
+  },
+  "Human Resources": {
+    "tools": [
+      "docs",
+      "sheets",
+      "docs",
+      "sheets",
+      "docs",
+      "sheets",
+      "sheets",
+      "forms",
+      "docs",
+      "slides"
+    ],
+    "cases": [
+      [
+        "Junior IT Support rolu üçün 5 iş nəticəsi yaz, yaş/cins kimi alakasız kriteriya qoyma.",
+        "Define five outcomes for a junior IT support role without unrelated age or gender requirements."
+      ],
+      [
+        "Ünsiyyət, Excel və problem həlli bacarıqlarını 1–4 səviyyə üzrə təsvir et.",
+        "Describe communication, spreadsheets and troubleshooting on a four-level competency rubric."
+      ],
+      [
+        "'Enerjili gənc' kimi ifadəni ölçülə bilən bacarıqla əvəz edən vakansiya mətni yaz.",
+        "Replace stereotyped job-ad language with measurable skills and outcomes."
+      ],
+      [
+        "A və B adlı iki uydurma namizədi eyni 5 kriteriya üzrə qiymətləndir.",
+        "Score two fictional candidates A and B against the same five criteria."
+      ],
+      [
+        "Müştəri şikayəti ssenarisinə 6 sual və 0–3 bal rubriki hazırla.",
+        "Create six structured customer-complaint interview questions and a 0–3 rubric."
+      ],
+      [
+        "İlk 1, 7 və 30 gün üçün giriş, təlim və nəticə checkpoint-ləri qur.",
+        "Plan onboarding checkpoints for days 1, 7 and 30 with clear deliverables."
+      ],
+      [
+        "6 uydurma komanda üzvünün Excel boşluqlarından təlim ehtiyacı çıxart.",
+        "Identify training needs from fictional spreadsheet skills for six team members."
+      ],
+      [
+        "İş mühiti haqqında 6 anonim sorğu sualı və sintetik cavab xülasəsi yaz.",
+        "Create six anonymous workplace survey items and a synthetic results summary."
+      ],
+      [
+        "Namizəd məlumatının toplanma, istifadə, məhdud giriş və silinmə sxemini çək.",
+        "Map collection, restricted access, usage and deletion of applicant information."
+      ],
+      [
+        "Vakansiya → qiymətləndirmə → müsahibə → onboarding sənədlərini portfelə yığ.",
+        "Combine job post, assessment, interview and onboarding assets in one HR portfolio."
+      ]
+    ]
+  },
+  "Digital Marketing": {
+    "tools": [
+      "docs,trends",
+      "sheets",
+      "docs",
+      "sheets",
+      "trends,sheets",
+      "docs,canva",
+      "docs",
+      "sheets",
+      "sheets",
+      "slides"
+    ],
+    "cases": [
+      [
+        "Tələbə tədbir platforması üçün iki persona və ehtiyacları araşdır; hipotezi fakt kimi göstərmə.",
+        "Research two personas for a student-events platform and label assumptions."
+      ],
+      [
+        "Üç oxşar açıq saytın mesaj, CTA və kontentini cədvəldə müqayisə et.",
+        "Compare messaging, calls to action and content on three public competitor sites."
+      ],
+      [
+        "'Tədbiri 3 dəqiqəyə tap' iddiasını yoxla; sübut yoxdursa yumşaq formada yaz.",
+        "Verify a 'find events in three minutes' claim or use qualified language."
+      ],
+      [
+        "Instagram reach, email signup və SEO discovery üçün ayrı məqsəd/KPI təyin et.",
+        "Set distinct goals and metrics for social reach, email signups and SEO."
+      ],
+      [
+        "'Tələbə təcrübəsini necə tapmaq olar' tipli 10 axtarış niyyətini klasterləşdir.",
+        "Cluster ten informational searches around finding internships."
+      ],
+      [
+        "Hero, 3 fayda, CTA və FAQ ilə bir səhifəlik landing copy hazırla.",
+        "Write landing page copy with a hero, three benefits, a CTA and an FAQ."
+      ],
+      [
+        "Razılığa əsaslanan 3 email: xoş gəldin, xatırlatma, yekun; real ünvanlara göndərmə.",
+        "Write a consent-based welcome, reminder and follow-up sequence without mailing anyone."
+      ],
+      [
+        "İki CTA-nı 1000 sintetik baxışla müqayisə et; nəticənin məhdudluğunu yaz.",
+        "Compare two CTAs using a fictional 1,000-visit sample and discuss uncertainty."
+      ],
+      [
+        "CTR və conversion düsturlarını 5 sətrlik sintetik data ilə hesabla.",
+        "Calculate click-through and conversion rates from five fictional rows."
+      ],
+      [
+        "Məhsul, auditoriya, kanal, metrikalar və 3 tövsiyəni təqdimatla yekunlaşdır.",
+        "Present the audience, channel mix, metrics and three evidence-backed recommendations."
+      ]
+    ]
+  },
+  "Content Writing": {
+    "tools": [
+      "docs",
+      "docs,sheets",
+      "docs",
+      "docs",
+      "docs,canva",
+      "docs",
+      "docs,sheets",
+      "docs",
+      "docs",
+      "docs,github"
+    ],
+    "cases": [
+      [
+        "'İlk internship müraciəti' mövzusunda oxucunun 5 sualını və məqalə məqsədini yaz.",
+        "Define five reader questions for a first-internship application article."
+      ],
+      [
+        "Rəsmi universitet və şirkət saytı daxil olmaqla 5 mənbənin tarixini və etibarlılığını yoxla.",
+        "Verify dates and credibility of five sources including official university or company pages."
+      ],
+      [
+        "'Təcrübəyə hazırlaşmaq üçün 7 addım' mövzusunun 5 başlıq variantını müqayisə et.",
+        "Compare five non-clickbait headlines about preparing for internships."
+      ],
+      [
+        "800–1000 sözlük CV, portfolio, müraciət və müsahibə bölməli məqalə yaz.",
+        "Write an 800–1,000 word guide on CVs, portfolios, applications and interviews."
+      ],
+      [
+        "Eyni məqalədən LinkedIn, Instagram və newsletter üçün fərqli 3 qısa mətn çıxart.",
+        "Adapt one article into distinct LinkedIn, Instagram and newsletter captions."
+      ],
+      [
+        "Talora üçün aydın və tələbəyə yaxın ton, do/don't misalları hazırla.",
+        "Create a student-friendly Talora voice guide with do/don't examples."
+      ],
+      [
+        "Məqalədə 10 iddianı yoxla, şəkil üçün istifadəyə icazə qeyd et.",
+        "Fact-check ten claims and document usage rights for images."
+      ],
+      [
+        "'Bu həftənin 3 təcrübə tövsiyəsi' mövzulu mock newsletter hazırlayıb göndərmə.",
+        "Draft a three-tip newsletter mockup without sending it."
+      ],
+      [
+        "Başlıq sırası, alt text, sadə dil və təsviri link adı üzrə məqaləni redaktə et.",
+        "Edit the article for heading hierarchy, alt text, plain language and useful links."
+      ],
+      [
+        "4 ən yaxşı yazı üçün məqsəd, mənbə və before/after redaktə nümunəsi hazırla.",
+        "Create a four-piece writing portfolio with sources and before/after edits."
+      ]
+    ]
+  },
+  "Social Media Management": {
+    "tools": [
+      "sheets",
+      "docs",
+      "sheets",
+      "sheets",
+      "canva",
+      "docs",
+      "sheets",
+      "sheets",
+      "docs",
+      "slides"
+    ],
+    "cases": [
+      [
+        "İki universitet klubunun açıq Instagram hesabında paylaşım ardıcıllığını müqayisə et.",
+        "Compare posting cadence on two public university club profiles."
+      ],
+      [
+        "Birinci kurs tələbəsi və məzun üçün iki persona və ayrı KPI yaz.",
+        "Create separate personas and KPIs for a first-year student and recent graduate."
+      ],
+      [
+        "Karyera məsləhəti, FAQ, təcrübə hekayəsi, proqram elanı sütunlarını qur.",
+        "Define content pillars for career tips, FAQs, stories and program announcements."
+      ],
+      [
+        "28 günlük kontent planına tarix, format, kanal, məsul şəxs, CTA yaz.",
+        "Build a 28-day calendar with date, format, channel, owner and CTA."
+      ],
+      [
+        "1080×1350 post üçün mesaj, vizual referans, kontrast və alt text brief-i hazırla.",
+        "Create a 1080×1350 post brief with message, contrast and alt text."
+      ],
+      [
+        "Gecikmiş müraciət sualı, spam və təhqir üçün nəzakətli cavab/escalation yaz.",
+        "Draft polite responses and escalation rules for application delays and spam."
+      ],
+      [
+        "Sual ilə başlayan hook və fayda ilə başlayan hook-u demo A/B məlumatında müqayisə et.",
+        "Compare question-led and benefit-led hooks with fictional A/B data."
+      ],
+      [
+        "Reach, comments, saves və clicks üçün həftəlik hesabat hesabla.",
+        "Prepare a weekly report of reach, comments, saves and clicks."
+      ],
+      [
+        "Səhv tədbir tarixi paylaşılması halında yoxla → düzəlt → izah et planı qur.",
+        "Build a verify → correct → explain plan after a mistaken event date."
+      ],
+      [
+        "6 post nümunəsini, 4 həftəlik KPI-ları və nəticə tövsiyələrini yekunlaşdır.",
+        "Package six sample posts, four-week KPIs and recommendations."
+      ]
+    ]
+  },
+  "Graphic Design": {
+    "tools": [
+      "figma,docs",
+      "canva",
+      "figma",
+      "inkscape,figma",
+      "figma",
+      "figma,canva",
+      "sheets,figma",
+      "inkscape,figma",
+      "figma",
+      "figma,docs"
+    ],
+    "cases": [
+      [
+        "Uydurma tələbə tədbirləri brendi üçün auditoriya və 5 dizayn meyarını yaz.",
+        "Define audience needs and five design criteria for a fictional student-events brand."
+      ],
+      [
+        "Minimalist, enerjili və akademik istiqamətlərdə moodboard düzəlt; qaynaqları yaz.",
+        "Create minimalist, energetic and academic moodboards with source credits."
+      ],
+      [
+        "28px başlıq, 18px altbaşlıq, 14px mətn və 8px grid qaydasını sına.",
+        "Test a 28/18/14px type scale and an 8px layout grid."
+      ],
+      [
+        "3 orijinal logomark sketçi yarat, 24px və 64px görünüşünü yoxla.",
+        "Sketch three original logos and test them at 24px and 64px."
+      ],
+      [
+        "Ağ yazı və tünd göy fon üçün kontrastı ölç, 4.5:1 hədəfinə bax.",
+        "Measure white-on-navy text contrast against a 4.5:1 normal-text target."
+      ],
+      [
+        "Kvadrat post, 1080×1350 feed və 1080×1920 story şablonu düzəlt.",
+        "Build square, feed and story post templates in three sizes."
+      ],
+      [
+        "5 sətir uydurma rəqəmlə dürüst bar chart infoqrafikası yarat.",
+        "Build an honest bar-chart infographic from five synthetic data points."
+      ],
+      [
+        "SVG loqo, PNG post və PDF guide eksport et, fayl adlarını yoxla.",
+        "Export SVG, PNG and PDF assets and validate file naming."
+      ],
+      [
+        "2 versiyanın spacing, rəng və oxunaqlığını before/after müqayisə et.",
+        "Compare two iterations for spacing, color and readability."
+      ],
+      [
+        "Loqo, palitra, şrift, şablon və istifadəyə dair qaydaları bir brand kit-də birləşdir.",
+        "Package logos, colors, type, templates and usage rules in a brand kit."
+      ]
+    ]
+  },
+  "Video Editing": {
+    "tools": [
+      "docs",
+      "canva,docs",
+      "docs",
+      "kdenlive",
+      "audacity,kdenlive",
+      "kdenlive",
+      "kdenlive",
+      "kdenlive",
+      "kdenlive",
+      "kdenlive,docs"
+    ],
+    "cases": [
+      [
+        "45 saniyəlik 'Təcrübəyə necə müraciət etməli?' mövzulu video brief yaz.",
+        "Write a 45-second how-to-apply-for-internships video brief."
+      ],
+      [
+        "Hook, problem, 3 addım, fayda, CTA və yekun üçün 8 kadr planla.",
+        "Storyboard eight shots for hook, problem, steps, benefit and CTA."
+      ],
+      [
+        "Öz çəkdiyin 3 klipi və icazəli qrafikanı ayrı qovluqlarda saxla.",
+        "Organize three self-recorded clips and properly licensed illustrations."
+      ],
+      [
+        "Kdenlive timeline-da 45 saniyəlik rough cut hazırla; ilk 3 saniyədə mövzu bilinsin.",
+        "Create a 45-second rough cut in Kdenlive with a clear opening hook."
+      ],
+      [
+        "Danışığı musiqidən aydın saxla və audio səviyyəsini qulaqcıqla yoxla.",
+        "Keep spoken audio intelligible above music and listen on headphones."
+      ],
+      [
+        "'İndi müraciət edin' cümləsinə düzgün timing ilə subtitr əlavə et, SRT çıxart.",
+        "Add timed captions and an SRT export for the call to action."
+      ],
+      [
+        "İşıqları fərqli 3 kadrın rəng temperaturunu bir-birinə yaxınlaşdır.",
+        "Match color temperatures across three differently lit shots."
+      ],
+      [
+        "2 saniyəlik title və bir lower-third əlavə et, həddindən artıq effekt istifadə etmə.",
+        "Add a restrained two-second title and one lower-third."
+      ],
+      [
+        "1920×1080 və 1080×1920 video çıxart, mətnin kəsilmədiyini yoxla.",
+        "Export 16:9 and 9:16 video versions with safe text areas."
+      ],
+      [
+        "Video, SRT, layihə faylı, istifadə olunan mənbələr və 5 keyfiyyət yoxlaması təqdim et.",
+        "Submit the video, SRT, editable project, source credits and five QA notes."
+      ]
+    ]
+  },
+  "Instructional Design": {
+    "tools": [
+      "docs,forms",
+      "docs",
+      "sheets",
+      "docs,slides",
+      "forms,sheets",
+      "docs",
+      "docs",
+      "forms,sheets",
+      "sheets",
+      "slides,docs"
+    ],
+    "cases": [
+      [
+        "Talora-da ilk dəfə müraciət edən tələbənin bilmədiyi 3 addımı araşdır.",
+        "Identify three knowledge gaps for a student applying for the first time."
+      ],
+      [
+        "'Müraciətin 4 addımını sıralayır' kimi ölçülən öyrənmə nəticələri yaz.",
+        "Write measurable outcomes such as listing four application steps."
+      ],
+      [
+        "Hesab yarat, proqram seç, müraciət et adlı 3 modulun xəritəsini qur.",
+        "Map account setup, program selection and application into three modules."
+      ],
+      [
+        "10 dəqiqəlik dərsi 2 dəq giriş + 5 dəq demo + 3 dəq məşq olaraq planla.",
+        "Plan a ten-minute lesson with introduction, demo and practice."
+      ],
+      [
+        "5 test sualı və 1 praktik forma tapşırığına uyğun rubrik hazırla.",
+        "Create five quiz items and a rubric for completing a sample form."
+      ],
+      [
+        "Yanlış cavab üçün 'niyə' və 'nəyi təkrar öyrənməli' feedback-i yaz.",
+        "Provide feedback explaining errors and recommended remediation."
+      ],
+      [
+        "Dərsdə subtitr, alt text, başlıq sırası və klaviatura dəstəyini yoxla.",
+        "Audit captions, alt text, heading order and keyboard accessibility."
+      ],
+      [
+        "Üç uydurma öyrənən profili ilə dərsi addım-addım simulyasiya et.",
+        "Walk through the lesson using three fictional learner personas."
+      ],
+      [
+        "5 suallıq əvvəl/sonra testin ölçmə cədvəlini sintetik data ilə doldur.",
+        "Create a five-item pre/post learning table using synthetic scores."
+      ],
+      [
+        "Məqsəd, kontent, quiz, rubrik və təlimçi qeydlərini bir mini-kurs kimi paketlə.",
+        "Package goals, lesson, quiz, rubric and facilitator notes as a mini-course."
+      ]
+    ]
+  },
+  "Prompt Engineering": {
+    "tools": [
+      "docs,sheets,ai",
+      "ai,sheets",
+      "docs,ai",
+      "docs,ai,sheets",
+      "python,vscode",
+      "docs,ai",
+      "docs,ai",
+      "sheets",
+      "sheets,ai",
+      "github,docs"
+    ],
+    "cases": [
+      [
+        "'Təcrübə təsvirindən 3 bacarıq çıxar' tapşırığı üçün 10 test girişi və düzgün cavab hazırla.",
+        "Create ten inputs and gold answers for extracting three skills from internship descriptions."
+      ],
+      [
+        "'Bu mətndən 3 texnologiyanı tap' promptunu 10 nümunədə sınayıb səhvləri qeyd et.",
+        "Evaluate a simple technology extraction prompt on ten test inputs."
+      ],
+      [
+        "'Əvvəlki qaydanı unut' kimi zərərsiz mətni etibarsız data kimi izolyasiya et.",
+        "Treat benign ignore-prior-instructions text as untrusted input."
+      ],
+      [
+        "Zero-shot və 3 nümunəli promptu eyni 10 testdə müqayisə et.",
+        "Compare zero-shot and three-example prompts using the same ten cases."
+      ],
+      [
+        "{ \"skills\": [\"Python\", \"SQL\"] } JSON obyektini Python json.loads ilə yoxla.",
+        "Validate a skills JSON object with Python's json.loads."
+      ],
+      [
+        "4 açıq mənbə cümləsi üzrə mənbə ID-ləri ilə cavab hazırlat.",
+        "Ground answers in four public statements and require source IDs."
+      ],
+      [
+        "Etibarsız sənəd mətnindəki təlimatı data kimi qəbul etdiyini sına.",
+        "Test boundaries around instructions embedded in untrusted document text."
+      ],
+      [
+        "10 test üçün accuracy və JSON validity faizlərini cədvəldə hesabla.",
+        "Calculate accuracy and valid JSON rates for ten cases."
+      ],
+      [
+        "İki promptun token və gecikmə fərqini pulsuz limit daxilində müqayisə et.",
+        "Compare token counts and latency for two prompts within free quotas."
+      ],
+      [
+        "Prompt v1/v2, test dataseti, nəticə CSV-si və README ilə GitHub repo hazırla.",
+        "Prepare a GitHub repo with prompt v1/v2, test fixtures, results CSV and README."
+      ]
+    ]
+  }
+}
