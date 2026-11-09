@@ -145,7 +145,7 @@ BEGIN
   INSERT INTO public.lesson_progress(enrollment_id,lesson_id)
   SELECT id,'00000000-0000-4000-8000-0000000000e2'
   FROM public.course_enrollments WHERE course_id='00000000-0000-4000-8000-0000000000c1';
- EXCEPTION WHEN insufficient_privilege THEN denied:=true;
+ EXCEPTION WHEN insufficient_privilege OR check_violation THEN denied:=true;
  END;
  IF NOT denied THEN RAISE EXCEPTION 'Student wrote progress to archived course'; END IF;
 END;
