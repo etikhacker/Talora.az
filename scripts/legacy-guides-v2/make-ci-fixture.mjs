@@ -46,7 +46,7 @@ process.stdout.write([
   ' UNIQUE (internship_id,task_number)',
   ');',
   'CREATE TABLE public.task_submissions (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), task_id uuid REFERENCES public.internship_tasks(id), status text NOT NULL);',
-  'CREATE TEMP TABLE fixture_import(payload jsonb NOT NULL) ON COMMIT DROP;',
+  'CREATE TEMP TABLE fixture_import(payload jsonb NOT NULL);',
   'INSERT INTO fixture_import(payload) VALUES ($legacy_ci$' + data + '$legacy_ci$::jsonb);',
   'INSERT INTO public.internships(slug) SELECT DISTINCT r.item->>\'slug\' FROM fixture_import f CROSS JOIN LATERAL jsonb_array_elements(f.payload) r(item);',
   'INSERT INTO public.internship_tasks(internship_id,task_number,title,description,instructions)',
