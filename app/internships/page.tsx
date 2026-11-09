@@ -24,7 +24,6 @@ import {
   Clock,
   ArrowRight,
   Sparkles,
-  Users,
   RotateCcw,
 } from 'lucide-react';
 
