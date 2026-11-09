@@ -1,0 +1,152 @@
+[
+  [
+    "aistudio,docs,sheets",
+    "Uydurma 'Giriş kodumu unutdum' mesajına {'category':'account','confidence':0.9} formatında cavab nümunəsi yaz.",
+    "Use a fictional 'I forgot my sign-in code' message with a JSON category and confidence score.",
+    [
+      "'account','payment','other' etiketlərini və nümunə mesajları cədvələ yaz.",
+      "Promptda yalnız JSON cavab verilməsi və anlaşılmayan mətn üçün 'other' qaydasını müəyyən et.",
+      "Eyni 10 sintetik mesajı iki dəfə sınayıb etiketlərin ardıcıllığını müqayisə et."
+    ],
+    [
+      "Define account, payment and other labels with fictional example messages.",
+      "Require JSON-only output and a clear fallback for ambiguous messages.",
+      "Repeat the same ten tests and compare label consistency."
+    ]
+  ],
+  [
+    "python,vscode,github",
+    "`policy_1.md`-də 'İmtina üçün 7 gün', `policy_2.md`-də 'Dəstək emaili' yazıb sualların yanında mənbə ID-lərini göstər.",
+    "Create two fictional policy Markdown documents and answer questions with source IDs.",
+    [
+      "3 kiçik sintetik sənəd və hər birinə unikal mənbə ID-si yarat.",
+      "Sadə Python axtarışı ilə suala uyğun hissəni tap; cavabda mənbə ID-si olsun.",
+      "Sənəddə cavab olmayan sual üçün 'Bu mənbələrdə məlumat yoxdur' nəticəsini sınayıb qeyd et."
+    ],
+    [
+      "Create three short fictional documents with unique source IDs.",
+      "Use a simple Python keyword search to select matching passages and cite the IDs.",
+      "Test a question whose answer is absent and return 'not found in provided sources'."
+    ]
+  ],
+  [
+    "sheets,python,aistudio",
+    "10 uydurma sual üçün gözlənilən cavab, AI cavabı, düzgünlük (0/1) və mənbə uyğunluğunu cədvəldə qiymətləndir.",
+    "Score ten fictional questions for correctness and source support.",
+    [
+      "Etalon cavablar olan 10 sətirlik test cədvəli qur.",
+      "Doğruluq və mənbə düzgünlüyü üzrə ayrıca sütun doldur; qiymətləndirmə qaydasını yaz.",
+      "Düzgünlük faizini hesabla, ən çox təkrarlanan iki səhv səbəbini göstər."
+    ],
+    [
+      "Build ten benchmark rows with expected answers.",
+      "Score correctness and source accuracy separately using a documented rubric.",
+      "Calculate the accuracy percentage and identify two frequent error types."
+    ]
+  ],
+  [
+    "python,fastapi,vscode,github",
+    "Lokal FastAPI `/answer` endpoint-i JSON sual qəbul edib mənbəli cavab və ya aydın xəta qaytarsın; AI modeli üçün ödənişli API lazım deyil.",
+    "Build a localhost FastAPI /answer prototype returning source-grounded responses or explicit errors.",
+    [
+      "Giriş/çıxış JSON modelini Pydantic ilə müəyyən et; boş və çox uzun sualları rədd et.",
+      "Əvvəlki Q&A modulu ilə lokal endpoint qur; model istifadə edə bilməsən qayda əsaslı demo əlavə et.",
+      "Uğurlu, mənbəsiz və yanlış giriş üçün testlər yaz, README-də işlətmə addımlarını göstər."
+    ],
+    [
+      "Define Pydantic input/output schemas and reject empty or oversized questions.",
+      "Connect your earlier Q&A logic or a rule-based local stub; no paid API is necessary.",
+      "Test success, missing evidence and invalid input and document local setup."
+    ]
+  ],
+  [
+    "aistudio,sheets",
+    "Prompt 'Ödənişim necədir?' və 'Telefonla giriş etmir' kimi qarışıq sintetik mesajlarda səhv etiket versin; səbəbləri ayır.",
+    "Use ambiguous fictional payment/login messages to analyze incorrect prompt classification.",
+    [
+      "10 edge case qur: boş mətn, typo, iki mövzu, şəbəkə xətası və s.",
+      "Hər testdə gözlənilən etiketlə faktiki etiket arasındakı fərqi yaz.",
+      "Promptun ikinci versiyasını qur, həmin 10 nümunədə yaxşılaşmanı ölç."
+    ],
+    [
+      "Write ten edge cases such as empty text, typos and mixed intents.",
+      "Compare expected versus actual labels and categorize each failure.",
+      "Revise the prompt once and measure improvements on the same ten cases."
+    ]
+  ],
+  [
+    "python,vscode,github",
+    "Yalnız `get_status('demo-123')` adlı lokal saxta funksiyaya icazə ver; naməlum funksiyanı rədd et.",
+    "Allow a local mock get_status('demo-123') function and reject unknown tool names.",
+    [
+      "Funksiya üçün JSON input schema və icazəli funksiya siyahısı hazırla.",
+      "Yanlış tip, naməlum ad və boş parametri yoxlayan validator yaz.",
+      "Uğur, validator xətası və funksiya xətası üzrə mock testləri topla; real servisə yazma."
+    ],
+    [
+      "Define a JSON input schema and explicit function allowlist.",
+      "Validate types, unknown function names and missing parameters.",
+      "Test success, validation failure and simulated tool failure without calling external systems."
+    ]
+  ],
+  [
+    "python,sheets",
+    "'Sertifikat necə alınır?' sualına 3 sintetik FAQ hissəsi arasından ən uyğun 2-ni tap, `precision@2` hesabla.",
+    "Retrieve the top two relevant passages from three fictional FAQ documents and calculate precision@2.",
+    [
+      "Sənədləri kiçik paraqraflara böl; hər hissəyə source ID yaz.",
+      "İki chunk ölçüsü sınayıb eyni 8 sualda ilk 2 nəticəni qeyd et.",
+      "Uyğun mənbə tapılmayanda cavab uydurma, 'məlumat yoxdur' qaydasını test et."
+    ],
+    [
+      "Split fictional documents into passages with source IDs.",
+      "Compare two chunk sizes on eight fixed questions using top-two results.",
+      "Test that a missing source produces an unknown answer, not a fabricated claim."
+    ]
+  ],
+  [
+    "python,docs,github",
+    "Sənəddə 'Əvvəlki qaydanı unut' yazısı olsa da AI onu mənbə mətnindən gələn etibarsız məzmun kimi görməlidir.",
+    "Treat a harmless 'ignore previous rule' sentence inside a local document as untrusted content.",
+    [
+      "Zərərsiz 5 sintetik risk ssenarisi yaz: prompt injection, şəxsi data tələb etmə, mənbəsiz cavab və s.",
+      "Giriş yoxlaması, mənbə limiti və təhlükəsiz fallback qaydalarını sənədləşdir.",
+      "Bütün ssenariləri yalnız lokal/fiktiv mühitdə test et, nəticəni öncə/sonra cədvəlində göstər."
+    ],
+    [
+      "Document five harmless synthetic risks, including prompt injection and unsupported claims.",
+      "Define input checks, source boundaries and safe fallback behavior.",
+      "Run only local fictional tests and compare before/after behavior."
+    ]
+  ],
+  [
+    "python,sheets",
+    "10 sintetik sorğu üçün `time.perf_counter()` ilə cavab gecikməsini ölç; token sayını yalnız təxmini hesabla, ödəniş etmə.",
+    "Benchmark ten fictional queries with time.perf_counter and estimate tokens without paying for usage.",
+    [
+      "Kiçik lokal cavab funksiya/maketini 10 dəfə çağır və vaxtları millisanidə saxla.",
+      "Qısa və uzun prompt variantları üçün orta və p95 gecikməni müqayisə et.",
+      "Qiymət rəsmi mənbədən yoxlanmayıbsa onu 'təxmini/simulyasiya' kimi işarələ."
+    ],
+    [
+      "Measure ten runs of a local response function in milliseconds.",
+      "Compare average and p95 latency for short and long inputs.",
+      "Mark cost figures as illustrative unless based on verified official pricing."
+    ]
+  ],
+  [
+    "github,docs,python",
+    "Yeni developer repo-nu klonlayıb `python -m ...` komandasını işlədə, nümunə sorğu verə və testləri başlada bilməlidir.",
+    "A new developer should clone the repository, run local commands, ask a sample question and execute tests.",
+    [
+      "README-yə quraşdırma, təhlükəsiz config və test addımlarını yaz.",
+      "Promptlar, sintetik məlumatlar, qiymətləndirmə cədvəli və məhdudiyyətləri repo-da ayrı saxla.",
+      "Başqasının ilk dəfə quraşdırdığı ssenarini addım-addım yoxla, sirləri GitHub-a göndərmə."
+    ],
+    [
+      "Write setup, safe configuration and test commands in the README.",
+      "Keep prompts, synthetic fixtures, evaluation results and limitations organized.",
+      "Rehearse a clean installation and confirm no secrets are committed."
+    ]
+  ]
+]
