@@ -9,10 +9,8 @@ export const INTERNSHIP_CATEGORY_GROUPS = [
     az: 'Proqramlaşdırma və texnologiya',
     en: 'Software & Technology',
     values: [
-      'Frontend', 'Backend', 'Data', 'AI', 'Automation',
-      'Proqramlaşdırma və Veb', 'Məlumat Analitikası',
-      'Kibertəhlükəsizlik', 'UI/UX Dizayn', 'Məhsul İdarəetməsi',
-      'Rəqəmsal Marketinq', 'Cybersecurity', 'Mobile Development',
+      'Frontend', 'Backend', 'Proqramlaşdırma və Veb',
+      'Kibertəhlükəsizlik', 'Cybersecurity', 'Mobile Development',
     ],
   },
   {
@@ -20,6 +18,7 @@ export const INTERNSHIP_CATEGORY_GROUPS = [
     az: 'Süni intellekt və Prompt Engineering',
     en: 'AI & Prompt Engineering',
     values: [
+      'Data', 'AI', 'Automation', 'Məlumat Analitikası',
       'AI Engineering', 'Prompt Engineering', 'Generative AI',
       'AI Automation', 'AI Research', 'AI Content Evaluation',
     ],
@@ -29,7 +28,7 @@ export const INTERNSHIP_CATEGORY_GROUPS = [
     az: 'Biznes və idarəetmə',
     en: 'Business & Management',
     values: [
-      'Business Analysis', 'Business Development', 'Project Management',
+      'Məhsul İdarəetməsi', 'Business Analysis', 'Business Development', 'Project Management',
       'Human Resources', 'Entrepreneurship',
     ],
   },
@@ -38,7 +37,7 @@ export const INTERNSHIP_CATEGORY_GROUPS = [
     az: 'Kommunikasiya və marketinq',
     en: 'Communication & Marketing',
     values: [
-      'Public Relations', 'Content Writing', 'Social Media Management',
+      'Rəqəmsal Marketinq', 'Public Relations', 'Content Writing', 'Social Media Management',
       'Corporate Communication', 'Digital Marketing',
     ],
   },
@@ -47,7 +46,7 @@ export const INTERNSHIP_CATEGORY_GROUPS = [
     az: 'Dizayn və yaradıcılıq',
     en: 'Design & Creativity',
     values: [
-      'UI/UX Design', 'Graphic Design', 'Video Editing',
+      'UI/UX Dizayn', 'UI/UX Design', 'Graphic Design', 'Video Editing',
       'Creative Content Production',
     ],
   },
