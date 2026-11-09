@@ -14,6 +14,8 @@ import { useAuth } from '@/lib/auth/auth-context';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { localizedInternshipText } from '@/lib/internships/localized-content';
 import { getInternshipBySlug } from '@/lib/internships/service';
+import { InternshipSeatIndicator } from '@/components/internships/seat-indicator';
+import type { InternshipSeatAvailability } from '@/lib/internships/seats';
 import { getStudentApplications } from '@/lib/applications/service';
 import { getStudentEnrollments } from '@/lib/enrollments/service';
 import { Internship, Application, Enrollment } from '@/types/database';
@@ -53,6 +55,7 @@ export default function InternshipDetailsPage({ params }: Props) {
   const [currentTimestamp, setCurrentTimestamp] = useState<number | null>(null);
   const [studentApp, setStudentApp] = useState<Application | null>(null);
   const [studentEnrollment, setStudentEnrollment] = useState<Enrollment | null>(null);
+  const [seatAvailability, setSeatAvailability] = useState<InternshipSeatAvailability | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -61,7 +64,23 @@ export default function InternshipDetailsPage({ params }: Props) {
         const found = await getInternshipBySlug(slug);
         if (!isMounted) return;
         setInternship(found);
+        setSeatAvailability(null);
         setCurrentTimestamp(Date.now());
+
+        // Live public aggregate; absence of a response never means zero seats.
+        if (found) {
+          void fetch('/api/internships/' + found.id + '/seats', { cache: 'no-store' })
+            .then(async (response) => {
+              if (!response.ok) throw new Error('Seats unavailable');
+              return (await response.json()) as InternshipSeatAvailability;
+            })
+            .then((availability) => {
+              if (isMounted) setSeatAvailability(availability);
+            })
+            .catch(() => {
+              if (isMounted) setSeatAvailability(null);
+            });
+        }
 
         // If authenticated student, check their application and enrollment status
         if (profile?.id && profile.role === 'student' && found) {
@@ -218,6 +237,9 @@ export default function InternshipDetailsPage({ params }: Props) {
                 <span className="text-sm font-bold text-slate-900">
                   {internship.max_students ? `${internship.max_students} ${isAz ? 'tələbə' : 'spots'}` : (isAz ? 'Məhdudiyyətsiz' : 'Open')}
                 </span>
+                <div className="mt-1">
+                  <InternshipSeatIndicator availability={seatAvailability} isAz={isAz} compact />
+                </div>
               </div>
               <div className="bg-slate-50/70 rounded-xl p-3 border border-slate-100">
                 <span className="text-2xs text-slate-400 block mb-1 uppercase font-semibold">{t('applicationDeadline')}</span>
