@@ -161,3 +161,81 @@ export async function createCourseLesson(moduleId: string, title: string, positi
     .select('*').single();
   return requireData(data, error) as CourseLesson;
 }
+
+
+export interface CourseProgressSummary {
+  requiredTotal: number;
+  completedRequired: number;
+  percent: number;
+}
+
+/**
+ * Resolve progress for an entire student's dashboard in three batched queries.
+ * Every query is still restricted by the caller's Supabase RLS policies.
+ * The method never trusts a client-submitted percentage.
+ */
+export async function getMyCourseProgress(
+  enrollments: CourseEnrollmentWithCourse[],
+): Promise<Record<string, CourseProgressSummary>> {
+  const available = enrollments.filter(
+    (enrollment) => enrollment.courses !== null && enrollment.status !== 'cancelled',
+  );
+  if (available.length === 0) return {};
+
+  const supabase = client();
+  const courseIds = [...new Set(available.map((enrollment) => enrollment.course_id))];
+  const { data: modules, error: moduleError } = await supabase
+    .from('course_modules')
+    .select('id,course_id')
+    .in('course_id', courseIds)
+    .eq('status', 'published');
+  if (moduleError) throw new Error(moduleError.message);
+
+  const moduleToCourse = new Map(
+    (modules ?? []).map((module) => [module.id, module.course_id]),
+  );
+  const courseRequired = new Map<string, Set<string>>();
+  for (const courseId of courseIds) courseRequired.set(courseId, new Set());
+
+  if (moduleToCourse.size > 0) {
+    const { data: lessons, error: lessonError } = await supabase
+      .from('course_lessons')
+      .select('id,module_id')
+      .in('module_id', [...moduleToCourse.keys()])
+      .eq('status', 'published')
+      .eq('is_required', true);
+    if (lessonError) throw new Error(lessonError.message);
+    for (const lesson of lessons ?? []) {
+      const courseId = moduleToCourse.get(lesson.module_id);
+      if (courseId) courseRequired.get(courseId)?.add(lesson.id);
+    }
+  }
+
+  const { data: progress, error: progressError } = await supabase
+    .from('lesson_progress')
+    .select('enrollment_id,lesson_id')
+    .in('enrollment_id', available.map((enrollment) => enrollment.id));
+  if (progressError) throw new Error(progressError.message);
+
+  const completionByEnrollment = new Map<string, Set<string>>();
+  for (const row of progress ?? []) {
+    const done = completionByEnrollment.get(row.enrollment_id) ?? new Set<string>();
+    done.add(row.lesson_id);
+    completionByEnrollment.set(row.enrollment_id, done);
+  }
+
+  const summary: Record<string, CourseProgressSummary> = {};
+  for (const enrollment of available) {
+    const required = courseRequired.get(enrollment.course_id) ?? new Set<string>();
+    const done = completionByEnrollment.get(enrollment.id) ?? new Set<string>();
+    let completedRequired = 0;
+    for (const id of required) if (done.has(id)) completedRequired += 1;
+    const requiredTotal = required.size;
+    summary[enrollment.id] = {
+      requiredTotal,
+      completedRequired,
+      percent: requiredTotal > 0 ? Math.round((completedRequired / requiredTotal) * 100) : 0,
+    };
+  }
+  return summary;
+}
