@@ -16,6 +16,7 @@ import { DevelopmentNotice } from "@/components/landing/development-notice";
 import { ExperienceArt } from "@/components/landing/experience-art";
 import { useLandingMotion } from "@/components/landing/use-landing-motion";
 import { ProgramArtwork } from "@/components/internships/program-artwork";
+import { localizedInternshipText } from "@/lib/internships/localized-content";
 import { buttonVariants } from "@/components/ui/button";
 import { useLanguage } from "@/lib/i18n/language-context";
 import type { Internship } from "@/types/database";
@@ -407,11 +408,11 @@ export default function HomePage() {
                     href={"/internships/" + item.id}
                     key={item.id}
                   >
-                    <ProgramArtwork title={item.title} category={item.category} sizes="(max-width: 640px) 100vw, 50vw" />
+                    <ProgramArtwork title={item.title} category={item.category} sizes="(max-width: 639px) 100vw, (max-width: 1199px) 50vw, 25vw" />
                     <div className="live-program__body"><div>
                       <span className="eyebrow">{item.category}</span>
                       <h3>{item.title}</h3>
-                      <p>{item.short_description || item.description}</p>
+                      <p>{localizedInternshipText(item.short_description || item.description, isAz ? "az" : "en")}</p>
                     </div>
                     <span className="live-program__meta">
                       <span>

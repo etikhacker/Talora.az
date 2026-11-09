@@ -1,0 +1,21 @@
+name: Homepage featured cards regression
+
+on:
+  push:
+    branches: [feat/compact-homepage-programs-20261109]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  homepage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify compact layout and bilingual text
+        run: node --test scripts/homepage-program-cards.test.mjs

@@ -20,3 +20,50 @@
   .landing-faq .landing-faq__fees { padding:22px; }
 }
 @media(prefers-reduced-motion:reduce) { .program-artwork__image { transition:none; transform:none !important; } }
+
+/* Compact featured internship cards on the public homepage only.
+   Does not change the direction cards or the /internships catalogue. */
+.talora-landing .live-programs {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.talora-landing .live-program.live-program--illustrated {
+  min-width: 0;
+  border-radius: 12px;
+}
+.talora-landing .live-program.live-program--illustrated .program-artwork {
+  aspect-ratio: auto;
+  height: clamp(136px, 12vw, 180px);
+}
+.talora-landing .live-program.live-program--illustrated .live-program__body {
+  padding: 16px;
+  gap: 12px;
+}
+.talora-landing .live-program.live-program--illustrated h3 {
+  font-size: 17px;
+  line-height: 1.35;
+  margin-block: 8px;
+}
+.talora-landing .live-program.live-program--illustrated p {
+  font-size: 12px;
+  line-height: 1.55;
+  -webkit-line-clamp: 2;
+}
+.talora-landing .live-program.live-program--illustrated .live-program__meta {
+  font-size: 12px;
+  padding-top: 12px;
+}
+@media (min-width: 640px) and (max-width: 1199px) {
+  .talora-landing .live-programs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .talora-landing .live-program.live-program--illustrated .program-artwork {
+    height: clamp(150px, 19vw, 205px);
+  }
+}
+@media (max-width: 639px) {
+  .talora-landing .live-programs { grid-template-columns: 1fr; gap: 14px; }
+  .talora-landing .live-program.live-program--illustrated .program-artwork {
+    height: clamp(170px, 49vw, 225px);
+  }
+}
