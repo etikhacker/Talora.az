@@ -44,7 +44,7 @@ test('RLS protects unpublished lessons and student ownership', () => {
   assert.doesNotMatch(sql, /GRANT SELECT ON [^\n]*public\.course_lessons[^\n]* TO anon(?:,|;)/i);
   assert.ok(sql.includes('CREATE POLICY lessons_read ON public.course_lessons FOR SELECT TO authenticated'));
   assert.ok(sql.includes("c.status='published'"));
-  assert.ok(sql.includes('e.status IN (\\'active\\',\\'completed\\')') || sql.includes("e.status IN ('active','completed')"));
+  assert.ok(sql.includes("e.status IN ('active','completed')"));
   assert.ok(sql.includes('CREATE POLICY course_enrollments_student_insert ON public.course_enrollments'));
   assert.ok(sql.includes('student_id IN (SELECT p.id FROM public.profiles p WHERE p.user_id=(SELECT auth.uid()))'));
   assert.ok(sql.includes('CREATE POLICY lesson_progress_student_insert ON public.lesson_progress'));
