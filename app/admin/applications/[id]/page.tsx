@@ -66,7 +66,8 @@ export default function AdminApplicationReviewPage({ params }: Props) {
   const [resendLoading, setResendLoading] = useState(false);
 
   const refreshDeliveryStatus = useCallback(async () => {
-    setDeliveryLoading(true);
+    // Initial state is already loading. Avoid a synchronous state update
+    // when invoked from useEffect; next state changes happen after await.
     try {
       const response = await fetch(`/api/notifications/send?id=${encodeURIComponent(id)}`, {
         credentials: 'same-origin',
@@ -117,11 +118,31 @@ export default function AdminApplicationReviewPage({ params }: Props) {
       }
     }
     load();
-    void refreshDeliveryStatus();
+    // Keep the effect purely reactive to an external request. State updates
+    // occur in promise callbacks, not synchronously in the effect body.
+    void fetch(`/api/notifications/send?id=${encodeURIComponent(id)}`, {
+      credentials: 'same-origin',
+      cache: 'no-store',
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('email_status_unavailable');
+        return response.json() as Promise<{ delivery?: DeliveryStatus | null }>;
+      })
+      .then((payload) => {
+        if (!isMounted) return;
+        setDelivery(payload.delivery || null);
+        setDeliveryError(null);
+      })
+      .catch(() => {
+        if (isMounted) setDeliveryError(isAz ? 'E-poçt statusu oxunmadı.' : 'Could not load email status.');
+      })
+      .finally(() => {
+        if (isMounted) setDeliveryLoading(false);
+      });
     return () => {
       isMounted = false;
     };
-  }, [id, refreshDeliveryStatus]);
+  }, [id, isAz]);
 
   const handleDecision = async (decision: 'accepted' | 'rejected') => {
     if (!application) return;
