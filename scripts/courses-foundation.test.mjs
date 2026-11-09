@@ -87,3 +87,20 @@ test('new proposed internship tracks are selectable', () => {
     assert.ok(form.includes('value="' + name + '"'), name);
   }
 });
+
+test('feature flag is disabled by default across navigation and direct routes', () => {
+  const feature = source('lib/features/courses.ts');
+  const middleware = source('middleware.ts');
+  assert.ok(feature.includes("process.env.NEXT_PUBLIC_COURSES_ENABLED === 'true'"));
+  assert.ok(middleware.includes('!isCoursesEnabled'));
+  assert.ok(middleware.includes("new URL('/dashboard', request.url)"));
+  assert.ok(middleware.includes("new URL('/internships', request.url)"));
+  assert.ok(middleware.includes('admin'));
+  assert.ok(middleware.includes('courses'));
+  assert.ok(middleware.includes('learn'));
+  for (const file of [
+    'components/layout/navbar.tsx',
+    'components/admin/admin-sidebar.tsx',
+    'components/dashboard/student-sidebar.tsx',
+  ]) assert.ok(source(file).includes('isCoursesEnabled'), file);
+});
