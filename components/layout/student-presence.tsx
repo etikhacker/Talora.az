@@ -31,12 +31,17 @@ export function StudentPresence() {
       const supabase = createClient();
       if (!supabase) return;
       lastPingAt.current = now;
-      void supabase.rpc('touch_student_presence').then(({ error }) => {
-        if (error) {
-          // Feature is optional while migration is pending. Do not disrupt UX.
-          console.warn('Presence update unavailable:', error.code);
+      void (async () => {
+        try {
+          const result: { error: { code?: string } | null } = await supabase.rpc('touch_student_presence');
+          if (result.error) {
+            // Feature is optional while migration is pending. Do not disrupt UX.
+            console.warn('Presence update unavailable:', result.error.code);
+          }
+        } catch {
+          // Presence collection must never block navigation.
         }
-      });
+      })();
     };
     ping();
     const timer = window.setInterval(ping, 180_000);
