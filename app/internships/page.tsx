@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { useLanguage } from '@/lib/i18n/language-context';
+import { INTERNSHIP_CATEGORY_GROUPS } from '@/lib/internships/categories';
 import type { Internship } from '@/types/database';
 import { formatDate as formatDisplayDate } from '@/lib/utils/date';
 import {
@@ -41,6 +42,7 @@ function InternshipsContent({
   const [currentTimestamp, setCurrentTimestamp] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
 
@@ -87,6 +89,10 @@ function InternshipsContent({
         if (selectedCategory !== 'all' && item.category !== selectedCategory) {
           return false;
         }
+        const group = INTERNSHIP_CATEGORY_GROUPS.find((entry) => entry.key === selectedGroup);
+        if (group && !group.values.some((value) => value === item.category)) {
+          return false;
+        }
 
         // Difficulty filter
         if (selectedDifficulty !== 'all' && item.difficulty !== selectedDifficulty) {
@@ -122,7 +128,7 @@ function InternshipsContent({
         // Default: newest
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       });
-  }, [internships, selectedCategory, selectedDifficulty, searchTerm, sortBy]);
+  }, [internships, selectedCategory, selectedGroup, selectedDifficulty, searchTerm, sortBy]);
 
   const getDifficultyLabel = (diff: string) => {
     if (diff === 'beginner') return t('difficultyBeginner');
@@ -205,7 +211,7 @@ function InternshipsContent({
               <button
                 id="cat-filter-all"
                 type="button"
-                onClick={() => setSelectedCategory('all')}
+                onClick={() => { setSelectedCategory('all'); setSelectedGroup(null); }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
                   selectedCategory === 'all'
                     ? 'bg-blue-600 text-white shadow-xs font-semibold'
@@ -219,7 +225,7 @@ function InternshipsContent({
                   key={cat}
                   id={`cat-filter-${cat}`}
                   type="button"
-                  onClick={() => setSelectedCategory(cat)}
+                  onClick={() => { setSelectedCategory(cat); setSelectedGroup(null); }}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
                     selectedCategory === cat
                       ? 'bg-blue-600 text-white shadow-xs font-semibold'
@@ -231,6 +237,56 @@ function InternshipsContent({
               ))}
             </div>
           </div>
+
+
+          {/* Broader career directions: show availability accurately, never fake listings. */}
+          <section aria-labelledby="career-tracks-heading" className="mb-7">
+            <div className="mb-3 flex items-start justify-between gap-4">
+              <div>
+                <h2 id="career-tracks-heading" className="text-base font-bold text-slate-900">
+                  {isAz ? 'Yeni karyera istiqamətləri' : 'New career tracks'}
+                </h2>
+                <p className="mt-1 text-xs text-slate-600">
+                  {isAz
+                    ? 'Proqramı olan istiqamətləri filtr et. Digərləri hazırlıq mərhələsindədir.'
+                    : 'Filter tracks with published opportunities. Other tracks are being prepared.'}
+                </p>
+              </div>
+              {selectedGroup && (
+                <button type="button" onClick={() => setSelectedGroup(null)}
+                  className="shrink-0 text-xs font-medium text-blue-700 hover:underline">
+                  {isAz ? 'Filtri sil' : 'Clear track'}
+                </button>
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 xl:grid-cols-5">
+              {INTERNSHIP_CATEGORY_GROUPS.filter((group) => group.key !== 'technology').map((group) => {
+                const available = internships.filter((item) =>
+                  group.values.some((value) => value === item.category)
+                ).length;
+                const active = selectedGroup === group.key;
+                return (
+                  <button
+                    key={group.key}
+                    type="button"
+                    disabled={loading || available === 0}
+                    aria-pressed={active}
+                    onClick={() => { setSelectedGroup(active ? null : group.key); setSelectedCategory('all'); }}
+                    className={\`rounded-xl border p-3 text-left transition-colors \${active
+                      ? 'border-blue-600 bg-blue-50 text-blue-900'
+                      : 'border-slate-200 bg-white text-slate-900 hover:border-blue-300'} disabled:cursor-default disabled:opacity-65\`}
+                  >
+                    <span className="block text-xs font-semibold leading-snug">{isAz ? group.az : group.en}</span>
+                    <span className="mt-2 block text-[11px] text-slate-500">
+                      {loading ? (isAz ? 'Yoxlanılır...' : 'Checking...') : available
+                        ? (isAz ? \`\${available} proqram\` : \`\${available} programs\`)
+                        : (isAz ? 'Tezliklə' : 'Coming soon')}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
 
           {/* Internships Grid */}
           {loading ? (
@@ -346,22 +402,23 @@ function InternshipsContent({
                 <Briefcase className="w-7 h-7" />
               </div>
               <h3 className="text-lg font-bold text-slate-900 mb-2">
-                {searchTerm || selectedCategory !== 'all' || selectedDifficulty !== 'all'
+                {searchTerm || selectedCategory !== 'all' || selectedGroup !== null || selectedDifficulty !== 'all'
                   ? (isAz ? 'Axtarışa uyğun təcrübə tapılmadı.' : 'No internships match your filter criteria.')
                   : t('emptyInternships')}
               </h3>
               <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto leading-relaxed mb-6">
-                {searchTerm || selectedCategory !== 'all' || selectedDifficulty !== 'all'
+                {searchTerm || selectedCategory !== 'all' || selectedGroup !== null || selectedDifficulty !== 'all'
                   ? (isAz ? 'Axtarış sözünü dəyişməyə və ya filterləri sıfırlamağa cəhd edin.' : 'Try adjusting your search keywords or resetting the active filters.')
                   : (isAz ? 'Tezliklə yeni təcrübə proqramları əlavə ediləcəkdir.' : 'New internship programs will be opened shortly.')}
               </p>
-              {(searchTerm || selectedCategory !== 'all' || selectedDifficulty !== 'all') && (
+              {(searchTerm || selectedCategory !== 'all' || selectedGroup !== null || selectedDifficulty !== 'all') && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => {
                     setSearchTerm('');
                     setSelectedCategory('all');
+                    setSelectedGroup(null);
                     setSelectedDifficulty('all');
                   }}
                   className="gap-1.5 border-slate-200 text-slate-800"
