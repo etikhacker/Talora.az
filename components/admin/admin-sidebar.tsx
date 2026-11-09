@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth/auth-context";
 import { useLanguage, type Translations } from "@/lib/i18n/language-context";
+import { isCoursesEnabled } from "@/lib/features/courses";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -215,7 +216,7 @@ export function AdminSidebar({
         </div>
       )}
       <nav className="min-h-0 flex-1 space-y-4 overflow-y-auto px-2 py-3">
-        {groups.map((g) => (
+        {groups.filter((g) => isCoursesEnabled || g.en !== "COURSES").map((g) => (
           <section key={g.en}>
             {!collapsed && (
               <p className="mb-2 px-3 text-[9px] font-bold tracking-[.16em] text-slate-500">
