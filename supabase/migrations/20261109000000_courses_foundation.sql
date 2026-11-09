@@ -57,7 +57,7 @@ WHERE i.category_id IS NULL AND c.slug=CASE i.category
 
 -- Keep the optional normalized ID in sync for legacy internship writes.
 CREATE FUNCTION private.course_map_internship_category()
-RETURNS trigger LANGUAGE plpgsql SET search_path=pg_catalog AS $
+RETURNS trigger LANGUAGE plpgsql SET search_path=pg_catalog AS $$
 DECLARE target_slug text;
 BEGIN
   target_slug := CASE trim(NEW.category)
@@ -83,7 +83,7 @@ BEGIN
    ORDER BY CASE WHEN c.slug=target_slug THEN 0 ELSE 1 END LIMIT 1;
   RETURN NEW;
 END;
-$;
+$$;
 REVOKE ALL ON FUNCTION private.course_map_internship_category() FROM PUBLIC;
 CREATE TRIGGER internships_category_normalize
   BEFORE INSERT OR UPDATE OF category ON public.internships
@@ -191,9 +191,15 @@ CREATE TRIGGER lesson_progress_validate BEFORE INSERT OR UPDATE ON public.lesson
 
 -- A course cannot become published without at least one visible lesson.
 CREATE FUNCTION private.course_require_publishable()
-RETURNS trigger LANGUAGE plpgsql SET search_path=pg_catalog AS $
+RETURNS trigger LANGUAGE plpgsql SET search_path=pg_catalog AS $$
+DECLARE verify_publish boolean := false;
 BEGIN
- IF NEW.status='published' AND (TG_OP='INSERT' OR OLD.status IS DISTINCT FROM NEW.status) THEN
+ IF TG_OP='INSERT' THEN
+  verify_publish := NEW.status='published';
+ ELSIF NEW.status='published' AND OLD.status IS DISTINCT FROM NEW.status THEN
+  verify_publish := true;
+ END IF;
+ IF verify_publish THEN
   IF NOT EXISTS (
    SELECT 1 FROM public.course_modules m
    JOIN public.course_lessons l ON l.module_id=m.id
@@ -205,7 +211,7 @@ BEGIN
  END IF;
  RETURN NEW;
 END;
-$;
+$$;
 REVOKE ALL ON FUNCTION private.course_require_publishable() FROM PUBLIC;
 CREATE TRIGGER courses_publish_guard BEFORE INSERT OR UPDATE OF status ON public.courses
  FOR EACH ROW EXECUTE FUNCTION private.course_require_publishable();
