@@ -291,7 +291,7 @@ function InternshipsContent({
 
           {/* Internships Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {[1, 2, 3, 4].map((n) => (
                 <div key={n} className="bg-white rounded-xl border border-slate-200 p-6 space-y-4 animate-pulse">
                   <div className="h-4 bg-slate-100 rounded w-1/3"></div>
@@ -302,7 +302,7 @@ function InternshipsContent({
               ))}
             </div>
           ) : filteredInternships.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {filteredInternships.map((internship) => {
                 const deadlineFormatted = formatDeadline(internship.application_deadline);
                 const isDeadlinePassed =
@@ -314,10 +314,10 @@ function InternshipsContent({
                   <div
                     key={internship.id}
                     id={`internship-card-${internship.slug}`}
-                    className="catalogue-card bg-white rounded-xl border border-slate-200 p-6 shadow-xs hover:border-blue-300 hover:shadow-sm transition-all flex flex-col justify-between group"
+                    className="catalogue-card bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-xs hover:border-blue-300 hover:shadow-sm transition-all flex flex-col justify-between group"
                   >
                     <div>
-                      <ProgramArtwork title={internship.title} category={internship.category} sizes="(max-width: 767px) 100vw, 50vw" />
+                      <ProgramArtwork title={internship.title} category={internship.category} sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw" />
                       {/* Zero-pill metadata row */}
                       <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 font-medium mb-2.5">
                         <span className="text-blue-600 font-semibold">{internship.category || 'General Track'}</span>
@@ -335,18 +335,18 @@ function InternshipsContent({
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2 mb-2">
+                      <h3 className="text-base font-bold leading-snug text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2 mb-1.5">
                         {internship.title}
                       </h3>
 
                       {/* Short Description */}
-                      <p className="text-xs sm:text-sm text-slate-600 line-clamp-3 leading-relaxed mb-4">
+                      <p className="text-xs sm:text-sm text-slate-600 line-clamp-2 leading-relaxed mb-3">
                         {localizedInternshipText(internship.short_description || internship.description, isAz ? 'az' : 'en')}
                       </p>
 
                       {/* Skills clean unboxed list */}
                       {internship.skills && internship.skills.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mb-5">
+                        <div className="flex flex-wrap gap-1.5 mb-3">
                           {internship.skills.slice(0, 4).map((skill) => (
                             <span
                               key={skill}
@@ -365,7 +365,7 @@ function InternshipsContent({
                     </div>
 
                     {/* Footer Info & CTA */}
-                    <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div className="space-y-1">
                         {deadlineFormatted && (
                           <div className={`flex items-center gap-1.5 text-xs ${isDeadlinePassed ? 'text-amber-600 font-medium' : 'text-slate-500'}`}>
