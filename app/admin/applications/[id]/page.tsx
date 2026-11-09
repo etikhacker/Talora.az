@@ -66,7 +66,8 @@ export default function AdminApplicationReviewPage({ params }: Props) {
   const [resendLoading, setResendLoading] = useState(false);
 
   const refreshDeliveryStatus = useCallback(async () => {
-    setDeliveryLoading(true);
+    // Initial state is already loading. Avoid a synchronous state update
+    // when invoked from useEffect; next state changes happen after await.
     try {
       const response = await fetch(`/api/notifications/send?id=${encodeURIComponent(id)}`, {
         credentials: 'same-origin',
