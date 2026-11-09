@@ -74,7 +74,7 @@ COMMIT;
 BEGIN;
 SET LOCAL ROLE authenticated;
 SELECT set_config('request.jwt.claim.sub','00000000-0000-4000-8000-0000000000a3',true);
-DO $
+DO $$
 DECLARE rejected boolean := false;
 BEGIN
  BEGIN
@@ -84,14 +84,14 @@ BEGIN
  END;
  IF NOT rejected THEN RAISE EXCEPTION 'Empty published lesson was accepted'; END IF;
 END;
-$;
+$$;
 COMMIT;
 
 -- A live course cannot lose its published curriculum.
 BEGIN;
 SET LOCAL ROLE authenticated;
 SELECT set_config('request.jwt.claim.sub','00000000-0000-4000-8000-0000000000a3',true);
-DO $
+DO $$
 DECLARE blocked boolean;
 BEGIN
  blocked := false;
@@ -115,7 +115,7 @@ BEGIN
  END;
  IF NOT blocked THEN RAISE EXCEPTION 'Published lesson was deleted'; END IF;
 END;
-$;
+$$;
 COMMIT;
 
 -- Student A cannot read lesson bodies before enrollment.
