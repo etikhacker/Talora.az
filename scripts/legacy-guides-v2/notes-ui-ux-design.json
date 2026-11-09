@@ -1,0 +1,152 @@
+[
+  [
+    "penpot,docs,github",
+    "Tələbənin tapşırığı tapmaqda çətinlik yaşamasını öyrənmək üçün 8 açıq müsahibə sualı yaz.",
+    "Draft eight open-ended questions about challenges finding and submitting tasks.",
+    [
+      "Araşdırma məqsədini və iştirakçı üçün razılıq mətni yaz.",
+      "'Son dəfə tapşırıq göndərəndə nə etdiniz?' tipli açıq suallar qur.",
+      "Real iştirakçı yoxdursa sintetik cavabı 'simulyasiya' kimi ayır və 3 tapıntı çıxar."
+    ],
+    [
+      "Define the research objective and a consent statement.",
+      "Use neutral prompts such as 'What did you do last time you submitted a task?'.",
+      "If no participants consent, label fictional answers as simulations and document three findings."
+    ]
+  ],
+  [
+    "draw,penpot",
+    "Task siyahısı → detal → fayl yüklə → təsdiq axınını oxlarla göstər, xəta qolları əlavə et.",
+    "Map task list → detail → upload → confirmation with an error branch.",
+    [
+      "Start/end, seçim və error vəziyyətlərini flowchart-da ayır.",
+      "Ən azı 7 addımlı əsas axın və 2 alternativ hal qur.",
+      "Mümkün geri dönüşləri və istifadəçinin hansı məlumatı gördüyünü qeyd et."
+    ],
+    [
+      "Mark start/end, decisions and failure states in a diagram.",
+      "Include at least seven main steps and two alternative paths.",
+      "Document navigation back paths and information available at each step."
+    ]
+  ],
+  [
+    "penpot,figma",
+    "Dashboard, task detail və submit ekranlarını əvvəlcə boz sadə bloklarla 360px enində çək.",
+    "Create low-fidelity 360px mobile wireframes for dashboard, task detail and submission.",
+    [
+      "Hər ekranda əsas başlıq, tapşırıq mətni və bir CTA yerləşdir.",
+      "Vizual dekorasiyadan əvvəl məzmun iyerarxiyası və spacing həll et.",
+      "Fayl seçimi və validation error halını ayrıca frame kimi göstər."
+    ],
+    [
+      "Place a clear heading, task content and one primary CTA on each screen.",
+      "Prioritize information structure and spacing before styling.",
+      "Include separate file-selection and validation-error frames."
+    ]
+  ],
+  [
+    "penpot,figma",
+    "Əvvəlki 3 wireframe-ə rəng, şrift, ikon, real tapşırıq mətni və mobil responsive variant əlavə et.",
+    "Turn three wireframes into readable high-fidelity screens with realistic fictional content.",
+    [
+      "Rəng palitrası, type scale və komponentləri sənədləşdir.",
+      "Normal, disabled və error vəziyyətlərini ekranlarda göstər.",
+      "Oxunaqlıq və vizual ardıcıllıq üçün before/after müqayisə et."
+    ],
+    [
+      "Define palette, type scale and reusable visual components.",
+      "Render normal, disabled and error states on the screens.",
+      "Compare readability and visual consistency before and after changes."
+    ]
+  ],
+  [
+    "penpot,figma,contrast",
+    "Primary button, input, badge və spacing token-ları üçün kiçik design system hazırla.",
+    "Create a mini design system with buttons, inputs, badges and spacing tokens.",
+    [
+      "Rəng və 8px spacing token-ları müəyyən et.",
+      "Komponentlərin hover, focus, disabled və error variantlarını yarat.",
+      "Normal mətn kontrastını 4.5:1 hədəfinə görə yoxla."
+    ],
+    [
+      "Define color and 8px spacing tokens.",
+      "Build hover, focus, disabled and error variants.",
+      "Verify normal-text contrast against a 4.5:1 target."
+    ]
+  ],
+  [
+    "penpot,figma",
+    "Tapşırıq siyahısında item aç, submit formuna keç və təsdiq mesajını clickable prototype-da göstər.",
+    "Build a clickable prototype from task list to submission confirmation.",
+    [
+      "Frame-lər arasında klik və back bağlantıları yarat.",
+      "Əsas 4 interaksiyanı success/error halları ilə göstər.",
+      "İstifadəçiyə əlavə söz izahı olmadan axını tamamlamağa çalış."
+    ],
+    [
+      "Connect frames with click and back interactions.",
+      "Demonstrate four interactions including success and error states.",
+      "Test whether the flow is understandable without narration."
+    ]
+  ],
+  [
+    "contrast,penpot,docs",
+    "Task detail ekranında font, kontrast, fokus sırası və alt text çatışmazlıqlarını audit et.",
+    "Audit task-detail screens for contrast, focus order, readable text and image alternatives.",
+    [
+      "Siyahı, forma və düymələr üçün 5 bəndlik audit yaz.",
+      "Kontrast ölçüsünü və klaviatura/fokus ardıcıllığını ayrıca qeyd et.",
+      "Problemləri severity-yə görə sırala, düzəliş variantını göstərəndə sübut əlavə et."
+    ],
+    [
+      "Audit five criteria across lists, forms and buttons.",
+      "Record contrast checks and expected keyboard/focus order.",
+      "Prioritize severity and show evidence for proposed fixes."
+    ]
+  ],
+  [
+    "penpot,figma",
+    "360px mobil, 768px planşet və 1440px desktop task ekranını eyni məzmunla dizayn et.",
+    "Adapt the same task content to 360px, 768px and 1440px layouts.",
+    [
+      "Üç frame ölçüsü qur, mətni qısaltmadan iyerarxiyanı saxla.",
+      "Düymələri touch üçün rahat və məzmunu scroll üçün oxunaqlı saxla.",
+      "Uzun tapşırıq başlığı və boş status halı üçün responsive test et."
+    ],
+    [
+      "Create three frames preserving the same content and hierarchy.",
+      "Maintain comfortable touch targets and readable scrolling.",
+      "Check long headings and empty states on all viewports."
+    ]
+  ],
+  [
+    "docs,penpot",
+    "3 neytral tapşırıqla usability sınağı apar; real iştirakçı varsa razılıq al, yoxdursa mock qeyd et.",
+    "Run three neutral usability tasks with consent or mark a simulation honestly.",
+    [
+      "Tapşırığı tapmaq və göndərmək üçün ölçülən test ssenariləri yaz.",
+      "Harada dayanma/yanlış klik yarandığını qeyd et, ad-soyad toplama.",
+      "Ən vacib iki problemi düzəltmək üçün öncə/sonra prototip göstər."
+    ],
+    [
+      "Write measurable find-and-submit usability tasks.",
+      "Record confusion or wrong clicks without collecting identities.",
+      "Prioritize two fixes and compare before/after prototype frames."
+    ]
+  ],
+  [
+    "penpot,slides,docs",
+    "Problem → araşdırma → user flow → wireframe → test → yekun dizaynı 6 slayda topla.",
+    "Summarize problem, research, flow, wireframes, tests and final design in six slides.",
+    [
+      "İlkin məqsədi, vacib araşdırma nəticəsini və dizayn qərarlarını bağla.",
+      "Real iştirakçı məlumatını sintetik ssenaridən ayrı qeyd et.",
+      "Edit edilən dizayn linki, export PDF və əsas məhdudiyyətləri handoff-a əlavə et."
+    ],
+    [
+      "Connect the initial problem to findings and key design decisions.",
+      "Separate real observations from simulated cases.",
+      "Provide editable design, exported PDF and known limitations."
+    ]
+  ]
+]
