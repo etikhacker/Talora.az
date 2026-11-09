@@ -98,7 +98,7 @@ BEGIN
   INSERT INTO private.admin_section_seen(user_id,section,last_seen_at)
     VALUES (v_user,p_section,pg_catalog.clock_timestamp())
   ON CONFLICT (user_id,section) DO UPDATE
-    SET last_seen_at=pg_catalog.greatest(
+    SET last_seen_at=GREATEST(
       private.admin_section_seen.last_seen_at,EXCLUDED.last_seen_at
     )
   RETURNING last_seen_at INTO v_seen;
@@ -122,7 +122,7 @@ AS $public_seats$
   SELECT i.id, i.max_students,
     COALESCE(e.active_count,0)::integer,
     CASE WHEN i.max_students IS NULL THEN NULL
-      ELSE pg_catalog.greatest(i.max_students-COALESCE(e.active_count,0)::integer,0)
+      ELSE GREATEST(i.max_students-COALESCE(e.active_count,0)::integer,0)
     END
   FROM public.internships i
   LEFT JOIN LATERAL (
