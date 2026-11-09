@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth/auth-context";
 import { useLanguage, type Translations } from "@/lib/i18n/language-context";
+import { isCoursesEnabled } from "@/lib/features/courses";
 import { TaloraLogo } from "@/components/layout/talora-logo";
 import { Avatar } from "@/components/ui/avatar";
 import {
@@ -82,7 +83,7 @@ export function StudentSidebar() {
         </div>
       </div>
       <nav aria-label={t("sideStudentMenu")}>
-        {items.map((item, index) => {
+        {items.filter((item) => isCoursesEnabled || item.href !== "/dashboard/courses").map((item, index) => {
           const Icon = item.icon;
           const active =
             path === item.href ||
@@ -94,7 +95,7 @@ export function StudentSidebar() {
                   {language === "az" ? "İNKİŞAF YOLUN" : "YOUR JOURNEY"}
                 </p>
               )}
-              {index === 8 && (
+              {item.href === "/dashboard/notifications" && (
                 <p className="eyebrow px-3 pt-6 pb-3">
                   {language === "az" ? "ŞƏXSİ KABİNET" : "YOUR ACCOUNT"}
                 </p>
