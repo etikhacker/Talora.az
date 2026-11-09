@@ -1,0 +1,146 @@
+{
+  "aistudio": {
+    "name": "Google AI Studio (free tier) / ChatGPT Free",
+    "url": "https://aistudio.google.com",
+    "az": "Sintetik mətnlə promptu pulsuz limit daxilində sına; ödənişli API, bank kartı və şəxsi məlumat tələb edilmir.",
+    "en": "Test synthetic prompts manually within free quotas; paid APIs, billing and private user data are not required."
+  },
+  "docs": {
+    "name": "Google Docs (personal)",
+    "url": "https://docs.google.com/document/",
+    "az": "Boş sənəd aç, məqsəd/nəticə/cədvəl bölmələrini qur və lazım olduqda PDF ixrac et.",
+    "en": "Create a document with goals, evidence, tables and a PDF export when needed."
+  },
+  "sheets": {
+    "name": "Google Sheets (personal)",
+    "url": "https://sheets.google.com",
+    "az": "Sütun başlıqları, sintetik sətirlər və yoxlanıla bilən hesablamalar yarat.",
+    "en": "Create labeled columns, fictional sample records and verifiable calculations."
+  },
+  "slides": {
+    "name": "Google Slides (personal)",
+    "url": "https://slides.google.com",
+    "az": "Bir slaydda bir fikir saxla, export PDF al və mənbələri qeyd et.",
+    "en": "Keep one idea per slide, cite sources and export to PDF."
+  },
+  "draw": {
+    "name": "diagrams.net",
+    "url": "https://app.diagrams.net",
+    "az": "Blank diagram seç, addımları oxlarla birləşdir və PNG/PDF çıxart.",
+    "en": "Create a blank diagram, connect steps with arrows and export PNG/PDF."
+  },
+  "github": {
+    "name": "GitHub Free",
+    "url": "https://github.com",
+    "az": "README və nümunə kod üçün şəxsi repo yarat; token və şəxsi data yükləmə.",
+    "en": "Use a free repository with README and sample code; never commit secrets or personal data."
+  },
+  "python": {
+    "name": "Python (free)",
+    "url": "https://www.python.org",
+    "az": "Lokal Python qur, `.py` skriptləri və sintetik testləri terminaldan işlət.",
+    "en": "Install Python locally and run scripts with fictional test fixtures."
+  },
+  "vscode": {
+    "name": "Visual Studio Code",
+    "url": "https://code.visualstudio.com",
+    "az": "Layihə qovluğunu aç, sintaksis xətalarını yoxla və faylları təşkil et.",
+    "en": "Open your project folder, inspect syntax and organize source files."
+  },
+  "fastapi": {
+    "name": "FastAPI (open source)",
+    "url": "https://fastapi.tiangolo.com",
+    "az": "Python layihəsində lokal HTTP endpoint və Pydantic input modeli yarat; ödənişli server lazım deyil.",
+    "en": "Create local Python HTTP endpoints with Pydantic validation; paid hosting is unnecessary."
+  },
+  "curl": {
+    "name": "curl",
+    "url": "https://curl.se",
+    "az": "Yalnız öz lokal HTTP servisindən test sorğuları göndər, status və JSON cavablarını yoxla.",
+    "en": "Send test requests only to authorized local endpoints and check status/JSON results."
+  },
+  "postgres": {
+    "name": "PostgreSQL (local, free)",
+    "url": "https://www.postgresql.org",
+    "az": "Lokal test DB-də cədvəllər qur; production Supabase/Talora bazasında SQL çalışdırma.",
+    "en": "Use a local test database; never run these exercises against production Talora/Supabase."
+  },
+  "sqlite": {
+    "name": "SQLite (free)",
+    "url": "https://www.sqlite.org",
+    "az": "Lokal `.db` faylında sintetik cədvəl, SQL sorğuları və testlər hazırla.",
+    "en": "Use a local .db database with fictional tables, queries and tests."
+  },
+  "pytest": {
+    "name": "pytest (open source)",
+    "url": "https://docs.pytest.org",
+    "az": "Lokal Python unit/integration testləri yaz, nəticələri `pytest` ilə təsdiqlə.",
+    "en": "Write local Python tests and run them with pytest."
+  },
+  "zap": {
+    "name": "OWASP ZAP (passive only)",
+    "url": "https://www.zaproxy.org",
+    "az": "Yalnız localhost və ya açıq icazəli laboratoriyada passiv analiz apar; üçüncü tərəfi skan etmə.",
+    "en": "Use passive inspection only on localhost or expressly authorized labs; do not scan third parties."
+  },
+  "pandas": {
+    "name": "pandas (open source)",
+    "url": "https://pandas.pydata.org",
+    "az": "Sintetik CSV-ni DataFrame kimi oxu, boş/dublikat dəyərləri ölç və təmizlə.",
+    "en": "Read fictional CSV data into a DataFrame and inspect missing/duplicate values."
+  },
+  "matplotlib": {
+    "name": "Matplotlib (open source)",
+    "url": "https://matplotlib.org",
+    "az": "Sintetik datadan qrafik çək, ox adlarını və vahidi qeyd et.",
+    "en": "Chart fictional data with meaningful axis labels and units."
+  },
+  "node": {
+    "name": "Node.js (free)",
+    "url": "https://nodejs.org",
+    "az": "Lokal JavaScript/TypeScript mühiti qur, paketləri quraşdır və development server aç.",
+    "en": "Install a local JavaScript/TypeScript runtime and run your development server."
+  },
+  "vite": {
+    "name": "Vite (free)",
+    "url": "https://vite.dev",
+    "az": "React/TypeScript starter yarat və brauzerdə lokal UI-ni aç.",
+    "en": "Create a React/TypeScript starter and run the UI locally."
+  },
+  "vitest": {
+    "name": "Vitest (open source)",
+    "url": "https://vitest.dev",
+    "az": "UI və ya utility testlərini sintetik fixture-lərlə lokal işlət.",
+    "en": "Run UI and utility tests against fictional fixtures locally."
+  },
+  "chrome": {
+    "name": "Chrome DevTools / Lighthouse",
+    "url": "https://developer.chrome.com/docs/lighthouse",
+    "az": "Brauzerdə mobil responsive və performans ölçmələrini ödənişsiz apar.",
+    "en": "Use free browser tools to inspect responsive layout and performance."
+  },
+  "expo": {
+    "name": "Expo Go / Expo CLI (free local)",
+    "url": "https://docs.expo.dev",
+    "az": "`npx expo start` ilə lokal React Native demo aç, Expo Go-da test et; app-store/EAS ödənişi lazım deyil.",
+    "en": "Run a local React Native demo with Expo Go; paid store publishing or EAS is not required."
+  },
+  "penpot": {
+    "name": "Penpot (free/open source)",
+    "url": "https://penpot.app",
+    "az": "Pulsuz planda frame, prototip və dizayn komponentləri hazırla; hesab limitlərini yoxla.",
+    "en": "Use free design boards, interactive prototypes and components within plan limits."
+  },
+  "figma": {
+    "name": "Figma Starter (free tier)",
+    "url": "https://www.figma.com",
+    "az": "Starter Draft faylında frame və komponent qur, pulsuz plandakı fayl limitlərini nəzərə al.",
+    "en": "Use free Starter draft files and components while respecting usage limits."
+  },
+  "contrast": {
+    "name": "WebAIM Contrast Checker",
+    "url": "https://webaim.org/resources/contrastchecker/",
+    "az": "Rəng kodlarını daxil edib normal mətn üçün WCAG AA 4.5:1 kontrastını yoxla.",
+    "en": "Enter colors and check the 4.5:1 WCAG AA ratio for normal text."
+  }
+}

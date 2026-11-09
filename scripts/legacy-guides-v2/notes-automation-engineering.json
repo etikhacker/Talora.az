@@ -1,0 +1,152 @@
+[
+  [
+    "draw,docs",
+    "Müraciət forması → admin yoxlama → status → bildiriş axınında hansı addımların əl işi olduğunu göstər.",
+    "Map a fictional application form → admin review → status update → notification flow.",
+    [
+      "Əvvəlki prosesin ən azı 6 addımını swimlane/diaqramda çək.",
+      "İnsan təsdiqi və avtomatlaşdırıla bilən addımları fərqli işarələ.",
+      "Yalnız bir addımın avtomatlaşmasının vaxt və risk təsirini izah et."
+    ],
+    [
+      "Draw at least six steps in a current-state workflow.",
+      "Distinguish human approvals from safe automation opportunities.",
+      "Explain the time/risk impact of automating one step."
+    ]
+  ],
+  [
+    "python,fastapi,curl",
+    "Lokal `POST /webhook` göndərişi `{'event':'application.created','id':'demo-01'}` qəbul etsin.",
+    "Build a local POST /webhook endpoint accepting a fictional application-created JSON event.",
+    [
+      "FastAPI-də lokal webhook route və Pydantic schema yarat.",
+      "`curl` ilə düzgün/yanlış payload-lar göndər, nəticəni logla.",
+      "Eyni event iki dəfə gəldikdə idempotency açarı ilə duplicate nəticəni göstər."
+    ],
+    [
+      "Create a localhost webhook route with Pydantic validation.",
+      "Send valid and invalid JSON with curl and inspect responses.",
+      "Demonstrate duplicate-event handling using an idempotency key."
+    ]
+  ],
+  [
+    "python,vscode",
+    "Lokal workflow müvəqqəti 503 xətası versin; maksimum 3 cəhd və 1s/2s/4s backoff-u simulyasiya et.",
+    "Simulate a local workflow returning temporary 503 errors with bounded exponential retry.",
+    [
+      "Müvəqqəti və daimi xətaları fərqli klassifikasiya et.",
+      "Maksimum 3 cəhd və backoff üçün test edilə bilən funksiya qur.",
+      "Təkrar icra eyni nəticəni ikinci dəfə yazmamalıdır; loglarla sübut et."
+    ],
+    [
+      "Separate transient failures from permanent errors.",
+      "Implement bounded retries and delays in a testable function.",
+      "Verify retries do not create duplicate results and record outcomes."
+    ]
+  ],
+  [
+    "python,draw,github",
+    "Lokal sintetik form → validator → admin approval mock → bildiriş yazısı prosesini tamamla.",
+    "Integrate a fictional form, validator, mock human approval and notification log.",
+    [
+      "Əvvəlki workflow-ları bir sxemdə birləşdir və yalnız fiktiv məlumatla sına.",
+      "Səhv giriş, təkrar event və admin təsdiqi gözləmə vəziyyətini əlavə et.",
+      "5 sınaq nəticəsini və prosesin əl ilə idarə edilən hissəsini sənədləşdir."
+    ],
+    [
+      "Connect earlier workflows in one diagram using fictional data.",
+      "Handle invalid payloads, duplicates and waiting for human approval.",
+      "Document five test results and the human-controlled steps."
+    ]
+  ],
+  [
+    "python,sheets",
+    "`fullName`, `emailAddress` girişlərini `name`, `email` kimi vahid JSON formatına çevir.",
+    "Normalize fictional fullName/emailAddress fields into a standard name/email JSON schema.",
+    [
+      "Giriş və çıxış schema-larını iki nümunə JSON ilə göstər.",
+      "Boş və səhv tipli sahələr üçün validation/fallback qaydası yaz.",
+      "5 qarışıq payload-u transformasiya edib before/after cədvəlinə əlavə et."
+    ],
+    [
+      "Define input/output schemas with two example JSON objects.",
+      "Validate missing and wrong-type values with explicit fallback rules.",
+      "Transform five varied samples and record before/after results."
+    ]
+  ],
+  [
+    "python,fastapi,curl",
+    "Lokal `GET /demo-records` endpoint-inə timeout və 429/500 mock cavablarını sına.",
+    "Test a local GET /demo-records integration with mock 429/500 and timeout responses.",
+    [
+      "Servis mock-u ilə lokal HTTP inteqrasiyası qur; real API açarı istifadə etmə.",
+      "Timeout və limit xətaları üçün təhlükəsiz fallback və retry limitini yaz.",
+      "JSON sahələrini doğrula və ən azı 4 status halını test et."
+    ],
+    [
+      "Create a localhost HTTP mock without real API credentials.",
+      "Add safe timeout, rate-limit and failure handling with bounded retries.",
+      "Validate JSON and test at least four response scenarios."
+    ]
+  ],
+  [
+    "python,docs",
+    "Windows Task Scheduler və ya lokal Python timer ilə gündəlik yoxlamanın necə işə düşəcəyini simulyasiya et.",
+    "Simulate a daily job using Windows Task Scheduler or a local Python timer.",
+    [
+      "Saat zonasını Asia/Baku kimi sənədləşdir, 2 run nümunəsi qur.",
+      "Eyni vaxtda iki iş düşdükdə duplicate-in qarşısını alan açar istifadə et.",
+      "Missed run və yenidən başlatma davranışını synthetic log-da göstər."
+    ],
+    [
+      "Document timezone and two scheduled-run examples.",
+      "Use a unique run key to prevent overlapping duplicates.",
+      "Simulate a missed run and restart scenario using local logs."
+    ]
+  ],
+  [
+    "python,docs",
+    "Yalnız `notifications.log` faylına 'approved'/'failed' statuslu uydurma bildirişlər yaz.",
+    "Write fictional approved/failed notifications to a local log, not real recipients.",
+    [
+      "Bildiriş üçün subject/body şablonlarını müəyyən et.",
+      "İstifadəçi seçimlərini və olmayan alıcını yoxlayan filtr qur.",
+      "Uğurlu, bloklanan və retry halları üçün log sübutu təqdim et."
+    ],
+    [
+      "Define subject/body templates for fictional notifications.",
+      "Apply preference and recipient checks before creating a notification.",
+      "Demonstrate success, suppression and retry in a local log."
+    ]
+  ],
+  [
+    "sheets,python",
+    "20 simulyasiya workflow run üçün success_rate, median_duration və retry_count hesabla.",
+    "Calculate success rate, median duration and retries from 20 simulated workflow runs.",
+    [
+      "Run ID, status, duration, retries sütunları qur.",
+      "Ölçüləri formulası ilə hesabla və uğursuz run-ları ayrıca say.",
+      "Fərz etdiyin alert hədlərini və false alarm riskini izah et."
+    ],
+    [
+      "Create columns for run ID, status, duration and retry count.",
+      "Calculate summary KPIs and inspect failed runs.",
+      "Explain alert thresholds and potential false positives."
+    ]
+  ],
+  [
+    "github,docs,draw",
+    "Yeni developer lokal webhook → validator → notification log axınını README ilə işlədə bilsin.",
+    "Enable another developer to run the local webhook → validator → notification log workflow.",
+    [
+      "Repo-ya quraşdırma addımları, config nümunəsi və flow diaqramı əlavə et.",
+      "Risklər, retry, monitorinq və manual təsdiq yerini sənədləşdir.",
+      "2 uğurlu, 2 xəta ssenarisinin ekran/log nəticəsini təhvil ver."
+    ],
+    [
+      "Document setup, sample config and the workflow diagram.",
+      "Describe risks, retries, monitoring and manual approval checkpoints.",
+      "Include evidence for two successful and two failed runs."
+    ]
+  ]
+]
