@@ -12,7 +12,7 @@ export type AnnouncementValidation =
   | { success: true; value: AnnouncementInput }
   | { success: false; error: string };
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function validateAnnouncement(value: unknown): AnnouncementValidation {
