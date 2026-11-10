@@ -1,11 +1,14 @@
 export type AnnouncementAudience = 'all' | 'active' | 'individual';
 
+export type AnnouncementChannel = 'in_app' | 'email' | 'both';
+
 export interface AnnouncementInput {
   title: string;
   body: string;
   audience: AnnouncementAudience;
   recipientEmail: string | null;
   requestId: string;
+  channel: AnnouncementChannel;
 }
 
 export type AnnouncementValidation =
@@ -37,6 +40,10 @@ export function validateAnnouncement(value: unknown): AnnouncementValidation {
   if (typeof input.requestId !== 'string' || !UUID.test(input.requestId)) {
     return { success: false, error: 'Göndəriş identifikatoru düzgün deyil.' };
   }
+  const channel: AnnouncementChannel = input.channel === undefined ? 'in_app' : input.channel as AnnouncementChannel;
+  if (channel !== 'in_app' && channel !== 'email' && channel !== 'both') {
+    return { success: false, error: 'Göndəriş kanalı düzgün seçilməyib.' };
+  }
   const recipientEmail = typeof input.recipientEmail === 'string'
     ? input.recipientEmail.trim().toLowerCase()
     : null;
@@ -56,6 +63,7 @@ export function validateAnnouncement(value: unknown): AnnouncementValidation {
       audience: input.audience,
       recipientEmail: input.audience === 'individual' ? recipientEmail : null,
       requestId: input.requestId,
+      channel,
     },
   };
 }
