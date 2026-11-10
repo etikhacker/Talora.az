@@ -27,7 +27,7 @@ test('all announcement channels are validated and individual email is normalized
 });
 
 test('email migration enables RLS, private grants and idempotent jobs', () => {
-  const sql = read('supabase/migrations/20261110170000_admin_announcement_email_delivery.sql');
+  const sql = read('supabase/migrations/20261110124144_admin_announcement_email_delivery.sql');
   assert.match(sql, /ALTER TABLE public.admin_announcements/);
   assert.match(sql, /CREATE TABLE public.admin_announcement_email_deliveries/);
   assert.match(sql, /UNIQUE\(announcement_id, user_id\)/);
