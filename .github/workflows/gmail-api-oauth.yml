@@ -28,7 +28,11 @@ jobs:
         run: node --test scripts/gmail-api-regression.test.mjs
       - name: Test application email receipt and manual retry safeguards
         run: node --test scripts/application-email-delivery.test.mjs
+      - name: Test private admin routing policy
+        run: node --test scripts/private-admin-entry.test.mjs
       - name: Type-check Next.js application
         run: npx tsc --noEmit
       - name: Lint application email admin UI and route
         run: npx eslint 'app/admin/applications/[id]/page.tsx' app/api/notifications/send/route.ts lib/email/application-delivery.ts
+      - name: Lint private admin routing and guard
+        run: npx eslint lib/auth/admin-route-gate.ts lib/supabase/middleware.ts app/admin/layout.tsx
