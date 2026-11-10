@@ -1,6 +1,6 @@
 export interface InboxNotification {
   id: string;
-  kind: 'application' | 'task_review' | 'deadline';
+  kind: 'application' | 'task_review' | 'deadline' | 'announcement';
   subject: string;
   status: string;
   body: string;
@@ -18,6 +18,7 @@ export function notificationLabel(item: InboxNotification, isAz: boolean): strin
     'task_review:rejected': ['Tapşırığınız qəbul edilmədi', 'Assignment not approved'],
     'deadline:deadline_warning': ['Son təhvil tarixi yaxınlaşır', 'Assignment deadline approaching'],
     'deadline:deadline_expired': ['Təhvil müddəti bitdi', 'Assignment deadline passed'],
+    'announcement:published': ['Yeni elan', 'New announcement'],
   };
   return (labels[`${item.kind}:${item.status}`] || ['Yeni bildiriş', 'New notification'])[isAz ? 0 : 1];
 }
