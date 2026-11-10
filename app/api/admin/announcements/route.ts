@@ -10,6 +10,26 @@ export const dynamic = 'force-dynamic';
 const noStore = { 'Cache-Control': 'private, no-store' };
 const MAX_REQUEST_CHARS = 9_000;
 
+type HistoryRow = {
+  id: string;
+  title: string;
+  body: string;
+  audience: string;
+  recipient_email: string | null;
+  delivered_count: number;
+  delivery_channel: string;
+  created_at: string;
+};
+
+type SummaryRow = {
+  announcement_id: string;
+  queued_count: number;
+  sending_count: number;
+  sent_count: number;
+  failed_count: number;
+  uncertain_count: number;
+};
+
 function jsonError(message: string, status: number) {
   return NextResponse.json({ error: message }, { status, headers: noStore });
 }
@@ -37,7 +57,7 @@ export async function GET() {
     console.error('Admin announcement history read failed:', error.code);
     return jsonError('Elan tarixçəsini yükləmək mümkün olmadı.', 500);
   }
-  const ids = (data || []).map(item => item.id);
+  const ids = ((data || []) as HistoryRow[]).map(item => item.id);
   if (!ids.length) return NextResponse.json({ announcements: [] }, { headers: noStore });
   const { data: summaries, error: summaryError } = await admin
     .rpc('admin_announcement_email_summaries', { p_ids: ids });
@@ -45,8 +65,8 @@ export async function GET() {
     console.error('Admin announcement email summary read failed:', summaryError.code);
     return jsonError('Elan statuslarını yükləmək mümkün olmadı.', 500);
   }
-  const byId = new Map((summaries || []).map(item => [item.announcement_id, item]));
-  const announcements = (data || []).map(item => ({
+  const byId = new Map(((summaries || []) as SummaryRow[]).map(item => [item.announcement_id, item]));
+  const announcements = ((data || []) as HistoryRow[]).map(item => ({
     ...item,
     email_delivery: byId.get(item.id) || null,
   }));
