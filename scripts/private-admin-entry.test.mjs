@@ -51,5 +51,5 @@ test('the old admin login page is removed; shared login still supports admin use
   assert.match(login, /if \(res\.role === 'admin'\) \{\s*router\.replace\('\/admin'\);/);
   const layout = readFileSync(new URL('../app/admin/layout.tsx', import.meta.url), 'utf8');
   assert.doesNotMatch(layout, /\/admin\/login/);
-  assert.match(layout, /if \(!user\) router\.replace\('\/'\)/);
+  assert.ok(layout.includes('if (!user) router.replace("/");'));
 });
