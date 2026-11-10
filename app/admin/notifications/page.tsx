@@ -58,13 +58,14 @@ export default function AdminNotificationsPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [studentSearch, setStudentSearch] = useState('');
+  const [studentPickerOpen, setStudentPickerOpen] = useState(false);
   const [students, setStudents] = useState<StudentOption[]>([]);
   const [studentsLoading, setStudentsLoading] = useState(false);
   const [studentsError, setStudentsError] = useState<string | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!composerOpen || form.audience !== 'individual') return;
+    if (!composerOpen || form.audience !== 'individual' || !studentPickerOpen) return;
     const abort = new AbortController();
     const timer = setTimeout(async () => {
       setStudentsLoading(true);
@@ -84,7 +85,7 @@ export default function AdminNotificationsPage() {
       }
     }, 200);
     return () => { clearTimeout(timer); abort.abort(); };
-  }, [composerOpen, form.audience, studentSearch]);
+  }, [composerOpen, form.audience, studentSearch, studentPickerOpen]);
 
   useEffect(() => {
     let mounted = true;
@@ -183,6 +184,7 @@ export default function AdminNotificationsPage() {
   const openComposer = () => {
     setForm(emptyForm());
     setStudentSearch('');
+    setStudentPickerOpen(false);
     setStudents([]);
     setRequestId(crypto.randomUUID());
     setError(null);
@@ -375,7 +377,7 @@ export default function AdminNotificationsPage() {
               <div className="space-y-2">
                 <label htmlFor="announcement-audience" className="block text-sm font-semibold">Alıcı qrupu</label>
                 <select id="announcement-audience" value={form.audience}
-                  onChange={event => setForm(prev => ({ ...prev, audience: event.target.value as AnnouncementAudience, recipientEmail: '' }))}
+                  onChange={event => { setStudentPickerOpen(false); setStudentSearch(''); setForm(prev => ({ ...prev, audience: event.target.value as AnnouncementAudience, recipientEmail: '' })); }}
                   disabled={sending} className="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option value="all">Bütün tələbələr</option>
                   <option value="active">Aktiv təcrübəçilər</option>
@@ -383,28 +385,49 @@ export default function AdminNotificationsPage() {
                 </select>
               </div>
               {form.audience === 'individual' && (
-                <div className="space-y-2">
+                <div className="space-y-2" onBlur={event => {
+                  // Keep the popup open while focus moves among its own controls.
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                    setStudentPickerOpen(false);
+                  }
+                }}>
                   <label htmlFor="announcement-student-search" className="block text-sm font-semibold">Tələbə seçin</label>
                   <input id="announcement-student-search" type="search" maxLength={80}
-                    value={studentSearch} onChange={event => setStudentSearch(event.target.value)}
+                    value={studentSearch}
+                    onFocus={() => setStudentPickerOpen(true)}
+                    onKeyDown={event => { if (event.key === 'Escape') setStudentPickerOpen(false); }}
+                    onChange={event => {
+                      setStudentSearch(event.target.value);
+                      setStudentPickerOpen(true);
+                      setForm(prev => ({ ...prev, recipientEmail: '' }));
+                    }}
+                    aria-describedby="announcement-student-selection"
                     disabled={sending} placeholder="Ad, soyad və ya e-poçt ilə axtar..."
                     className="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                  <div className="max-h-44 overflow-y-auto rounded-xl border border-slate-700 bg-slate-950"
-                    role="group" aria-label="Tələbə siyahısı">
-                    {studentsLoading ? <p className="p-3 text-sm text-slate-400">Tələbələr yüklənir...</p>
-                      : studentsError ? <p role="alert" className="p-3 text-sm text-rose-300">{studentsError}</p>
-                      : students.length === 0 ? <p className="p-3 text-sm text-slate-400">Tələbə tapılmadı.</p>
-                      : students.map(student => (
-                        <button key={student.id} type="button" disabled={sending}
-                          aria-pressed={form.recipientEmail === student.email}
-                          onClick={() => setForm(prev => ({ ...prev, recipientEmail: student.email }))}
-                          className={`w-full border-b border-slate-800 p-3 text-left text-sm hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-blue-400 ${form.recipientEmail === student.email ? 'bg-blue-950/50 text-blue-200' : 'text-slate-200'}`}>
-                          <span className="block font-semibold">{student.full_name || 'Adsız tələbə'}</span>
-                          <span className="block truncate text-xs text-slate-400">{student.email}</span>
-                        </button>
-                      ))}
-                  </div>
-                  <p className="text-xs text-slate-400">
+                  {studentPickerOpen && (
+                    <div id="announcement-student-options"
+                      className="max-h-44 overflow-y-auto rounded-xl border border-slate-700 bg-slate-950"
+                      role="group" aria-label="Tələbə siyahısı">
+                      {studentsLoading ? <p className="p-3 text-sm text-slate-400">Tələbələr yüklənir...</p>
+                        : studentsError ? <p role="alert" className="p-3 text-sm text-rose-300">{studentsError}</p>
+                        : students.length === 0 ? <p className="p-3 text-sm text-slate-400">Tələbə tapılmadı.</p>
+                        : students.map(student => (
+                          <button key={student.id} type="button" disabled={sending}
+                            aria-pressed={form.recipientEmail === student.email}
+                            onMouseDown={event => event.preventDefault()}
+                            onClick={() => {
+                              setForm(prev => ({ ...prev, recipientEmail: student.email }));
+                              setStudentSearch('');
+                              setStudentPickerOpen(false);
+                            }}
+                            className={`w-full border-b border-slate-800 p-3 text-left text-sm hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-blue-400 ${form.recipientEmail === student.email ? 'bg-blue-950/50 text-blue-200' : 'text-slate-200'}`}>
+                            <span className="block font-semibold">{student.full_name || 'Adsız tələbə'}</span>
+                            <span className="block truncate text-xs text-slate-400">{student.email}</span>
+                          </button>
+                        ))}
+                    </div>
+                  )}
+                  <p id="announcement-student-selection" className="text-xs text-slate-400">
                     {form.recipientEmail ? `Seçilib: ${form.recipientEmail}` : 'Siyahıdan tələbəni seçin.'}
                   </p>
                 </div>
