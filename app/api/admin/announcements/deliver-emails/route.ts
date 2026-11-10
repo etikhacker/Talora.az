@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient, createClient } from '@/lib/supabase/server';
 import { isSoleAdminEmail } from '@/lib/auth/admin';
 import { isGmailConfigured, sendGmailEmail } from '@/lib/email/gmail';
+import { parseAnnouncementDeliveryLookup } from '@/lib/announcements/delivery-lookup';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 const headers = { 'Cache-Control': 'private, no-store' };
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 interface EmailJob {
   job_id: string;
@@ -49,9 +49,8 @@ export async function POST(request: NextRequest) {
   } catch {
     return errorResponse('Sorğu formatı düzgün deyil.', 400);
   }
-  if (typeof input.id !== 'string' || !UUID.test(input.id)) {
-    return errorResponse('Elan ID-si düzgün deyil.', 400);
-  }
+  const lookup = parseAnnouncementDeliveryLookup(input);
+  if (!lookup) return errorResponse('Elan və ya sorğu identifikatoru düzgün deyil.', 400);
   const retryFailed = input.retryFailed === true;
   const retryUncertain = input.retryUncertain === true && input.confirmPossibleDuplicate === true;
   if (input.retryUncertain === true && !retryUncertain) {
@@ -61,15 +60,20 @@ export async function POST(request: NextRequest) {
   const admin = await createAdminClient();
   if (!admin) return errorResponse('Konfiqurasiya xətası.', 503);
   const { data: announcement, error: lookupError } = await admin
-    .from('admin_announcements').select('id,delivery_channel').eq('id', input.id).maybeSingle();
+    .from('admin_announcements').select('id,request_id,delivery_channel')
+    .eq(lookup.column, lookup.value).maybeSingle();
   if (lookupError) return errorResponse('Elan yoxlanıla bilmədi.', 500);
   if (!announcement) return errorResponse('Elan tapılmadı.', 404);
+  if (lookup.expectedId && announcement.id !== lookup.expectedId) {
+    return errorResponse('Elan və sorğu identifikatorları uyğun gəlmir.', 409);
+  }
+  const announcementId = announcement.id;
   if (announcement.delivery_channel === 'in_app') {
     return errorResponse('Bu elanın e-poçt kanalı yoxdur.', 422);
   }
 
   const { data: claimed, error: claimError } = await admin.rpc('claim_admin_announcement_email_jobs', {
-    p_announcement_id: input.id,
+    p_announcement_id: announcementId,
     p_retry_failed: retryFailed,
     p_retry_uncertain: retryUncertain,
   });
@@ -104,7 +108,7 @@ export async function POST(request: NextRequest) {
     return status;
   }));
   const { data: summary, error: summaryError } = await admin
-    .rpc('admin_announcement_email_summaries', { p_ids: [input.id] });
+    .rpc('admin_announcement_email_summaries', { p_ids: [announcementId] });
   if (summaryError) console.error('Announcement email summary unavailable:', summaryError.code);
   const totals = Array.isArray(summary) ? summary[0] || null : null;
   return NextResponse.json({

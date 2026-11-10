@@ -12,6 +12,7 @@ const MAX_REQUEST_CHARS = 9_000;
 
 type HistoryRow = {
   id: string;
+  request_id: string;
   title: string;
   body: string;
   audience: string;
@@ -50,7 +51,7 @@ export async function GET() {
   if (authError || !admin) return authError;
   const { data, error } = await admin
     .from('admin_announcements')
-    .select('id,title,body,audience,recipient_email,delivered_count,delivery_channel,created_at')
+    .select('id,request_id,title,body,audience,recipient_email,delivered_count,delivery_channel,created_at')
     .order('created_at', { ascending: false })
     .limit(50);
   if (error) {
