@@ -30,9 +30,13 @@ jobs:
         run: node --test scripts/application-email-delivery.test.mjs
       - name: Test private admin routing policy
         run: node --test scripts/private-admin-entry.test.mjs
+      - name: Test admin announcements and recipient isolation
+        run: node --test scripts/admin-announcements.test.mjs
       - name: Type-check Next.js application
         run: npx tsc --noEmit
       - name: Lint application email admin UI and route
         run: npx eslint 'app/admin/applications/[id]/page.tsx' app/api/notifications/send/route.ts lib/email/application-delivery.ts
       - name: Lint private admin routing and guard
         run: npx eslint lib/auth/admin-route-gate.ts lib/supabase/middleware.ts app/admin/layout.tsx
+      - name: Lint admin announcements
+        run: npx eslint app/admin/notifications/page.tsx app/api/admin/announcements/route.ts lib/announcements/validation.ts app/dashboard/notifications/page.tsx lib/notifications/inbox.ts

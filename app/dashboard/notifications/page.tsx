@@ -14,7 +14,7 @@ export default function StudentNotificationsPage() {
   const az = language === 'az';
   return <section className="notification-inbox" aria-labelledby="inbox-title">
     <PageHeading title={<span id="inbox-title">{az ? 'Bildirişlər' : 'Notifications'}</span>}
-      description={az ? 'Müraciət nəticələri, tapşırıq rəyləri və son tarix xatırlatmaları' : 'Application decisions, assignment reviews and deadline reminders'} />
+      description={az ? 'Müraciət nəticələri, tapşırıq rəyləri, elanlar və son tarix xatırlatmaları' : 'Application decisions, assignment reviews, announcements and deadline reminders'} />
     <div className="notification-toolbar">
       <div className="notification-filters" aria-label={az ? 'Bildiriş filtri' : 'Notification filter'}>
         <button type="button" disabled={inbox.saving} aria-pressed={!inbox.unreadOnly} onClick={() => inbox.filter(false)}>{az ? 'Hamısı' : 'All'}</button>
@@ -30,7 +30,7 @@ export default function StudentNotificationsPage() {
       {inbox.loading ? <div className="notification-empty" role="status"><RefreshCw className="animate-spin" size={24} /><p>{az ? 'Bildirişlər yüklənir…' : 'Loading notifications…'}</p></div>
       : !inbox.items.length && !inbox.error ? <div className="notification-empty"><Bell size={32} /><h2>{inbox.unreadOnly ? (az ? 'Hamısını oxumusunuz' : 'You’re all caught up') : (az ? 'Hələ bildiriş yoxdur' : 'No notifications yet')}</h2><p>{az ? 'Müraciətinizə və ya tapşırığınıza baxıldıqda nəticə burada görünəcək.' : 'When your application or assignment is reviewed, the result will appear here.'}</p></div>
       : <ul className="notification-list">{inbox.items.map(item => {
-        const Icon = item.kind === 'application' ? FileCheck2 : item.kind === 'task_review' ? ClipboardCheck : CalendarClock;
+        const Icon = item.kind === 'application' ? FileCheck2 : item.kind === 'task_review' ? ClipboardCheck : item.kind === 'announcement' ? Bell : CalendarClock;
         return <li key={item.id} className={`notification-item${!item.read_at ? ' notification-item--unread' : ''}`}>
           <div className="notification-icon"><Icon size={22} /></div>
           <div className="notification-content">
