@@ -9,6 +9,7 @@ import { Bell, Send, X, RefreshCw, Users, CheckCircle2, AlertCircle } from 'luci
 
 interface AnnouncementRecord {
   id: string;
+  request_id: string;
   title: string;
   body: string;
   audience: AnnouncementAudience;
@@ -131,6 +132,7 @@ export default function AdminNotificationsPage() {
     announcementId: string,
     retryFailed = false,
     retryUncertain = false,
+    publishRequestId?: string,
   ): Promise<EmailSummary | null> => {
     setProcessingId(announcementId);
     let lastSummary: EmailSummary | null = null;
@@ -143,6 +145,7 @@ export default function AdminNotificationsPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             id: announcementId,
+            requestId: publishRequestId,
             retryFailed: i === 0 && retryFailed,
             retryUncertain: i === 0 && retryUncertain,
             confirmPossibleDuplicate: retryUncertain,
@@ -164,7 +167,7 @@ export default function AdminNotificationsPage() {
     }
   };
 
-  const resumeEmails = async (id: string, retryFailed = false, retryUncertain = false) => {
+  const resumeEmails = async (id: string, retryFailed = false, retryUncertain = false, publishRequestId?: string) => {
     if (processingId) return;
     if (retryUncertain && !window.confirm(
       'Göndərişin nəticəsi qeyri-müəyyəndir. Gmail Sent qovluğunu yoxlamısınız? Təkrar email gedə bilər.'
@@ -172,7 +175,7 @@ export default function AdminNotificationsPage() {
     if (retryFailed && !window.confirm('Uğursuz email göndərişlərini yenidən sınamaq istəyirsiniz?')) return;
     setError(null);
     try {
-      const result = await processEmailQueue(id, retryFailed, retryUncertain);
+      const result = await processEmailQueue(id, retryFailed, retryUncertain, publishRequestId);
       setSuccess(result
         ? `E-poçt: ${result.sent_count} göndərildi, ${result.failed_count} uğursuz, ${result.uncertain_count} yoxlama tələb edir, ${result.queued_count} növbədə.`
         : 'Göndəriş statusu yeniləndi.');
@@ -205,6 +208,7 @@ export default function AdminNotificationsPage() {
       `“${form.title.trim()}” elanını ${audienceLabel.toLowerCase()} üçün ${channelLabels[form.channel].toLowerCase()} ilə göndərmək istəyirsiniz? Göndərişi geri qaytarmaq mümkün deyil.`
     )) return;
 
+    const publishedRequestId = requestId;
     setSending(true);
     try {
       const response = await fetch('/api/admin/announcements', {
@@ -225,14 +229,14 @@ export default function AdminNotificationsPage() {
       setRequestId('');
       setSuccess(`Saytdaxili: ${result.deliveredCount ?? 0} · E-poçt növbəsi: ${result.emailQueued ?? 0}`);
       await refresh();
-      if ((result.emailQueued ?? 0) > 0 && result.id) {
+      if ((result.emailQueued ?? 0) > 0) {
         try {
-          const summary = await processEmailQueue(result.id);
+          const summary = await processEmailQueue(result.id || '', false, false, publishedRequestId);
           if (summary) setSuccess(
             `Saytdaxili: ${result.deliveredCount ?? 0} · E-poçt: ${summary.sent_count} göndərildi, ${summary.failed_count} uğursuz, ${summary.uncertain_count} yoxlama tələb edir, ${summary.queued_count} növbədə.`
           );
         } catch (emailError) {
-          setSuccess(`Elan yadda saxlanıldı. E-poçt növbədədir: ${emailError instanceof Error ? emailError.message : 'Tarixçədən davam edin.'}`);
+          setError(`Elan yaradıldı, amma email göndərişi tamamlanmadı: ${emailError instanceof Error ? emailError.message : 'Tarixçədən davam edin.'}`);
         }
       }
     } catch (err) {
@@ -329,7 +333,7 @@ export default function AdminNotificationsPage() {
                   <div className="flex flex-wrap gap-2">
                     {item.email_delivery.queued_count > 0 && (
                       <Button type="button" variant="outline" size="sm" disabled={!!processingId}
-                        onClick={() => void resumeEmails(item.id)}>
+                        onClick={() => void resumeEmails(item.id, false, false, item.request_id)}>
                         {processingId === item.id ? 'Göndərilir...' : 'Email göndərişini davam et'}
                       </Button>
                     )}
@@ -341,13 +345,13 @@ export default function AdminNotificationsPage() {
                     )}
                     {item.email_delivery.failed_count > 0 && (
                       <Button type="button" variant="outline" size="sm" disabled={!!processingId}
-                        onClick={() => void resumeEmails(item.id, true)}>
+                        onClick={() => void resumeEmails(item.id, true, false, item.request_id)}>
                         Uğursuzları yenidən göndər
                       </Button>
                     )}
                     {item.email_delivery.uncertain_count > 0 && (
                       <Button type="button" variant="outline" size="sm" disabled={!!processingId}
-                        onClick={() => void resumeEmails(item.id, false, true)}>
+                        onClick={() => void resumeEmails(item.id, false, true, item.request_id)}>
                         Yoxlanmış emaili yenidən göndər
                       </Button>
                     )}
