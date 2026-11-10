@@ -1,4 +1,4 @@
-import { parseAnnouncementText } from '@/lib/announcements/text-format';
+import { parseAnnouncementText } from '../announcements/text-format.ts';
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, char => ({
