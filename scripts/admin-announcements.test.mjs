@@ -42,7 +42,7 @@ test('individual notification requires valid email and blocks additional bulk em
 });
 
 test('database migration delivers atomically with idempotency and locked-down API roles', () => {
-  const sql = read('supabase/migrations/20261110143000_admin_announcements.sql');
+  const sql = read('supabase/migrations/20261110104253_admin_announcements.sql');
   assert.match(sql, /CREATE TABLE public\.admin_announcements/);
   assert.match(sql, /request_id uuid NOT NULL UNIQUE/);
   assert.match(sql, /ENABLE ROW LEVEL SECURITY/);
