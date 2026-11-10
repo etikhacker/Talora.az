@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import { getSupabasePublicKey, getSupabaseUrl, isSupabaseConfigured } from './config';
 import { isSoleAdminEmail } from '@/lib/auth/admin';
+import { adminRouteDestination, isAdminRoute } from '@/lib/auth/admin-route-gate';
 
 /**
  * Route helpers.
@@ -26,7 +27,9 @@ function redirectTo(request: NextRequest, pathname: string, extra?: Record<strin
       url.searchParams.set(key, value);
     }
   }
-  return NextResponse.redirect(url);
+  const response = NextResponse.redirect(url);
+  response.headers.set('Cache-Control', 'private, no-store');
+  return response;
 }
 
 export async function updateSession(request: NextRequest) {
@@ -35,14 +38,13 @@ export async function updateSession(request: NextRequest) {
   });
 
   const pathname = request.nextUrl.pathname;
-  const isAdminArea = isArea(pathname, '/admin');
-  const isAdminLogin = pathname.toLowerCase() === '/admin/login';
+  const isAdminArea = isAdminRoute(pathname);
   const isDashboardArea = isArea(pathname, '/dashboard');
   const isStudentAuthPage =
     pathname.toLowerCase() === '/login' || pathname.toLowerCase() === '/register';
-  // The public sign-in screen must remain reachable even when auth is unavailable.
-  // Redirecting /admin/login to itself otherwise causes an infinite redirect loop.
-  const isProtectedArea = (isAdminArea && !isAdminLogin) || isDashboardArea;
+  // Every /admin path, including the legacy /admin/login URL, is private.
+  // Admins authenticate through the shared /login page instead.
+  const isProtectedArea = isAdminArea || isDashboardArea;
 
   /* ---------------------------------------------------------------------
    * Fail CLOSED.
@@ -55,8 +57,8 @@ export async function updateSession(request: NextRequest) {
    * screen, never the console.
    * ------------------------------------------------------------------- */
   if (!isSupabaseConfigured()) {
-    if (isAdminArea && !isAdminLogin) {
-      return redirectTo(request, '/admin/login', { reason: 'setup' });
+    if (isAdminArea) {
+      return redirectTo(request, '/');
     }
     if (isDashboardArea) {
       return redirectTo(request, '/login', { reason: 'setup' });
@@ -104,9 +106,9 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (isProtectedArea && authUnavailable) {
-    return redirectTo(request, isAdminArea ? '/admin/login' : '/login', {
-      reason: 'unavailable',
-    });
+    // Don't reveal a separate admin entry point on auth outages.
+    if (isAdminArea) return redirectTo(request, '/');
+    return redirectTo(request, '/login', { reason: 'unavailable' });
   }
 
   const isAdmin = Boolean(user) && isSoleAdminEmail(user?.email);
@@ -116,24 +118,13 @@ export async function updateSession(request: NextRequest) {
     return redirectTo(request, '/login', { redirect: pathname });
   }
 
-  // Protect /admin (only admins can access)
-  if (isAdminArea && !isAdminLogin) {
-    if (!user) {
-      return redirectTo(request, '/admin/login');
-    }
+  // Identity is verified through Auth.getUser(), not browser-supplied profile
+  // metadata. Unauthenticated visitors see the public homepage, students
+  // return to their dashboard, and only the admin reaches the private console.
+  const adminDestination = adminRouteDestination(pathname, Boolean(user), isAdmin);
+  if (adminDestination) return redirectTo(request, adminDestination);
 
-    // The sole admin identity is checked from the verified Supabase Auth user.
-    // Do not rely on a client-editable profile role for route protection.
-    if (!isSoleAdminEmail(user.email)) {
-      return redirectTo(request, '/dashboard', { denied: 'admin' });
-    }
-  }
-
-  // An admin has no business on the student login/register screens, and a
-  // signed-in student has no business on the admin login screen.
-  if (isAdminLogin && user && !isAdmin) {
-    return redirectTo(request, '/dashboard');
-  }
+  // An authenticated user has no need for the public login/register pages.
   if (isStudentAuthPage && user) {
     return redirectTo(request, isAdmin ? '/admin' : '/dashboard');
   }
