@@ -3,6 +3,7 @@ import { createAdminClient, createClient } from '@/lib/supabase/server';
 import { isSoleAdminEmail } from '@/lib/auth/admin';
 import { isGmailConfigured, sendGmailEmail } from '@/lib/email/gmail';
 import { parseAnnouncementDeliveryLookup } from '@/lib/announcements/delivery-lookup';
+import { renderAnnouncementEmailHtml } from '@/lib/email/announcement-template';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -89,6 +90,7 @@ export async function POST(request: NextRequest) {
       await sendGmailEmail(job.recipient_email, {
         subject: job.subject,
         text: job.body,
+        html: renderAnnouncementEmailHtml({ title: job.subject, body: job.body }),
       });
     } catch (error) {
       const raw = error instanceof Error ? error.message : 'DELIVERY_UNKNOWN';
