@@ -61,12 +61,12 @@ test('database migration delivers atomically with idempotency and locked-down AP
   assert.doesNotMatch(sql, /GRANT (ALL|EXECUTE).*TO (anon|authenticated)/);
 });
 
-test('admin API authorizes sole admin, validates and never sends external emails', () => {
+test('admin publish API authorizes sole admin, validates and only queues external emails', () => {
   const route = read('app/api/admin/announcements/route.ts');
   assert.match(route, /session\.auth\.getUser\(\)/);
   assert.match(route, /isSoleAdminEmail\(data\.user\.email\)/);
   assert.match(route, /validateAnnouncement\(parsed\)/);
-  assert.match(route, /admin\.rpc\('publish_admin_announcement'/);
+  assert.match(route, /admin\.rpc\('publish_admin_announcement_v2'/);
   assert.match(route, /Cache-Control.*private, no-store/);
   assert.doesNotMatch(route, /sendGmail|fetch\(['"]https:\/\//);
 });
