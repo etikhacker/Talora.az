@@ -66,7 +66,7 @@ test('admin publish API authorizes sole admin, validates and only queues externa
   assert.match(route, /session\.auth\.getUser\(\)/);
   assert.match(route, /isSoleAdminEmail\(data\.user\.email\)/);
   assert.match(route, /validateAnnouncement\(parsed\)/);
-  assert.match(route, /admin\.rpc\('publish_admin_announcement'/);
+  assert.match(route, /admin\.rpc\('publish_admin_announcement_v2'/);
   assert.match(route, /Cache-Control.*private, no-store/);
   assert.doesNotMatch(route, /sendGmail|fetch\(['"]https:\/\//);
 });
