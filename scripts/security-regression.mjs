@@ -1,17 +1,16 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { readdirSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { join, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = new URL('../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
 
-const [config, middleware, adminLayout, adminLogin, admin, students, migration, certificates, submissions, tasks, loginPage, registerPage, adminLoginLayout, dashboardLayout, adminSidebar, studentSidebar, legacyGlobals, internshipsPage, selectComponent, providers] = await Promise.all([
+const [config, middleware, adminLayout, admin, students, migration, certificates, submissions, tasks, loginPage, registerPage, adminLoginLayout, dashboardLayout, adminSidebar, studentSidebar, legacyGlobals, internshipsPage, selectComponent, providers] = await Promise.all([
   read('lib/supabase/config.ts'),
   read('lib/supabase/middleware.ts'),
   read('app/admin/layout.tsx'),
-  read('app/admin/login/page.tsx'),
   read('app/admin/page.tsx'),
   read('app/admin/students/page.tsx'),
   read('supabase/migrations/20260922000006_harden_storage_ownership.sql'),
@@ -33,8 +32,10 @@ const [config, middleware, adminLayout, adminLogin, admin, students, migration, 
 const designSystem = await read('app/design-system.css');
 const themeController = await read('lib/theme.ts');
 const globals = legacyGlobals + '\n' + designSystem;
-assert.match(middleware, /isProtectedArea = \(isAdminArea && !isAdminLogin\) \|\| isDashboardArea/,
-  'auth unavailability must not redirect the public admin login to itself');
+assert.match(middleware, /const isProtectedArea = isAdminArea \\|\\| isDashboardArea/,
+  'all admin routes must be treated as protected');
+assert.equal(existsSync(new URL('app/admin/login/page.tsx', root)), false,
+  'there must not be a publicly accessible admin-branded login form');
 
 assert.match(config, /process\.env\.SUPABASE_URL/);
 assert.match(config, /process\.env\.SUPABASE_PUBLISHABLE_KEY/);
@@ -42,15 +43,8 @@ assert.match(middleware, /getSupabasePublicKey\(\)/);
 assert.match(middleware, /getSupabaseUrl\(\)/);
 assert.match(middleware, /isSoleAdminEmail\(user\?\.email\)/);
 assert.match(adminLayout, /isSoleAdminEmail\(user\?\.email\)/);
-assert.match(adminLogin, /SOLE_ADMIN_EMAIL/);
-assert.doesNotMatch(adminLogin, /admin@intern\.az|Quick Fill Demo Admin/);
-
-// The admin address must never be rendered into the page (placeholder,
-// aria-label, or any user-visible string) — that hands every visitor the one
-// account worth attacking.
-const adminLoginRendersEmail = /placeholder=\{?["'`]?[^"'`]*babayev\.omr\.23/i;
-assert.doesNotMatch(adminLogin, adminLoginRendersEmail);
-assert.doesNotMatch(adminLogin, /value=["']\{?SOLE_ADMIN_EMAIL/);
+assert.match(middleware, /adminRouteDestination\(pathname, Boolean\(user\), isAdmin\)/);
+assert.doesNotMatch(middleware, /redirectTo\(request, '\/admin\/login'/);
 
 // Route protection must fail CLOSED. A previous version returned the response
 // untouched whenever Supabase was unconfigured, which served /admin to anyone
@@ -60,11 +54,10 @@ assert.doesNotMatch(
   middleware,
   /let requests pass through[\s\S]{0,200}return supabaseResponse;/
 );
-assert.match(middleware, /isArea\(pathname, '\/admin'\)/);
+assert.match(middleware, /isAdminRoute\(pathname\)/);
 assert.match(middleware, /toLowerCase\(\)/);
 
 // The email must never be echoed back in an auth error message (enumeration).
-assert.doesNotMatch(adminLogin, /res\.error/);
 assert.doesNotMatch(loginPage, /res\.error/);
 
 // ?redirect= must not be usable as an open redirect.
@@ -125,7 +118,6 @@ const code = (src) => src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^[ \t]*\/\/.
 for (const [name, page] of [
   ['login', code(loginPage)],
   ['register', code(registerPage)],
-  ['admin login', code(adminLogin)],
 ]) {
   // Column sizing belongs to the grid rule in globals.css, not to per-page
   // width utilities that can drift apart again.
