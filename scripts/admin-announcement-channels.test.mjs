@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { validateAnnouncement } from '../lib/announcements/validation.ts';
+import { parseAnnouncementDeliveryLookup } from '../lib/announcements/delivery-lookup.ts';
 
 const read = name => readFileSync(new URL('../' + name, import.meta.url), 'utf8');
 const input = {
@@ -85,4 +86,44 @@ test('student choice collapses list and typing reopens it', () => {
   assert.match(page, /\{studentPickerOpen && \(/);
   assert.match(page, /setForm\(prev => \(\{ \.\.\.prev, recipientEmail: student\.email \}\)\);\s+setStudentSearch\(''\);\s+setStudentPickerOpen\(false\)/);
   assert.match(page, /onKeyDown=\{event => \{ if \(event\.key === 'Escape'\) setStudentPickerOpen\(false\); \}\}/);
+});
+
+test('delivery accepts real 8-4-4-4-12 announcement UUIDs and rejects truncated IDs', () => {
+  const id = '3fbb1c7c-c6df-4f20-9d26-70b35d7cc64e';
+  const requestId = '9243d9b7-32a6-47d1-9ab1-0a04a5bec155';
+  assert.deepEqual(parseAnnouncementDeliveryLookup({ id }), {
+    column: 'id',
+    value: id,
+    expectedId: id,
+  });
+  assert.deepEqual(parseAnnouncementDeliveryLookup({ id, requestId }), {
+    column: 'request_id',
+    value: requestId,
+    expectedId: id,
+  });
+  assert.deepEqual(parseAnnouncementDeliveryLookup({
+    id: 'invalid',
+    requestId,
+  }), {
+    column: 'request_id',
+    value: requestId,
+    expectedId: null,
+  });
+  assert.equal(parseAnnouncementDeliveryLookup({ id: '3fbb1c7c-c6df-4f20-70b35d7cc64e' }), null);
+  assert.equal(parseAnnouncementDeliveryLookup({ id: 'random-text' }), null);
+  assert.equal(parseAnnouncementDeliveryLookup({}), null);
+});
+
+test('delivery and composer use a verified server lookup for existing announcements', () => {
+  const api = read('app/api/admin/announcements/deliver-emails/route.ts');
+  const history = read('app/api/admin/announcements/route.ts');
+  const composer = read('app/admin/notifications/page.tsx');
+  assert.match(api, /parseAnnouncementDeliveryLookup\\(input\\)/);
+  assert.match(api, /\\.eq\\(lookup\\.column, lookup\\.value\\)/);
+  assert.match(api, /lookup\\.expectedId && announcement\\.id !== lookup\\.expectedId/);
+  assert.match(api, /p_announcement_id: announcementId/);
+  assert.match(history, /select\\('id,request_id,title/);
+  assert.match(composer, /requestId: publishRequestId/);
+  assert.match(composer, /processEmailQueue\\(result\\.id \\|\\| '', false, false, publishedRequestId\\)/);
+  assert.match(composer, /resumeEmails\\(item\\.id, false, false, item\\.request_id\\)/);
 });
