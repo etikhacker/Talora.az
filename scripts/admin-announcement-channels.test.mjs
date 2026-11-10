@@ -73,16 +73,16 @@ test('composer supports searchable student picker, channel and durable email sta
 
 test('email-only null delivery count regression is fixed in the applied migration', () => {
   const sql = read('supabase/migrations/20261110134238_fix_announcement_email_only_delivered_count.sql');
-  assert.match(sql, /CREATE OR REPLACE FUNCTION public\\.publish_admin_announcement_v2/);
-  assert.match(sql, /END IF;\\s+-- SELECT INTO with zero rows resets v_delivered to NULL\\.\\s+-- Email-only mode does not run the student_notifications INSERT\\.\\s+v_delivered := 0;/);
-  assert.match(sql, /UPDATE public\\.admin_announcements a\\s+SET delivered_count=v_delivered/);
+  assert.match(sql, /CREATE OR REPLACE FUNCTION public\.publish_admin_announcement_v2/);
+  assert.match(sql, /END IF;\s+-- SELECT INTO with zero rows resets v_delivered to NULL\.\s+-- Email-only mode does not run the student_notifications INSERT\.\s+v_delivered := 0;/);
+  assert.match(sql, /UPDATE public\.admin_announcements a\s+SET delivered_count=v_delivered/);
 });
 
 test('student choice collapses list and typing reopens it', () => {
   const page = read('app/admin/notifications/page.tsx');
-  assert.match(page, /const \\[studentPickerOpen, setStudentPickerOpen\\] = useState\\(false\\)/);
-  assert.match(page, /onFocus=\\{\\(\\) => setStudentPickerOpen\\(true\\)\\}/);
-  assert.match(page, /\\{studentPickerOpen && \\(/);
-  assert.match(page, /setForm\\(prev => \\(\\{ \\.\\.\\.prev, recipientEmail: student\\.email \\}\\)\\);\\s+setStudentSearch\\(''\\);\\s+setStudentPickerOpen\\(false\\)/);
-  assert.match(page, /onKeyDown=\\{event => \\{ if \\(event\\.key === 'Escape'\\) setStudentPickerOpen\\(false\\); \\}\\}/);
+  assert.match(page, /const \[studentPickerOpen, setStudentPickerOpen\] = useState\(false\)/);
+  assert.match(page, /onFocus=\{\(\) => setStudentPickerOpen\(true\)\}/);
+  assert.match(page, /\{studentPickerOpen && \(/);
+  assert.match(page, /setForm\(prev => \(\{ \.\.\.prev, recipientEmail: student\.email \}\)\);\s+setStudentSearch\(''\);\s+setStudentPickerOpen\(false\)/);
+  assert.match(page, /onKeyDown=\{event => \{ if \(event\.key === 'Escape'\) setStudentPickerOpen\(false\); \}\}/);
 });
