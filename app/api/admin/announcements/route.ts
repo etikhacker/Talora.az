@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient, createClient } from '@/lib/supabase/server';
 import { isSoleAdminEmail } from '@/lib/auth/admin';
 import { validateAnnouncement } from '@/lib/announcements/validation';
+import { isGmailConfigured } from '@/lib/email/gmail';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -29,14 +30,27 @@ export async function GET() {
   if (authError || !admin) return authError;
   const { data, error } = await admin
     .from('admin_announcements')
-    .select('id,title,body,audience,recipient_email,delivered_count,created_at')
+    .select('id,title,body,audience,recipient_email,delivered_count,delivery_channel,created_at')
     .order('created_at', { ascending: false })
     .limit(50);
   if (error) {
     console.error('Admin announcement history read failed:', error.code);
     return jsonError('Elan tarixçəsini yükləmək mümkün olmadı.', 500);
   }
-  return NextResponse.json({ announcements: data || [] }, { headers: noStore });
+  const ids = (data || []).map(item => item.id);
+  if (!ids.length) return NextResponse.json({ announcements: [] }, { headers: noStore });
+  const { data: summaries, error: summaryError } = await admin
+    .rpc('admin_announcement_email_summaries', { p_ids: ids });
+  if (summaryError) {
+    console.error('Admin announcement email summary read failed:', summaryError.code);
+    return jsonError('Elan statuslarını yükləmək mümkün olmadı.', 500);
+  }
+  const byId = new Map((summaries || []).map(item => [item.announcement_id, item]));
+  const announcements = (data || []).map(item => ({
+    ...item,
+    email_delivery: byId.get(item.id) || null,
+  }));
+  return NextResponse.json({ announcements }, { headers: noStore });
 }
 
 export async function POST(request: NextRequest) {
@@ -59,18 +73,21 @@ export async function POST(request: NextRequest) {
 
   const validation = validateAnnouncement(parsed);
   if (!validation.success) return jsonError(validation.error, 400);
-  const { title, body, audience, recipientEmail, requestId } = validation.value;
+  const { title, body, audience, recipientEmail, requestId, channel } = validation.value;
+  if (channel !== 'in_app' && !isGmailConfigured()) {
+    return jsonError('E-poçt göndərişi konfiqurasiya olunmayıb.', 503);
+  }
 
   try {
-    // The DB function inserts the history record and all student inbox entries
-    // in one transaction. Calling it twice with the same requestId is safe.
-    // No Gmail sends, retries or third-party requests occur here.
-    const { data, error } = await admin.rpc('publish_admin_announcement', {
+    // Transactionally stores inbox entries and/or email delivery jobs.
+    // No external API calls are made inside this idempotent POST.
+    const { data, error } = await admin.rpc('publish_admin_announcement_v2', {
       p_title: title,
       p_body: body,
       p_audience: audience,
       p_recipient_email: recipientEmail,
       p_request_id: requestId,
+      p_channel: channel,
     });
 
     if (error) {
@@ -80,6 +97,9 @@ export async function POST(request: NextRequest) {
       }
       if (code.includes('ANNOUNCEMENT_BULK_COOLDOWN')) {
         return jsonError('Kütləvi elanlar arasında ən azı 60 saniyə interval olmalıdır.', 429);
+      }
+      if (code.includes('ANNOUNCEMENT_NO_EMAIL_RECIPIENTS')) {
+        return jsonError('Seçilmiş tələbələrin etibarlı e-poçt ünvanı yoxdur.', 422);
       }
       if (code.includes('ANNOUNCEMENT_RECIPIENT_LIMIT')) {
         return jsonError('Bir elanın alıcı sayı 500-dən çox ola bilməz.', 422);
@@ -100,7 +120,8 @@ export async function POST(request: NextRequest) {
       id: published.announcement_id,
       deliveredCount: published.delivered_count,
       createdAt: published.published_at,
-      channel: 'in_app',
+      channel,
+      emailQueued: published.email_queued,
     }, { status: 200, headers: noStore });
   } catch {
     return jsonError('Server xətası baş verdi. Təkrar göndərməzdən əvvəl tarixçəni yoxlayın.', 502);
