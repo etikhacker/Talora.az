@@ -176,7 +176,7 @@ export default function AdminNotificationsPage() {
         ? `E-poçt: ${result.sent_count} göndərildi, ${result.failed_count} uğursuz, ${result.uncertain_count} yoxlama tələb edir, ${result.queued_count} növbədə.`
         : 'Göndəriş statusu yeniləndi.');
     } catch (err) {
-      setSuccess(err instanceof Error ? err.message : 'Email göndərişi alınmadı. Tarixçədən yenidən sınayın.');
+      setError(err instanceof Error ? err.message : 'Email göndərişi alınmadı. Tarixçədən yenidən sınayın.');
     }
   };
 
@@ -257,6 +257,11 @@ export default function AdminNotificationsPage() {
           <CheckCircle2 className="w-5 h-5 shrink-0" /> {success}
         </div>
       )}
+      {error && !composerOpen && (
+        <div role="alert" className="rounded-xl border border-red-700/40 bg-red-950/30 p-4 text-sm text-red-300">
+          {error}
+        </div>
+      )}
       {loadingError && (
         <div role="alert" className="rounded-xl border border-red-700/40 bg-red-950/30 p-4 text-sm text-red-300 flex items-center justify-between gap-3">
           <span className="flex items-center gap-2"><AlertCircle className="w-4 h-4" /> {loadingError}</span>
@@ -324,6 +329,12 @@ export default function AdminNotificationsPage() {
                       <Button type="button" variant="outline" size="sm" disabled={!!processingId}
                         onClick={() => void resumeEmails(item.id)}>
                         {processingId === item.id ? 'Göndərilir...' : 'Email göndərişini davam et'}
+                      </Button>
+                    )}
+                    {item.email_delivery.sending_count > 0 && (
+                      <Button type="button" variant="outline" size="sm" disabled={!!processingId}
+                        onClick={() => void resumeEmails(item.id)}>
+                        Göndəriş statusunu yoxla
                       </Button>
                     )}
                     {item.email_delivery.failed_count > 0 && (
