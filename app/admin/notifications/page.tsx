@@ -5,6 +5,7 @@ import { PageHeading } from '@/components/layout/page-heading';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ANNOUNCEMENT_AUDIENCE_LABELS, type AnnouncementAudience, type AnnouncementChannel } from '@/lib/announcements/validation';
+import { parseAnnouncementText } from '@/lib/announcements/text-format';
 import { Bell, Send, X, RefreshCw, Users, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface AnnouncementRecord {
@@ -60,6 +61,7 @@ export default function AdminNotificationsPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [studentSearch, setStudentSearch] = useState('');
   const [studentPickerOpen, setStudentPickerOpen] = useState(false);
+  const [emailPreviewOpen, setEmailPreviewOpen] = useState(false);
   const [students, setStudents] = useState<StudentOption[]>([]);
   const [studentsLoading, setStudentsLoading] = useState(false);
   const [studentsError, setStudentsError] = useState<string | null>(null);
@@ -188,6 +190,7 @@ export default function AdminNotificationsPage() {
     setForm(emptyForm());
     setStudentSearch('');
     setStudentPickerOpen(false);
+    setEmailPreviewOpen(false);
     setStudents([]);
     setRequestId(crypto.randomUUID());
     setError(null);
@@ -456,11 +459,46 @@ export default function AdminNotificationsPage() {
               </div>
               <div className="space-y-2">
                 <label htmlFor="announcement-body" className="block text-sm font-semibold">Elan mətni</label>
-                <textarea id="announcement-body" required minLength={10} maxLength={2000} rows={6}
+                <textarea id="announcement-body" required minLength={10} maxLength={2000} rows={6} wrap="soft"
                   disabled={sending} value={form.body} onChange={event => setForm(prev => ({ ...prev, body: event.target.value }))}
                   placeholder="Tələbələrə göndəriləcək məlumatı daxil edin..."
                   className="w-full resize-y rounded-xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 <p className="text-xs text-slate-500 text-right">{form.body.length}/2000</p>
+                {form.channel !== 'in_app' && (
+                  <div className="space-y-2">
+                    <Button type="button" variant="outline" size="sm"
+                      aria-expanded={emailPreviewOpen}
+                      aria-controls="announcement-email-preview"
+                      onClick={() => setEmailPreviewOpen(previous => !previous)}
+                      className="border-slate-700 text-slate-200">
+                      {emailPreviewOpen ? 'E-poçt önizləməsini gizlət' : 'E-poçt önizləməsi'}
+                    </Button>
+                    {emailPreviewOpen && (
+                      <div id="announcement-email-preview" role="region" aria-label="Məktubun önizləməsi"
+                        className="max-h-64 overflow-y-auto rounded-xl border border-slate-700 bg-white p-5 text-slate-800">
+                        <div className="mb-4 border-b border-slate-200 pb-3 text-lg font-bold">Talora</div>
+                        <h3 className="mb-4 text-xl font-semibold break-words">{form.title || 'Elanın başlığı'}</h3>
+                        {parseAnnouncementText(form.body).map((block, index) =>
+                          block.kind === 'paragraph' ? (
+                            <p key={index} className="mb-4 text-sm leading-relaxed break-words">
+                              {block.lines.map((line, lineIndex) => (
+                                <span key={lineIndex}>{line}{lineIndex < block.lines.length - 1 && <br />}</span>
+                              ))}
+                            </p>
+                          ) : block.kind === 'ordered' ? (
+                            <ol key={index} className="mb-4 list-decimal space-y-2 pl-6 text-sm leading-relaxed">
+                              {block.items.map((item, itemIndex) => <li key={itemIndex} className="break-words">{item}</li>)}
+                            </ol>
+                          ) : (
+                            <ul key={index} className="mb-4 list-disc space-y-2 pl-6 text-sm leading-relaxed">
+                              {block.items.map((item, itemIndex) => <li key={itemIndex} className="break-words">{item}</li>)}
+                            </ul>
+                          )
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               {error && <p role="alert" className="rounded-lg bg-red-950/40 border border-red-800/40 px-4 py-3 text-sm text-red-300">{error}</p>}
               <div className="flex items-center justify-end gap-3">
