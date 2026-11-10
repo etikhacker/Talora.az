@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/auth-context";
 import { isSoleAdminEmail } from "@/lib/auth/admin";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
@@ -16,17 +16,14 @@ export default function AdminLayout({
   const { user, isLoading } = useAuth();
   const isAdmin = isSoleAdminEmail(user?.email);
   const router = useRouter();
-  const pathname = usePathname();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { theme, toggleTheme } = useTheme();
   useEffect(() => {
-    if (pathname === "/admin/login") return;
     if (!isLoading) {
-      if (!user) router.push("/admin/login");
-      else if (!isAdmin) router.push("/dashboard");
+      if (!user) router.replace("/");
+      else if (!isAdmin) router.replace("/dashboard");
     }
-  }, [user, isAdmin, isLoading, router, pathname]);
-  if (pathname === "/admin/login") return <>{children}</>;
+  }, [user, isAdmin, isLoading, router]);
   if (isLoading)
     return (
       <div className="admin-shell workspace-shell flex min-h-screen items-center justify-center bg-slate-900 p-12 text-slate-400">
