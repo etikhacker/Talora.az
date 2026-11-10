@@ -118,12 +118,12 @@ test('delivery and composer use a verified server lookup for existing announceme
   const api = read('app/api/admin/announcements/deliver-emails/route.ts');
   const history = read('app/api/admin/announcements/route.ts');
   const composer = read('app/admin/notifications/page.tsx');
-  assert.match(api, /parseAnnouncementDeliveryLookup\\(input\\)/);
-  assert.match(api, /\\.eq\\(lookup\\.column, lookup\\.value\\)/);
-  assert.match(api, /lookup\\.expectedId && announcement\\.id !== lookup\\.expectedId/);
+  assert.match(api, /parseAnnouncementDeliveryLookup\(input\)/);
+  assert.match(api, /\.eq\(lookup\.column, lookup\.value\)/);
+  assert.match(api, /lookup\.expectedId && announcement\.id !== lookup\.expectedId/);
   assert.match(api, /p_announcement_id: announcementId/);
-  assert.match(history, /select\\('id,request_id,title/);
+  assert.match(history, /select\('id,request_id,title/);
   assert.match(composer, /requestId: publishRequestId/);
-  assert.match(composer, /processEmailQueue\\(result\\.id \\|\\| '', false, false, publishedRequestId\\)/);
-  assert.match(composer, /resumeEmails\\(item\\.id, false, false, item\\.request_id\\)/);
+  assert.match(composer, /processEmailQueue\(result\.id \|\| '', false, false, publishedRequestId\)/);
+  assert.match(composer, /resumeEmails\(item\.id, false, false, item\.request_id\)/);
 });
