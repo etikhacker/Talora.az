@@ -401,8 +401,7 @@ export default function AdminNotificationsPage() {
                       setStudentPickerOpen(true);
                       setForm(prev => ({ ...prev, recipientEmail: '' }));
                     }}
-                    aria-expanded={studentPickerOpen}
-                    aria-controls="announcement-student-options"
+                    aria-describedby="announcement-student-selection"
                     disabled={sending} placeholder="Ad, soyad və ya e-poçt ilə axtar..."
                     className="w-full rounded-xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
                   {studentPickerOpen && (
@@ -428,7 +427,7 @@ export default function AdminNotificationsPage() {
                         ))}
                     </div>
                   )}
-                  <p className="text-xs text-slate-400">
+                  <p id="announcement-student-selection" className="text-xs text-slate-400">
                     {form.recipientEmail ? `Seçilib: ${form.recipientEmail}` : 'Siyahıdan tələbəni seçin.'}
                   </p>
                 </div>
