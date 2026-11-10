@@ -32,7 +32,7 @@ const [config, middleware, adminLayout, admin, students, migration, certificates
 const designSystem = await read('app/design-system.css');
 const themeController = await read('lib/theme.ts');
 const globals = legacyGlobals + '\n' + designSystem;
-assert.match(middleware, /const isProtectedArea = isAdminArea \\|\\| isDashboardArea/,
+assert.ok(middleware.includes('const isProtectedArea = isAdminArea || isDashboardArea;'),
   'all admin routes must be treated as protected');
 assert.equal(existsSync(new URL('app/admin/login/page.tsx', root)), false,
   'there must not be a publicly accessible admin-branded login form');
