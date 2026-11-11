@@ -41,7 +41,7 @@ test('saving notification choices preserves unrelated account metadata', () => {
   assert.deepEqual(
     mergeNotificationPreferences(
       { full_name: 'A student', university: 'MDU', notification_preferences: { old: true } },
-      { new_internship_announcements: false, application_status_updates: false }
+      { new_internship_announcements: false, application_status_updates: false, task_review_updates: false }
     ),
     {
       full_name: 'A student',
