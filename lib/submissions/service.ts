@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/client';
 import { isSupabaseConfigured } from '@/lib/supabase/config';
 import { TaskSubmission, SubmissionStatus } from '@/types/database';
+import { requestTaskReviewEmail, type TaskReviewEmailResult } from '@/lib/email/request-task-review';
 
 // Get student's submissions for an internship / enrollment
 export async function getStudentSubmissionsForEnrollment(
@@ -282,13 +283,17 @@ export async function reviewSubmission({
   action: 'approve' | 'revision_requested' | 'reject';
   adminFeedback?: string | null;
   reviewerId?: string;
-}): Promise<{ success: boolean; error?: string; submission?: TaskSubmission }> {
+}): Promise<{ success: boolean; error?: string; submission?: TaskSubmission; emailDelivery?: TaskReviewEmailResult }> {
   // Validate requirement: Feedback is mandatory for revision_requested and reject!
   if ((action === 'revision_requested' || action === 'reject') && (!adminFeedback || adminFeedback.trim().length < 5)) {
     return {
       success: false,
       error: 'Düzəliş tələb edildikdə və ya rədd edildikdə rəy/səbəb qeyd edilməsi məcburidir (ən azı 5 simvol).',
     };
+  }
+
+  if ((adminFeedback || '').length > 2000) {
+    return { success: false, error: 'Admin rəyi 2000 simvoldan uzun olmamalıdır.' };
   }
 
   const targetStatus: SubmissionStatus =
@@ -306,25 +311,51 @@ export async function reviewSubmission({
   if (!supabase) return { success: false, error: 'Verilənlər bazası əlçatan deyil.' };
 
   try {
+    const { data: previous, error: previousError } = await supabase
+      .from('task_submissions')
+      .select('id,status,admin_feedback,updated_at,reviewed_at')
+      .eq('id', submissionId)
+      .maybeSingle();
+    if (previousError || !previous) {
+      return { success: false, error: 'Təqdimat tapılmadı və ya yoxlama icazəsi yoxdur.' };
+    }
+    const normalizedFeedback = adminFeedback?.trim() || '';
+    if (previous.status === targetStatus
+      && (previous.admin_feedback || '') === normalizedFeedback
+      && previous.reviewed_at) {
+      // Do not create another review event and email on repeated clicks.
+      const existing = await getSubmissionById(submissionId);
+      const emailDelivery = await requestTaskReviewEmail(submissionId);
+      return {
+        success: true,
+        submission: existing || undefined,
+        emailDelivery,
+      };
+    }
     const { data: updated, error } = await supabase
       .from('task_submissions')
       .update({
         status: targetStatus,
-        admin_feedback: adminFeedback?.trim() || null,
+        admin_feedback: normalizedFeedback || null,
         reviewed_by: reviewerId || null,
         reviewed_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
       .eq('id', submissionId)
+      .eq('status', previous.status)
+      .eq('updated_at', previous.updated_at)
       .select(`
         *,
         task:internship_tasks(*),
         student:profiles!task_submissions_student_id_fkey(*)
       `)
-      .single();
+      .maybeSingle();
 
     if (error) {
       return { success: false, error: error.message };
+    }
+    if (!updated) {
+      return { success: false, error: 'Bu təqdimat başqa sorğuda dəyişdirilib. Səhifəni yeniləyin.' };
     }
 
     // If approved, verify if this completes all required tasks for the enrollment
@@ -337,7 +368,8 @@ export async function reviewSubmission({
       }
     }
 
-    return { success: true, submission: updated as TaskSubmission };
+    const emailDelivery = await requestTaskReviewEmail(submissionId);
+    return { success: true, submission: updated as TaskSubmission, emailDelivery };
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Təqdimat yoxlanılarkən xəta baş verdi.';
     return { success: false, error: msg };
