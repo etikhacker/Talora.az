@@ -12,6 +12,9 @@ export const maxDuration = 60;
 
 const UUID = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 const noStore = { 'Cache-Control': 'private, no-store' };
+// Existing decisions before the email outbox was installed must never generate
+// emails implicitly; one-at-a-time manual send requires explicit confirmation.
+const OUTBOX_ENABLED_AT = new Date('2026-11-11T05:51:54.000Z').getTime();
 
 type DeliveryState = 'queued' | 'sending' | 'sent' | 'failed' | 'uncertain' | 'skipped';
 type ReviewState = 'approved' | 'revision_requested' | 'rejected';
@@ -35,6 +38,16 @@ interface ReviewRow {
   student_id: string;
   status: string;
   reviewed_at: string | null;
+  reviewed_by: string | null;
+}
+
+function canInitializeHistorical(review: ReviewRow | null, delivery: Delivery | null): boolean {
+  return !!review && !delivery
+    && ['approved', 'revision_requested', 'rejected'].includes(review.status)
+    && !!review.reviewed_by
+    && !!review.reviewed_at
+    && Number.isFinite(new Date(review.reviewed_at).getTime())
+    && new Date(review.reviewed_at).getTime() < OUTBOX_ENABLED_AT;
 }
 
 function jsonError(message: string, status: number) {
@@ -79,7 +92,7 @@ function isSameDecision(review: ReviewRow, delivery: Delivery) {
 type AdminDb = NonNullable<Awaited<ReturnType<typeof createAdminClient>>>;
 async function getLatest(admin: AdminDb, submissionId: string) {
   const [submissionResult, receiptResult] = await Promise.all([
-    admin.from('task_submissions').select('id,student_id,status,reviewed_at')
+    admin.from('task_submissions').select('id,student_id,status,reviewed_at,reviewed_by')
       .eq('id', submissionId).maybeSingle(),
     admin.from('task_review_email_deliveries').select('*')
       .eq('submission_id', submissionId)
@@ -116,7 +129,10 @@ export async function GET(request: NextRequest) {
   try {
     const result = await getLatest(admin, id);
     if (!result.found) return jsonError('Təqdimat tapılmadı.', 404);
-    return NextResponse.json({ delivery: publicStatus(result.delivery) }, { headers: noStore });
+    return NextResponse.json({
+      delivery: publicStatus(result.delivery),
+      canInitializeHistorical: canInitializeHistorical(result.review, result.delivery),
+    }, { headers: noStore });
   } catch {
     return jsonError('E-poçt statusunu yoxlamaq mümkün olmadı.', 500);
   }
@@ -140,6 +156,8 @@ export async function POST(request: NextRequest) {
   }
   const id = input.submissionId;
   if (typeof id !== 'string' || !UUID.test(id)) return jsonError('Tapşırıq ID-si düzgün deyil.', 400);
+  const initializeHistorical = input.initializeHistorical === true;
+  const confirmHistorical = input.confirmHistorical === true;
   const retryFailed = input.retryFailed === true;
   const retryUncertain = input.retryUncertain === true;
   if (retryUncertain && input.confirmPossibleDuplicate !== true) {
@@ -149,11 +167,63 @@ export async function POST(request: NextRequest) {
   try {
     const latest = await getLatest(admin, id);
     if (!latest.found) return jsonError('Təqdimat tapılmadı.', 404);
-    if (!latest.review || !latest.delivery) {
-      return jsonError('Bu qərar üçün email növbəsi tapılmadı.', 404);
+    if (!latest.review) return jsonError('Təqdimat tapılmadı.', 404);
+
+    let existingDelivery = latest.delivery;
+    if (!existingDelivery) {
+      if (!canInitializeHistorical(latest.review, null)) {
+        return jsonError('Bu qərar üçün email qeydi tapılmadı. Yeni qərarlar avtomatik növbəyə əlavə edilməlidir.', 409);
+      }
+      if (!initializeHistorical || !confirmHistorical) {
+        return jsonError('Əvvəlki qərar üçün məktub yalnız adminin ayrıca təsdiqi ilə göndərilə bilər.', 409);
+      }
+
+      // Fetch the exact previously reviewed decision. Do not update the
+      // underlying submission: changing reviewed_at would create fake review
+      // events and duplicate in-app notifications.
+      const { data: review, error: reviewError } = await admin.from('task_submissions')
+        .select('id,student_id,task_id,status,admin_feedback,reviewed_at,reviewed_by')
+        .eq('id', id).maybeSingle();
+      if (reviewError || !review || !canInitializeHistorical(review as ReviewRow, null)
+        || review.reviewed_at !== latest.review.reviewed_at
+        || review.status !== latest.review.status) {
+        return jsonError('Tapşırıq qərarı dəyişib. Səhifəni yeniləyin.', 409);
+      }
+      const [{ data: profile, error: profileError }, { data: task, error: taskError }] = await Promise.all([
+        admin.from('profiles').select('user_id').eq('id', review.student_id).maybeSingle(),
+        admin.from('internship_tasks').select('title').eq('id', review.task_id).maybeSingle(),
+      ]);
+      if (profileError || taskError || !profile?.user_id || !task?.title) {
+        return jsonError('Tələbə və ya tapşırıq məlumatları tapılmadı.', 422);
+      }
+      const { error: insertError } = await admin.from('task_review_email_deliveries')
+        .insert({
+          submission_id: review.id,
+          recipient_user_id: profile.user_id,
+          task_id: review.task_id,
+          task_title: task.title,
+          review_status: review.status,
+          review_feedback: review.admin_feedback || '',
+          reviewed_at: review.reviewed_at,
+          event_key: 'task-review:historical:' + review.id + ':' + review.reviewed_at,
+        });
+      if (insertError?.code === '23505') {
+        return jsonError('Bu qərar üçün email artıq qeydiyyata alınıb. Statusu yeniləyin.', 409);
+      }
+      if (insertError) {
+        console.error('Historical task review email enqueue failed:',insertError.code);
+        return jsonError('Əvvəlki qərar üçün email növbəsi yaradıla bilmədi.',500);
+      }
+      const refreshed = await getLatest(admin, id);
+      if (!refreshed.delivery || !refreshed.review ||
+          refreshed.review.status !== review.status ||
+          refreshed.review.reviewed_at !== review.reviewed_at) {
+        return jsonError('Qərar yenilənib. Email göndərilmədi; statusu yoxlayın.',409);
+      }
+      existingDelivery = refreshed.delivery;
     }
 
-    let job = latest.delivery;
+    let job = existingDelivery;
     // Interrupted requests might already have reached Gmail. Never auto-retry.
     if (job.status === 'sending' && job.claimed_at
       && Date.now() - new Date(job.claimed_at).getTime() > 10 * 60_000) {
