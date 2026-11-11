@@ -98,3 +98,42 @@ test('both admin submission review entrypoints use shared dispatch and retry UI'
   assert.match(detail,/retryUncertain: state === 'uncertain'/);
   assert.match(detail,/confirmPossibleDuplicate: state === 'uncertain'/);
 });
+
+test('unchanged reviews never invoke email POST or regenerate decision timestamp', () => {
+  const service=read('lib/submissions/service.ts');
+  assert.match(service, /if \(previous\.status === targetStatus/);
+  assert.match(service, /reviewUnchanged: true/);
+  const branch=service.slice(service.indexOf('if (previous.status === targetStatus'), service.indexOf('const { data: updated, error }'));
+  assert.doesNotMatch(branch,/requestTaskReviewEmail\(/);
+  assert.match(service,/const emailDelivery = await requestTaskReviewEmail\(submissionId\)/);
+});
+
+test('previous decisions require explicit admin confirmation before a single historical email', () => {
+  const route=read('app/api/admin/submissions/review-email/route.ts');
+  assert.match(route,/OUTBOX_ENABLED_AT/);
+  assert.match(route,/2026-11-11T05:51:54\.000Z/);
+  assert.match(route,/function canInitializeHistorical\(/);
+  assert.match(route,/initializeHistorical === true/);
+  assert.match(route,/confirmHistorical === true/);
+  assert.match(route,/if \(!initializeHistorical \|\| !confirmHistorical\)/);
+  assert.match(route,/canInitializeHistorical\(latest\.review, null\)/);
+  assert.match(route,/event_key: 'task-review:historical:'/);
+  assert.match(route,/insertError\?\.code === '23505'/);
+  assert.match(route,/getLatest\(admin, id\)/);
+  assert.match(route,/if \(!current \|\| !isSameDecision\(current as ReviewRow,job\)\)/);
+  assert.doesNotMatch(route,/\.update\(\{\s*reviewed_at:/);
+});
+
+test('prior decisions expose manual-send controls only with an actionable review', () => {
+  const route=read('app/api/admin/submissions/review-email/route.ts');
+  const detail=read('app/admin/submissions/[id]/page.tsx');
+  const list=read('app/admin/submissions/page.tsx');
+  assert.match(route,/canInitializeHistorical: canInitializeHistorical\(result\.review, result\.delivery\)/);
+  assert.match(detail,/canInitializeHistorical && !emailDelivery/);
+  assert.match(detail,/initializeHistorical: state === 'historical'/);
+  assert.match(detail,/confirmHistorical: state === 'historical'/);
+  assert.match(detail,/window\.confirm\(/);
+  assert.match(detail,/Əvvəlki qərar üçün email göndər/);
+  assert.match(list,/res\.reviewUnchanged/);
+  assert.match(list,/Email statusuna bax və idarə et/);
+});

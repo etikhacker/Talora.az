@@ -121,11 +121,13 @@ export default function AdminSubmissionsPage() {
         const delivery = res.emailDelivery;
         const success = delivery?.state === 'sent';
         setEmailNotice({
-          success,
+          success: success || res.reviewUnchanged === true,
           submissionId: selectedSub.id,
-          message: success
-            ? 'Tapşırıq qərarı saxlanıldı və email Gmail tərəfindən qəbul edildi.'
-            : 'Qərar saxlanıldı. ' + (delivery?.warning || 'Email statusu yoxlanılmalıdır.'),
+          message: res.reviewUnchanged
+            ? 'Bu tapşırığın qərarı artıq mövcuddur, yenidən qiymətləndirilmədi. Email statusuna baxın; köhnə qərar üçün ayrıca göndəriş edə bilərsiniz.'
+            : success
+              ? 'Tapşırıq qərarı saxlanıldı və email Gmail tərəfindən qəbul edildi.'
+              : 'Qərar saxlanıldı. ' + (delivery?.warning || 'Email statusu yoxlanılmalıdır.'),
         });
         setSelectedSub(null);
         await loadData();
@@ -211,12 +213,10 @@ export default function AdminSubmissionsPage() {
           ? 'border-emerald-700/50 bg-emerald-950/30 text-emerald-200'
           : 'border-amber-700/50 bg-amber-950/30 text-amber-200'}`}>
           {emailNotice.message}{' '}
-          {!emailNotice.success && (
-            <Link href={`/admin/submissions/${emailNotice.submissionId}`}
-              className="font-semibold underline underline-offset-2">
-              Email statusuna bax və idarə et
-            </Link>
-          )}
+          <Link href={`/admin/submissions/${emailNotice.submissionId}`}
+            className="font-semibold underline underline-offset-2">
+            Email statusuna bax və idarə et
+          </Link>
         </div>
       )}
 
