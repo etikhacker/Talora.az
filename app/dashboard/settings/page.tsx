@@ -236,6 +236,30 @@ export default function StudentSettingsPage() {
             </div>
           </label>
 
+          <label
+            htmlFor="task-review-updates"
+            className={`flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 ${preferencesLoading ? 'opacity-60' : 'cursor-pointer'}`}
+          >
+            <input
+              id="task-review-updates"
+              type="checkbox"
+              checked={preferences.task_review_updates}
+              onChange={(event) => updatePreference('task_review_updates', event.target.checked)}
+              disabled={preferencesLoading || saving}
+              className="rounded text-emerald-600 focus:ring-emerald-500"
+            />
+            <div>
+              <p className="font-semibold text-slate-800">
+                {language === 'az' ? 'Tapşırıqların yoxlanılması üzrə e-poçt' : 'Task review email updates'}
+              </p>
+              <p className="text-slate-500 text-[11px]">
+                {language === 'az'
+                  ? 'Təsdiq, düzəliş tələbi və rədd cavabı üçün e-poçt alın.'
+                  : 'Receive email when an assignment is approved, needs revision, or is rejected.'}
+              </p>
+            </div>
+          </label>
+
           <Button
             size="sm"
             onClick={handleSave}

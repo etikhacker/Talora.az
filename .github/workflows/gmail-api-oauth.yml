@@ -36,6 +36,8 @@ jobs:
         run: node --test scripts/admin-announcement-channels.test.mjs
       - name: Test responsive HTML announcements and plain text fallback
         run: node --test scripts/admin-announcement-email-format.test.mjs
+      - name: Test automatic task review emails, ledger, and preferences
+        run: node --test scripts/task-review-email-notifications.test.mjs scripts/notification-preferences.test.mjs
       - name: Type-check Next.js application
         run: npx tsc --noEmit
       - name: Lint application email admin UI and route
@@ -44,3 +46,5 @@ jobs:
         run: npx eslint lib/auth/admin-route-gate.ts lib/supabase/middleware.ts app/admin/layout.tsx
       - name: Lint admin announcements
         run: npx eslint app/admin/notifications/page.tsx app/api/admin/announcements/route.ts app/api/admin/announcements/students/route.ts app/api/admin/announcements/deliver-emails/route.ts lib/announcements/validation.ts lib/announcements/text-format.ts lib/email/announcement-template.ts app/dashboard/notifications/page.tsx lib/notifications/inbox.ts
+      - name: Lint task review email route and shared submission flow
+        run: npx eslint app/api/admin/submissions/review-email/route.ts lib/email/task-review-template.ts lib/email/request-task-review.ts lib/submissions/service.ts app/admin/submissions/page.tsx 'app/admin/submissions/[id]/page.tsx' app/dashboard/settings/page.tsx lib/notification-preferences.ts

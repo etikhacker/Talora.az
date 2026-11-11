@@ -51,6 +51,14 @@ export default function AdminSingleSubmissionPage({
   const [adminFeedback, setAdminFeedback] = useState('');
   const [reviewError, setReviewError] = useState('');
   const [reviewing, setReviewing] = useState(false);
+  const [emailDelivery, setEmailDelivery] = useState<{
+    state: string;
+    attempts?: number;
+    sentAt?: string | null;
+    requiresManualCheck?: boolean;
+  } | null>(null);
+  const [emailMessage, setEmailMessage] = useState<string | null>(null);
+  const [retryingEmail, setRetryingEmail] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -68,6 +76,66 @@ export default function AdminSingleSubmissionPage({
     }
     load();
   }, [submissionId]);
+
+  useEffect(() => {
+    if (!submissionId) return;
+    let active = true;
+    const loadEmail = async () => {
+      try {
+        const response = await fetch(
+          '/api/admin/submissions/review-email?submissionId=' + encodeURIComponent(submissionId),
+          { credentials: 'same-origin', cache: 'no-store' }
+        );
+        if (!response.ok) return;
+        const result = await response.json() as {
+          delivery?: { state: string; attempts?: number; sentAt?: string | null; requiresManualCheck?: boolean } | null;
+        };
+        if (active) setEmailDelivery(result.delivery || null);
+      } catch {
+        // Review data remains available even if email status cannot be loaded.
+      }
+    };
+    void loadEmail();
+    return () => { active = false; };
+  }, [submissionId]);
+
+  const retryReviewEmail = async () => {
+    if (!emailDelivery || retryingEmail) return;
+    const state = emailDelivery.state;
+    if (state !== 'queued' && state !== 'failed' && state !== 'uncertain') return;
+    if (state === 'failed' && !window.confirm('Uğursuz email göndərişini yenidən sınamaq istəyirsiniz?')) return;
+    if (state === 'uncertain' && !window.confirm(
+      'Email əvvəl göndərilmiş ola bilər. Gmail Sent qovluğunu yoxlamısınız? Təkrar göndərmək dublikat yarada bilər.'
+    )) return;
+    setRetryingEmail(true);
+    setEmailMessage(null);
+    try {
+      const response = await fetch('/api/admin/submissions/review-email', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          submissionId,
+          retryFailed: state === 'failed',
+          retryUncertain: state === 'uncertain',
+          confirmPossibleDuplicate: state === 'uncertain',
+        }),
+      });
+      const result = await response.json() as {
+        error?: string;
+        delivery?: { state: string; attempts?: number; sentAt?: string | null; requiresManualCheck?: boolean };
+      };
+      if (!response.ok) throw new Error(result.error || 'Email göndərişi alınmadı.');
+      setEmailDelivery(result.delivery || null);
+      setEmailMessage(result.delivery?.state === 'sent'
+        ? 'Məktub Gmail tərəfindən qəbul edildi.'
+        : 'Email statusu: ' + (result.delivery?.state || 'bilinmir') + '.');
+    } catch (err) {
+      setEmailMessage(err instanceof Error ? err.message : 'Email göndərilə bilmədi.');
+    } finally {
+      setRetryingEmail(false);
+    }
+  };
 
   const handleExecuteReview = async (action: 'approve' | 'revision_requested' | 'reject') => {
     if (!submission) return;
@@ -93,7 +161,14 @@ export default function AdminSingleSubmissionPage({
 
       if (res.success && res.submission) {
         setSubmission(res.submission);
-        router.push('/admin/submissions');
+        const state = res.emailDelivery?.state || 'unavailable';
+        setEmailDelivery({ state });
+        if (state === 'sent') {
+          router.push('/admin/submissions');
+        } else {
+          setEmailMessage('Qərar yadda saxlanıldı. ' +
+            (res.emailDelivery?.warning || 'Emailin göndərilmə vəziyyətini yoxlayın.'));
+        }
       } else {
         setReviewError(res.error || 'Qərar qeyd edilərkən xəta baş verdi.');
       }
@@ -321,6 +396,27 @@ export default function AdminSingleSubmissionPage({
           <h4 className="text-xs font-bold text-white uppercase tracking-wider">
             {isAz ? 'Rəy və Qərar Qəbulu' : 'Decision & Feedback'}
           </h4>
+
+          {emailMessage && (
+            <p role="status" className="rounded-xl border border-amber-700/50 bg-amber-950/30 p-3 text-sm text-amber-200">
+              {emailMessage}
+            </p>
+          )}
+          {emailDelivery && (
+            <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-700 p-3">
+              <span className="text-xs text-slate-200">
+                Email statusu: <strong>{emailDelivery.state}</strong>
+              </span>
+              {['queued', 'failed', 'uncertain'].includes(emailDelivery.state) && (
+                <Button type="button" variant="outline" size="sm" disabled={retryingEmail}
+                  onClick={() => void retryReviewEmail()}
+                  className="border-slate-600 text-white">
+                  {retryingEmail ? 'Yoxlanılır...' : emailDelivery.state === 'queued'
+                    ? 'Email göndərişini davam et' : 'Yenidən göndər'}
+                </Button>
+              )}
+            </div>
+          )}
 
           {reviewError && (
             <div className="p-3 bg-red-950/50 border border-red-800 text-red-200 text-xs rounded-xl flex items-center gap-2">
