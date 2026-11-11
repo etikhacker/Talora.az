@@ -283,7 +283,7 @@ export async function reviewSubmission({
   action: 'approve' | 'revision_requested' | 'reject';
   adminFeedback?: string | null;
   reviewerId?: string;
-}): Promise<{ success: boolean; error?: string; submission?: TaskSubmission; emailDelivery?: TaskReviewEmailResult }> {
+}): Promise<{ success: boolean; error?: string; submission?: TaskSubmission; emailDelivery?: TaskReviewEmailResult; reviewUnchanged?: boolean }> {
   // Validate requirement: Feedback is mandatory for revision_requested and reject!
   if ((action === 'revision_requested' || action === 'reject') && (!adminFeedback || adminFeedback.trim().length < 5)) {
     return {
@@ -323,13 +323,13 @@ export async function reviewSubmission({
     if (previous.status === targetStatus
       && (previous.admin_feedback || '') === normalizedFeedback
       && previous.reviewed_at) {
-      // Do not create another review event and email on repeated clicks.
+      // A repeated click isn't a new review. Never trigger an email for
+      // already-reviewed work, particularly historic work without an outbox.
       const existing = await getSubmissionById(submissionId);
-      const emailDelivery = await requestTaskReviewEmail(submissionId);
       return {
         success: true,
         submission: existing || undefined,
-        emailDelivery,
+        reviewUnchanged: true,
       };
     }
     const { data: updated, error } = await supabase
