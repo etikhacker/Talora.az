@@ -62,7 +62,7 @@ test('new opt-out is enabled by default and explicit false respected', () => {
 });
 
 test('atomic review outbox triggers only on approved/revision/rejected and is private', () => {
-  const sql=read('supabase/migrations/20261111080000_task_review_email_deliveries.sql');
+  const sql=read('supabase/migrations/20261111055154_task_review_email_deliveries.sql');
   assert.match(sql,/CREATE TABLE public\.task_review_email_deliveries/);
   assert.match(sql,/ENABLE ROW LEVEL SECURITY/);
   assert.match(sql,/REVOKE ALL ON TABLE public\.task_review_email_deliveries FROM PUBLIC,anon,authenticated/);
