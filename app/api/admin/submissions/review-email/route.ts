@@ -109,7 +109,8 @@ async function finish(admin: AdminDb, job: Delivery, state: DeliveryState, code:
 }
 export async function GET(request: NextRequest) {
   const { admin, error } = await requireAdmin();
-  if (error || !admin) return error;
+  if (error) return error;
+  if (!admin) return jsonError('Server konfiqurasiyası çatışmır.', 503);
   const id = request.nextUrl.searchParams.get('submissionId');
   if (!id || !UUID.test(id)) return jsonError('Tapşırıq ID-si düzgün deyil.', 400);
   try {
@@ -124,7 +125,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   if (!sameOrigin(request)) return jsonError('İcazə yoxdur.', 403);
   const { admin, error } = await requireAdmin();
-  if (error || !admin) return error;
+  if (error) return error;
+  if (!admin) return jsonError('Server konfiqurasiyası çatışmır.', 503);
 
   let input: Record<string, unknown>;
   try {
