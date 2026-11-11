@@ -55,6 +55,7 @@ export default function AdminSubmissionsPage() {
   const [adminFeedback, setAdminFeedback] = useState('');
   const [reviewError, setReviewError] = useState('');
   const [reviewing, setReviewing] = useState(false);
+  const [emailNotice, setEmailNotice] = useState<{ success: boolean; message: string; submissionId: string } | null>(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -90,6 +91,7 @@ export default function AdminSubmissionsPage() {
     setReviewAction(sub.status === 'revision_requested' ? 'revision_requested' : sub.status === 'rejected' ? 'reject' : 'approve');
     setAdminFeedback(sub.admin_feedback || '');
     setReviewError('');
+    setEmailNotice(null);
   };
 
   const handleExecuteReview = async (action: 'approve' | 'revision_requested' | 'reject') => {
@@ -116,6 +118,15 @@ export default function AdminSubmissionsPage() {
       });
 
       if (res.success) {
+        const delivery = res.emailDelivery;
+        const success = delivery?.state === 'sent';
+        setEmailNotice({
+          success,
+          submissionId: selectedSub.id,
+          message: success
+            ? 'Tapşırıq qərarı saxlanıldı və email Gmail tərəfindən qəbul edildi.'
+            : 'Qərar saxlanıldı. ' + (delivery?.warning || 'Email statusu yoxlanılmalıdır.'),
+        });
         setSelectedSub(null);
         await loadData();
       } else {
@@ -194,6 +205,20 @@ export default function AdminSubmissionsPage() {
           </>} />
         </div>
       </div>
+
+      {emailNotice && (
+        <div role="status" className={`rounded-xl border px-4 py-3 text-sm ${emailNotice.success
+          ? 'border-emerald-700/50 bg-emerald-950/30 text-emerald-200'
+          : 'border-amber-700/50 bg-amber-950/30 text-amber-200'}`}>
+          {emailNotice.message}{' '}
+          {!emailNotice.success && (
+            <Link href={`/admin/submissions/${emailNotice.submissionId}`}
+              className="font-semibold underline underline-offset-2">
+              Email statusuna bax və idarə et
+            </Link>
+          )}
+        </div>
+      )}
 
       {/* Filter Tabs & Counters */}
       <div className="flex flex-wrap items-center gap-2">
