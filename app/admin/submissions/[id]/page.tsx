@@ -59,6 +59,7 @@ export default function AdminSingleSubmissionPage({
   } | null>(null);
   const [emailMessage, setEmailMessage] = useState<string | null>(null);
   const [retryingEmail, setRetryingEmail] = useState(false);
+  const [canInitializeHistorical, setCanInitializeHistorical] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -89,8 +90,12 @@ export default function AdminSingleSubmissionPage({
         if (!response.ok) return;
         const result = await response.json() as {
           delivery?: { state: string; attempts?: number; sentAt?: string | null; requiresManualCheck?: boolean } | null;
+          canInitializeHistorical?: boolean;
         };
-        if (active) setEmailDelivery(result.delivery || null);
+        if (active) {
+          setEmailDelivery(result.delivery || null);
+          setCanInitializeHistorical(result.canInitializeHistorical === true);
+        }
       } catch {
         // Review data remains available even if email status cannot be loaded.
       }
@@ -100,9 +105,12 @@ export default function AdminSingleSubmissionPage({
   }, [submissionId]);
 
   const retryReviewEmail = async () => {
-    if (!emailDelivery || retryingEmail) return;
-    const state = emailDelivery.state;
-    if (state !== 'queued' && state !== 'failed' && state !== 'uncertain') return;
+    if ((!emailDelivery && !canInitializeHistorical) || retryingEmail) return;
+    const state = emailDelivery?.state || 'historical';
+    if (!['queued', 'failed', 'uncertain', 'historical'].includes(state)) return;
+    if (state === 'historical' && !window.confirm(
+      'Bu qərar email sistemi aktiv edilməzdən əvvəl verilib. Tapşırığın mövcud qərarını və admin rəyini tələbəyə indi göndərmək istəyirsiniz?'
+    )) return;
     if (state === 'failed' && !window.confirm('Uğursuz email göndərişini yenidən sınamaq istəyirsiniz?')) return;
     if (state === 'uncertain' && !window.confirm(
       'Email əvvəl göndərilmiş ola bilər. Gmail Sent qovluğunu yoxlamısınız? Təkrar göndərmək dublikat yarada bilər.'
@@ -119,6 +127,8 @@ export default function AdminSingleSubmissionPage({
           retryFailed: state === 'failed',
           retryUncertain: state === 'uncertain',
           confirmPossibleDuplicate: state === 'uncertain',
+          initializeHistorical: state === 'historical',
+          confirmHistorical: state === 'historical',
         }),
       });
       const result = await response.json() as {
@@ -127,6 +137,7 @@ export default function AdminSingleSubmissionPage({
       };
       if (!response.ok) throw new Error(result.error || 'Email göndərişi alınmadı.');
       setEmailDelivery(result.delivery || null);
+      if (result.delivery) setCanInitializeHistorical(false);
       setEmailMessage(result.delivery?.state === 'sent'
         ? 'Məktub Gmail tərəfindən qəbul edildi.'
         : 'Email statusu: ' + (result.delivery?.state || 'bilinmir') + '.');
@@ -161,13 +172,18 @@ export default function AdminSingleSubmissionPage({
 
       if (res.success && res.submission) {
         setSubmission(res.submission);
-        const state = res.emailDelivery?.state || 'unavailable';
-        setEmailDelivery({ state });
-        if (state === 'sent') {
-          router.push('/admin/submissions');
+        if (res.reviewUnchanged) {
+          setEmailMessage('Tapşırıq qərarı artıq mövcuddur və dəyişdirilmədi. Email statusunu aşağıdan yoxlayın.');
         } else {
-          setEmailMessage('Qərar yadda saxlanıldı. ' +
-            (res.emailDelivery?.warning || 'Emailin göndərilmə vəziyyətini yoxlayın.'));
+          const state = res.emailDelivery?.state || 'unavailable';
+          setEmailDelivery({ state });
+          setCanInitializeHistorical(false);
+          if (state === 'sent') {
+            router.push('/admin/submissions');
+          } else {
+            setEmailMessage('Qərar yadda saxlanıldı. ' +
+              (res.emailDelivery?.warning || 'Emailin göndərilmə vəziyyətini yoxlayın.'));
+          }
         }
       } else {
         setReviewError(res.error || 'Qərar qeyd edilərkən xəta baş verdi.');
@@ -402,17 +418,22 @@ export default function AdminSingleSubmissionPage({
               {emailMessage}
             </p>
           )}
-          {emailDelivery && (
+          {(emailDelivery || canInitializeHistorical) && (
             <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-700 p-3">
               <span className="text-xs text-slate-200">
-                Email statusu: <strong>{emailDelivery.state}</strong>
+                {canInitializeHistorical && !emailDelivery
+                  ? 'Əvvəlki qərar üçün email hələ göndərilməyib.'
+                  : <>Email statusu: <strong>{emailDelivery?.state}</strong></>}
               </span>
-              {['queued', 'failed', 'uncertain'].includes(emailDelivery.state) && (
+              {(canInitializeHistorical && !emailDelivery
+                || ['queued', 'failed', 'uncertain'].includes(emailDelivery?.state || '')) && (
                 <Button type="button" variant="outline" size="sm" disabled={retryingEmail}
                   onClick={() => void retryReviewEmail()}
                   className="border-slate-600 text-white">
-                  {retryingEmail ? 'Yoxlanılır...' : emailDelivery.state === 'queued'
-                    ? 'Email göndərişini davam et' : 'Yenidən göndər'}
+                  {retryingEmail ? 'Yoxlanılır...' : canInitializeHistorical && !emailDelivery
+                    ? 'Əvvəlki qərar üçün email göndər'
+                    : emailDelivery?.state === 'queued'
+                      ? 'Email göndərişini davam et' : 'Yenidən göndər'}
                 </Button>
               )}
             </div>
