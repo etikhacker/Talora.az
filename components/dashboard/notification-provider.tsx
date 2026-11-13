@@ -8,6 +8,8 @@ const PAGE_SIZE = 30;
 interface InboxState {
   items: InboxNotification[];
   unreadCount: number;
+  newArrivalCount: number;
+  dismissNewArrivals: () => void;
   loading: boolean;
   error: boolean;
   saving: boolean;
@@ -23,6 +25,8 @@ const Context = createContext<InboxState | null>(null);
 export function NotificationProvider({ userId, children }: { userId: string; children: React.ReactNode }) {
   const [items, setItems] = useState<InboxNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [newArrivalCount, setNewArrivalCount] = useState(0);
+  const previousUnreadCount = useRef<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -48,8 +52,16 @@ export function NotificationProvider({ userId, children }: { userId: string; chi
       ]);
       if (ticket !== request.current) return;
       if (list.error || unread.error) throw new Error('LOAD_FAILED');
+      const nextUnreadCount = unread.count ?? 0;
+      const previous = previousUnreadCount.current;
+      // Notify only for *new* unread events. Existing unread messages are
+      // shown on first load without repeatedly generating a popup.
+      if (previous !== null && nextUnreadCount > previous) {
+        setNewArrivalCount(nextUnreadCount - previous);
+      }
+      previousUnreadCount.current = nextUnreadCount;
       setItems((list.data || []) as InboxNotification[]);
-      setUnreadCount(unread.count || 0);
+      setUnreadCount(nextUnreadCount);
       setHasMore((list.count || 0) > limit);
       setError(false);
     } catch {
@@ -97,6 +109,9 @@ export function NotificationProvider({ userId, children }: { userId: string; chi
       const readIds = new Set((result.data || []).map((row: { id: string }) => row.id));
       setItems(current => current.map(item => readIds.has(item.id) ? { ...item, read_at: new Date().toISOString() } : item));
       setUnreadCount(current => Math.max(0, current - readIds.size));
+      if (previousUnreadCount.current !== null) {
+        previousUnreadCount.current = Math.max(0, previousUnreadCount.current - readIds.size);
+      }
       setError(false);
       success = true;
     } catch {
@@ -109,7 +124,8 @@ export function NotificationProvider({ userId, children }: { userId: string; chi
     return success;
   };
 
-  return <Context.Provider value={{ items, unreadCount, loading, error, saving, hasMore, unreadOnly, refresh,
+  return <Context.Provider value={{ items, unreadCount, newArrivalCount,
+    dismissNewArrivals: () => setNewArrivalCount(0), loading, error, saving, hasMore, unreadOnly, refresh,
     filter: unread => { if (unread !== unreadOnly) { setLoading(true); setUnreadOnly(unread); setLimit(PAGE_SIZE); } },
     loadMore: () => { setLoading(true); setLimit(current => current + PAGE_SIZE); }, markRead,
   }}>{children}</Context.Provider>;
