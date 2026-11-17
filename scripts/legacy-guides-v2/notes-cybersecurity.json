@@ -1,0 +1,152 @@
+[
+  [
+    "vscode,python,docs",
+    "Öz laptopunda localhost lab qovluğu yarat, icazə sərhədini 'yalnız localhost və öz tətbiqim' kimi yaz.",
+    "Create a localhost-only lab and document its scope and safety rules.",
+    [
+      "Test icazəsi, lokal ünvan və synthetic data qaydalarını yaz.",
+      "Demo tətbiqin sadə təhlükəsiz serverini qur, default olaraq internetə açma.",
+      "Lab start/stop, yedəkləmə və heç bir real hesaba toxunmama checklist-i hazırla."
+    ],
+    [
+      "Document authorized scope, localhost addresses and fictional data.",
+      "Start a demo server bound locally and never expose it publicly by default.",
+      "Write a checklist for starting, stopping and cleaning the lab."
+    ]
+  ],
+  [
+    "curl,vscode,docs",
+    "`curl -I http://localhost:8000` nümunəsində status, Content-Type və təhlükəsizlik başlıqlarını yoxla.",
+    "Inspect a localhost response status, content type and basic security headers.",
+    [
+      "Öz lokal serverinin response header-lərini browser DevTools və ya curl ilə oxu.",
+      "CSP, X-Content-Type-Options və cookie flag-ları üçün müşahidə cədvəli qur.",
+      "Başlıq yoxdursa riskini və təhlükəsiz config nümunəsini izah et."
+    ],
+    [
+      "Read your own local server's response headers using curl or DevTools.",
+      "Record CSP, X-Content-Type-Options and cookie flag observations.",
+      "Explain any missing header and suggest a safe configuration."
+    ]
+  ],
+  [
+    "vscode,python",
+    "Öz səhifəndə `<b>Salam</b>` mətnini textContent ilə göstər; interpretasiya fərqini ekran görüntüsü ilə izah et.",
+    "Compare harmless HTML-looking text rendered via textContent versus HTML interpretation locally.",
+    [
+      "Yalnız lokal HTML/JS demo yarat; üçüncü tərəfə payload göndərmə.",
+      "Eyni mətnin təhlükəsiz mətn və HTML kimi görünüş fərqini screenshot-la qeyd et.",
+      "`textContent` kimi təhlükəsiz output API istifadə edib əvvəl/sonra test yaz."
+    ],
+    [
+      "Build a localhost demo without sending test payloads to third-party sites.",
+      "Compare text versus HTML rendering of a harmless sample with screenshots.",
+      "Use safe output APIs such as textContent and verify the fix."
+    ]
+  ],
+  [
+    "python,vscode,docs",
+    "SQLite demo-da `id` dəyərini string birləşdirməsi əvəzinə parametrli sorğu ilə oxu.",
+    "Use parameterized SQLite queries rather than concatenating user-supplied IDs.",
+    [
+      "Kiçik lokal `users` cədvəli və 3 sintetik sətir yarat.",
+      "SQL sorğusunu `?` placeholder və parametr tuple ilə yaz.",
+      "Yanlış tip və gözlənilməz mətnlə test et; heç bir real DB və saytı skan etmə."
+    ],
+    [
+      "Build a tiny local users table with fictional records.",
+      "Write queries using parameter placeholders and parameter tuples.",
+      "Test invalid types and unexpected text against the local sample only."
+    ]
+  ],
+  [
+    "python,fastapi,docs",
+    "Uydurma user A öz task-ını görsün, user B-nin task ID-sinə sorğusu isə rədd edilsin.",
+    "Ensure fictional User A cannot read fictional User B's task by guessing an ID.",
+    [
+      "İki sintetik istifadəçi və hərəsinin bir task-ını yarat.",
+      "Endpoint-də owner yoxlamasının token/rol yoxlamasından sonra işlədiyini göstər.",
+      "Başqa istifadəçinin resursunu açma testini 403/404 ilə blokla və ekran sübutu ver."
+    ],
+    [
+      "Create two fictional users with one task each.",
+      "Validate ownership after authentication rather than trusting user input.",
+      "Test cross-user resource access and return a safe deny response."
+    ]
+  ],
+  [
+    "python,docs",
+    "Öz yaratdığın sintetik JWT-də `exp`, `iss`, `aud` sahələrinin nə üçün olduğunu təsvir et.",
+    "Explain exp, iss and aud claims on fictional tokens you generate locally.",
+    [
+      "JWT strukturu (header.payload.signature) və imza yoxlamasını sənədləşdir.",
+      "Öz test açarınla exp/iss/aud doğrulama funksiyası qur; real token paylaşma.",
+      "Vaxtı bitmiş və yanlış imzalı sintetik tokenlərin bloklandığını yoxla."
+    ],
+    [
+      "Explain header.payload.signature and verified-token requirements.",
+      "Validate exp/iss/aud on tokens signed with a local test key.",
+      "Reject expired and invalid-signature fictional tokens, never real credentials."
+    ]
+  ],
+  [
+    "docs,python",
+    "Lokal `GET /tasks/{id}` üçün authentication, owner authorization, input validation, rate limiting checklist-i yaz.",
+    "Build a safety checklist for a fictional local GET /tasks/{id} endpoint.",
+    [
+      "Öz demo API route-larını və mümkün riskləri siyahıya al.",
+      "Auth, BOLA, məlumat sızması və rate limit üzrə pass/fail meyarı qur.",
+      "Hər risk üçün bir təhlükəsiz lokal test və düzəliş addımı yaz."
+    ],
+    [
+      "List routes and realistic threats in your own demo API.",
+      "Define pass/fail tests for auth, BOLA, data exposure and rate limits.",
+      "Specify one authorized local test and remediation for each risk."
+    ]
+  ],
+  [
+    "zap,vscode,docs",
+    "OWASP ZAP ilə yalnız `localhost` test serverinin passiv header/response müşahidəsini apar.",
+    "Use OWASP ZAP passive inspection only against an authorized localhost server.",
+    [
+      "Öz lab ünvanını təsdiqlə və ZAP Browser / passive proxy-ni hazırla.",
+      "Yalnız passiv scan aktiv et; active scan və internet hədəfini istifadə etmə.",
+      "Görünən riskləri false positive ilə fərqləndir, ekran görüntüsü və düzəliş əlavə et."
+    ],
+    [
+      "Confirm the localhost scope and configure the ZAP passive proxy.",
+      "Use passive analysis only; do not launch active scans against external sites.",
+      "Document findings, possible false positives and safe fixes."
+    ]
+  ],
+  [
+    "vscode,python,github",
+    "Lokal XSS nümunəsinə textContent və SQL nümunəsinə parametrləşmə əlavə edib regression test yaz.",
+    "Fix local text rendering and parameterized-query examples and add regressions.",
+    [
+      "Əvvəlki lab-ın iki real problemi üzrə before/after qeydi saxla.",
+      "Kodda output encoding və parametrləşmiş SQL istifadə et.",
+      "Ən azı 4 testlə düzəlişin işlədiyini göstər və yalan müsbətləri yaz."
+    ],
+    [
+      "Record before/after observations for two vulnerabilities in your local lab.",
+      "Apply output encoding and parameterized SQL where relevant.",
+      "Verify four tests and note any false positives."
+    ]
+  ],
+  [
+    "docs,github,sheets",
+    "Risk cədvəlində 5 tapıntı üçün severity, təsir, sübut, fix və retest qeyd et.",
+    "Create a five-finding report with severity, impact, evidence, fix and retest.",
+    [
+      "Yalnız öz lab testlərindən nəticələri topla, real sayta aid iddia yazma.",
+      "Tapıntıları ehtimal/təsir əsasında prioritetləşdir və konkret düzəliş addımı ver.",
+      "Sonda 3 əsas təhlükəsizlik dərsi və yoxlanmamış sahələri izah et."
+    ],
+    [
+      "Use findings from your own lab only, without claims about external services.",
+      "Prioritize findings by probability/impact and document actionable fixes.",
+      "Summarize three lessons and any untested areas."
+    ]
+  ]
+]

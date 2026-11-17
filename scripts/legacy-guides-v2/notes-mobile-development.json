@@ -1,0 +1,152 @@
+[
+  [
+    "node,expo,github",
+    "Pulsuz Expo Go ilə 'My Tasks' ekranını real telefonda aç; mağazada yayımlama lazım deyil.",
+    "Open a My Tasks screen on a real phone using free Expo Go without app-store publishing.",
+    [
+      "Node.js və Expo layihəsini lokal quraşdır, `npx expo start` işə sal.",
+      "Expo Go ilə QR/kabel vasitəsilə demo aç və bir əsas ekran göstər.",
+      "README-də cihaz, əmrlər və xəta həllini yaz; ödənişli EAS build məcburi deyil."
+    ],
+    [
+      "Install Node.js and start a local Expo project.",
+      "Open the sample app via Expo Go and display one basic screen.",
+      "Document device/setup steps without requiring paid EAS builds."
+    ]
+  ],
+  [
+    "node,expo,vscode",
+    "Tapşırıq siyahısı → detal → təqdim etmə ekranı arasında geri düyməsi düzgün işləsin.",
+    "Implement list → task detail → submission navigation with correct back behavior.",
+    [
+      "Expo Router və ya React Navigation ilə 3 ekranı qeydiyyatdan keçir.",
+      "Tapşırıq ID-sini yalnız uyğun parametrlə növbəti ekrana ötür.",
+      "Naməlum ID, geri və deep-link halını lokal sına."
+    ],
+    [
+      "Register three screens using Expo Router or React Navigation.",
+      "Pass a task ID through typed navigation parameters.",
+      "Test unknown IDs, back navigation and basic deep linking."
+    ]
+  ],
+  [
+    "node,expo,vscode",
+    "TaskCard, StatusBadge və FormField mobil komponentlərini 320px ekranda sınayıb reuse et.",
+    "Create reusable TaskCard, StatusBadge and FormField components tested on a narrow phone.",
+    [
+      "Props və fərqli status variantlarını TypeScript ilə yaz.",
+      "Eyni TaskCard komponentini iki siyahıda istifadə et.",
+      "Mətn daşması, touch target və ekran oxuyucu label-lərini yoxla."
+    ],
+    [
+      "Type component props and variant states.",
+      "Reuse the same TaskCard in two different lists.",
+      "Check text overflow, touch targets and screen-reader labels."
+    ]
+  ],
+  [
+    "node,expo,vscode",
+    "Mock JSON-dan 5 tapşırıq yüklə; loading, pull-to-refresh, boş və offline xəta halını göstər.",
+    "Load five fictional tasks from a JSON fixture and handle loading, refresh, empty and error states.",
+    [
+      "Lokal fixture və async mock fetch yarat.",
+      "Dörd UI vəziyyətinin hər birini ayrıca göstər.",
+      "Yenidən cəhd/pull-to-refresh davranışını video və ya ekran görüntüsü ilə sübut et."
+    ],
+    [
+      "Prepare a local JSON fixture and async mock fetch.",
+      "Implement loading, success, empty and error UI states.",
+      "Demonstrate retry/pull-to-refresh with screenshots."
+    ]
+  ],
+  [
+    "node,expo,vscode",
+    "'pending' statuslu tapşırıqları filter-lə və başlıqda 'API' yazısını axtar.",
+    "Filter pending tasks and search titles for a sample query such as 'API'.",
+    [
+      "Search input və status chip-lərini state-ə bağla.",
+      "Axtarış və status filtrinin eyni vaxtda işləməsini göstər.",
+      "Nəticə boşdursa izah mesajı və 'Filtri təmizlə' düyməsi göstər."
+    ],
+    [
+      "Connect search input and status chips to local state.",
+      "Demonstrate combined search and status filtering.",
+      "Display a meaningful empty state and clear-filters action."
+    ]
+  ],
+  [
+    "node,expo,vscode",
+    "'darkMode=true' kimi qeyri-həssas seçimi lokal saxla, tətbiq açıldıqda bərpa et.",
+    "Persist a non-sensitive preference such as darkMode=true and restore it on relaunch.",
+    [
+      "Yalnız tema və filtr seçimi kimi qeyri-həssas məlumat saxla.",
+      "Lokal AsyncStorage ilə yazma/oxuma hallarını yoxla.",
+      "Yanlış/boş saxlanmış dəyər üçün təhlükəsiz default göstər; token və şifrə saxlama."
+    ],
+    [
+      "Store harmless preferences such as theme and filter settings only.",
+      "Test writing/reading through local AsyncStorage.",
+      "Use safe defaults and never store credentials in plain storage."
+    ]
+  ],
+  [
+    "node,expo,vscode",
+    "Email yanlış, portfel linki boş və klaviatura açıq olanda submit formunun vəziyyətini yoxla.",
+    "Validate email, empty portfolio link and keyboard interaction in a mobile form.",
+    [
+      "Input qaydaları və error text-lərini yaz.",
+      "Telefon klaviaturası açıldıqda submit düyməsinin görünməsini yoxla.",
+      "Uğurlu/yanlış submit halını mock data ilə test et."
+    ],
+    [
+      "Define input constraints and error messages.",
+      "Check submit visibility while the keyboard is open.",
+      "Test valid/invalid submissions using fictional data."
+    ]
+  ],
+  [
+    "node,expo,vscode",
+    "İnternet sönəndə son yüklənmiş 5 tapşırıq 'köhnə məlumat' etiketi ilə qalsın.",
+    "Display cached fictional tasks with an explicit stale-data label when offline.",
+    [
+      "Son uğurlu mock fetch nəticəsini lokal saxlama qatına yaz.",
+      "Offline zamanı `last_updated` tarixini və 'Yenilənməyib' mesajını göstər.",
+      "Bağlantı qayıdanda refresh və data fərqini test et."
+    ],
+    [
+      "Cache the last successfully fetched fictional task list.",
+      "Show last-updated time and an offline/stale label.",
+      "Test refresh and synchronization when connectivity returns."
+    ]
+  ],
+  [
+    "expo,docs",
+    "Bir istifadəçi axınını 2–3 razılıq verən testçi ilə yoxla; testçi yoxdursa simulyasiya kimi göstər.",
+    "Review the task flow with consenting test users or clearly label a simulated walkthrough.",
+    [
+      "Tapşırığı tap → aç → təqdim et üzrə 3 neytral test sualı hazırla.",
+      "İcazə ilə ekran qeydlərini anonimləşdir, şəxsi data toplama.",
+      "Müşahidələri problem, təsir, həll kimi qruplaşdır və iki düzəliş seç."
+    ],
+    [
+      "Prepare three neutral tasks covering find → open → submit.",
+      "Obtain consent and anonymize any collected notes; avoid private data.",
+      "Group observations into issue/impact/fix and prioritize two improvements."
+    ]
+  ],
+  [
+    "node,expo,github",
+    "Expo Go-da açılan 8 ekranlı demo, README, mock data və test sübutlarını birləşdir.",
+    "Package the demo app, README, mock data and screenshots, without paid store publishing.",
+    [
+      "Əvvəlki ekran, API mock, offline və validation hissələrini birləşdir.",
+      "Sıfırdan quraşdırma və 5 əsas istifadə axınını yoxla.",
+      "Source code, demo görüntü və məlum məhdudiyyətləri təhvil ver; real hesab məlumatı daxil etmə."
+    ],
+    [
+      "Integrate earlier screens, mock API, offline behavior and validation.",
+      "Run clean setup and test five common user journeys.",
+      "Deliver source, demo evidence and known limitations without real user data."
+    ]
+  ]
+]

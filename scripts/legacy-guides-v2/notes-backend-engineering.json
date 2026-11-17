@@ -1,0 +1,152 @@
+[
+  [
+    "vscode,python,fastapi,github",
+    "`GET /projects` siyahı, `GET /projects/1` detal, `POST /projects` yaradılma üçün request/response JSON yaz; hələ server lazım deyil.",
+    "Document GET /projects, GET /projects/1 and POST /projects request/response examples before coding.",
+    [
+      "README-də `Project(id,title,status)` modelini və 4 route-u göstər.",
+      "Hər route üçün uğurlu cavab və 404/422 kimi xəta nümunəsi yaz.",
+      "`openapi.yaml`-ı struktura görə yoxla, 5 request/response cütünü əlavə et."
+    ],
+    [
+      "Define a Project(id,title,status) model and four routes in README.",
+      "Write success and error examples including 404 and 422.",
+      "Validate the OpenAPI file and include five request/response pairs."
+    ]
+  ],
+  [
+    "postgres,draw,vscode",
+    "`projects`, `members`, `tasks` cədvəlləri üçün PK/FK və NOT NULL istifadə et; üzv olmayan layihəyə task yazma.",
+    "Design project/member/task tables with primary/foreign keys and invalid-reference tests.",
+    [
+      "ERD-də hər cədvəlin sahələrini və əlaqəni göstər.",
+      "Lokal PostgreSQL-də `CREATE TABLE` və FK/UNIQUE/CHECK qaydalarını yaz.",
+      "Keçərli və keçərsiz 5 INSERT-i test et; real Talora bazasına qoşulma."
+    ],
+    [
+      "Draw an ERD showing fields and relationships.",
+      "Create the local PostgreSQL schema with keys and constraints.",
+      "Test five valid/invalid inserts; never run this against Talora production."
+    ]
+  ],
+  [
+    "python,fastapi,vscode",
+    "Məsələn, qeydiyyatda boş email 422, eyni email duplicate, yanlış login isə neytral xəta verməlidir.",
+    "Test empty email, duplicate signup and neutral error responses for failed logins.",
+    [
+      "Pydantic ilə input validation və parol hash komponentini seç.",
+      "Şifrəni plaintext/log-da saxlamadan lokal sintetik hesab yarat.",
+      "Yanlış email, boş şifrə və səhv credential halları üçün test əlavə et."
+    ],
+    [
+      "Validate input using Pydantic and choose a maintained password hashing utility.",
+      "Create local fictional accounts without storing or logging plaintext passwords.",
+      "Test invalid email, missing password and failed sign-in with neutral errors."
+    ]
+  ],
+  [
+    "python,fastapi,postgres,pytest",
+    "`POST /tasks`, `GET /tasks`, `PATCH /tasks/1` route-ları owner authorization ilə işləsin.",
+    "Build task create/list/update endpoints with ownership checks.",
+    [
+      "Əvvəlki schema, validation və authorization qaydalarını bir servisə birləşdir.",
+      "İcazəsiz istifadəçinin başqa task-a daxil olmasını 403/404 ilə blokla.",
+      "Lokal DB və sintetik istifadəçilərlə 6 integration test yaz."
+    ],
+    [
+      "Connect prior schema, input validation and authorization in one service.",
+      "Deny cross-user task access with safe 403/404 behavior.",
+      "Run six integration tests with a local database and fictional users."
+    ]
+  ],
+  [
+    "python,fastapi,pytest",
+    "50 sintetik layihəni `?limit=10&offset=0&status=active` ilə ver; sabit sıra saxla.",
+    "Paginate fifty fictional projects using limit, offset and status filters.",
+    [
+      "Filter parametrlərini Pydantic-lə yoxla, limit üçün 1–100 sərhəd qoy.",
+      "SQL-də sabit `ORDER BY created_at,id` və LIMIT/OFFSET tətbiq et.",
+      "Boş səhifə, yanlış status və növbəti səhifədə duplicate üçün test yaz."
+    ],
+    [
+      "Validate filters and enforce a reasonable limit such as 1–100.",
+      "Use stable ORDER BY columns with LIMIT/OFFSET.",
+      "Test empty pages, invalid filters and duplicate-free page transitions."
+    ]
+  ],
+  [
+    "postgres,python,pytest",
+    "Layihə yaradılarkən iki əlaqəli sətirdən ikinci INSERT səhv olsa birincisi də rollback olsun.",
+    "Ensure that a failed second INSERT rolls back the whole local transaction.",
+    [
+      "Bir layihə və ilkin üzvlük INSERT-lərini transaction-a yerləşdir.",
+      "FK pozuntusu ilə qəsdən rollback sınağı qur, commit halını ayrıca yoxla.",
+      "Rollback-dan sonra DB-də yarımçıq sətrin olmadığını testlə sübut et."
+    ],
+    [
+      "Wrap project and membership inserts in one transaction.",
+      "Trigger a fictional FK error and verify rollback before testing commit.",
+      "Assert no partial records remain after the failed transaction."
+    ]
+  ],
+  [
+    "fastapi,vscode,github",
+    "FastAPI `/docs`-da `GET /tasks`, `POST /tasks` və 422 nümunələri görünsün.",
+    "Ensure FastAPI /docs contains task endpoints and a 422 validation example.",
+    [
+      "Pydantic request/response model və endpoint təsvirləri əlavə et.",
+      "OpenAPI JSON-u export et və 2 nümunə request-i sənəddən yoxla.",
+      "README-də auth tələbi, xətalar və işlətmə komandasını yaz."
+    ],
+    [
+      "Add Pydantic models and clear endpoint descriptions.",
+      "Export OpenAPI JSON and verify two documented requests.",
+      "Explain authentication, errors and startup commands in README."
+    ]
+  ],
+  [
+    "python,pytest,vscode",
+    "Task create üçün 201, validation üçün 422, başqa owner üçün 403/404 testini yaz.",
+    "Test task creation, invalid payload and cross-owner denial.",
+    [
+      "Unit test və lokal integration test-i ayır; sabit sintetik fixture yaz.",
+      "Ən azı 6 əsas və 3 neqativ test yarat.",
+      "Testləri terminaldan təkrar işlə, uğursuz testi düzəldib nəticəni saxla."
+    ],
+    [
+      "Separate unit and local integration tests with deterministic fixtures.",
+      "Write six expected-behavior tests and three negative tests.",
+      "Re-run the suite after fixes and record passing results."
+    ]
+  ],
+  [
+    "python,fastapi,pytest",
+    "Məsələn, `request_id=demo-abc`, `status=422`, `duration_ms=8` logla, parol və tokeni loglama.",
+    "Log request IDs, status and duration without logging passwords or tokens.",
+    [
+      "Mərkəzi exception handler ilə sabit JSON error schema yarat.",
+      "Sorğulara request ID əlavə et və status/duration-u təhlükəsiz logla.",
+      "404, 422, 500 üçün eyni response formatını test et; stack trace-i istifadəçiyə göstərmə."
+    ],
+    [
+      "Implement centralized handlers returning a consistent JSON error schema.",
+      "Generate request IDs and log safe status/duration fields.",
+      "Test 404, 422 and 500 without returning stack traces to clients."
+    ]
+  ],
+  [
+    "github,python,fastapi,pytest",
+    "Lokal `uvicorn app.main:app --reload` ilə açılan servisdə `/health` route-u 200 qaytarsın.",
+    "Run the service locally and verify GET /health returns 200.",
+    [
+      "README-də dependency, env.example və lokal start komandasını yaz.",
+      "Pulsuz lokal test pipeline quraşdır; GitHub Actions Free limitinə bağlı deyilsən.",
+      "Sıfırdan repo clone → test → start → health check sınağını qeyd et."
+    ],
+    [
+      "Document dependencies, env.example and a local start command.",
+      "Run a local test pipeline without requiring paid CI or hosting.",
+      "Rehearse clone → test → start → health check from a clean setup."
+    ]
+  ]
+]

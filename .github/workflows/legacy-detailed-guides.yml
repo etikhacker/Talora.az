@@ -1,0 +1,63 @@
+name: Original internship detailed guides regression
+
+on:
+  push:
+    branches: [content/detailed-free-guides-legacy-80-20261109]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Check all 80 AZ/EN guides and unchanged official criteria
+        run: node --test scripts/legacy-guides-v2.test.mjs
+
+  postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: talora_test
+          POSTGRES_DB: talora_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d talora_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Prepare exact-original synthetic fixture
+        run: node scripts/legacy-guides-v2/make-ci-fixture.mjs > /tmp/legacy-guides-fixture.sql
+      - name: Apply eight guarded transactions and verify published tasks
+        env:
+          PGPASSWORD: talora_test
+        run: |
+          set -euo pipefail
+          for file in \
+            /tmp/legacy-guides-fixture.sql \
+            scripts/legacy-guides-v2/update-applied-ai-engineering.sql \
+            scripts/legacy-guides-v2/update-automation-engineering.sql \
+            scripts/legacy-guides-v2/update-backend-engineering.sql \
+            scripts/legacy-guides-v2/update-cybersecurity.sql \
+            scripts/legacy-guides-v2/update-data-analytics.sql \
+            scripts/legacy-guides-v2/update-frontend-engineering.sql \
+            scripts/legacy-guides-v2/update-mobile-development.sql \
+            scripts/legacy-guides-v2/update-ui-ux-design.sql \
+            scripts/legacy-guides-v2/postgres-verify.sql; do
+            docker run --rm --network host -e PGPASSWORD \
+              -v "$PWD:/workspace:ro" -v /tmp:/tmp:ro postgres:17 \
+              psql -X -h 127.0.0.1 -U postgres -d talora_test \
+                -v ON_ERROR_STOP=1 -f "$([[ "$file" == /tmp/* ]] && echo "$file" || echo "/workspace/$file")"
+          done
