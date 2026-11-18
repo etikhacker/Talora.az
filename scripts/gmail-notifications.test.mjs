@@ -9,6 +9,22 @@ async function loadEmailHelpers() {
   }
 }
 
+async function loadGmailApi() {
+  try {
+    return await import('../lib/email/gmail-api.ts');
+  } catch {
+    return {};
+  }
+}
+
+async function loadGmailTransport() {
+  try {
+    return await import('../lib/email/gmail.ts');
+  } catch {
+    return {};
+  }
+}
+
 test('Gmail sending is disabled until both sender and app password are configured', async () => {
   const { getGmailSettings } = await loadEmailHelpers();
   assert.equal(typeof getGmailSettings, 'function', 'Gmail settings behavior must be implemented');
@@ -165,4 +181,85 @@ test('application HTML escapes user content, preserves the decision, and sends b
   assert.throws(() => buildApplicationStatusEmail({
     fullName:'Student', internshipTitle:'Program', status:'accepted', applicationUrl:'javascript:alert(1)',
   }), /INVALID_APPLICATION_URL/);
+});
+
+
+test('Gmail OAuth token errors expose only the safe Google error code', async () => {
+  const { createGmailApiTransport } = await loadGmailApi();
+  assert.equal(typeof createGmailApiTransport, 'function');
+
+  const transport = createGmailApiTransport(
+    {
+      user: 'sender@example.com',
+      clientId: 'client-id',
+      clientSecret: 'client-secret',
+      refreshToken: 'refresh-token',
+    },
+    async () => new Response(JSON.stringify({
+      error: 'invalid_grant',
+      error_description: 'sensitive provider details must not be logged',
+    }), { status: 400 })
+  );
+
+  await assert.rejects(
+    transport.send(['student@example.com'], { subject: 'Test', text: 'Test' }),
+    (error) => {
+      assert.equal(error.message, 'GMAIL_API_TOKEN_HTTP_400_INVALID_GRANT');
+      assert.doesNotMatch(error.message, /sensitive|refresh-token|client-secret/i);
+      return true;
+    }
+  );
+});
+
+test('Gmail falls back to SMTP only when OAuth token acquisition fails before send', async () => {
+  const { sendWithGmailSmtpFallback } = await loadGmailTransport();
+  assert.equal(typeof sendWithGmailSmtpFallback, 'function');
+
+  let apiAttempts = 0;
+  let smtpAttempts = 0;
+  const result = await sendWithGmailSmtpFallback(
+    async () => {
+      apiAttempts += 1;
+      throw new Error('GMAIL_API_TOKEN_HTTP_400_INVALID_GRANT');
+    },
+    async () => {
+      smtpAttempts += 1;
+      return 'smtp-sent';
+    },
+    true
+  );
+
+  assert.equal(result, 'smtp-sent');
+  assert.equal(apiAttempts, 1);
+  assert.equal(smtpAttempts, 1);
+});
+
+test('Gmail does not SMTP-fallback after an ambiguous or send-stage API failure', async () => {
+  const { sendWithGmailSmtpFallback } = await loadGmailTransport();
+  assert.equal(typeof sendWithGmailSmtpFallback, 'function');
+
+  let smtpAttempts = 0;
+  await assert.rejects(
+    sendWithGmailSmtpFallback(
+      async () => { throw new Error('GMAIL_API_SEND_UNCERTAIN_TIMEOUT'); },
+      async () => { smtpAttempts += 1; },
+      true
+    ),
+    /GMAIL_API_SEND_UNCERTAIN_TIMEOUT/
+  );
+  assert.equal(smtpAttempts, 0);
+});
+
+test('Gmail preserves the OAuth error when SMTP fallback is not configured', async () => {
+  const { sendWithGmailSmtpFallback } = await loadGmailTransport();
+  assert.equal(typeof sendWithGmailSmtpFallback, 'function');
+
+  await assert.rejects(
+    sendWithGmailSmtpFallback(
+      async () => { throw new Error('GMAIL_API_TOKEN_HTTP_400_INVALID_GRANT'); },
+      async () => 'should-not-run',
+      false
+    ),
+    /GMAIL_API_TOKEN_HTTP_400_INVALID_GRANT/
+  );
 });
