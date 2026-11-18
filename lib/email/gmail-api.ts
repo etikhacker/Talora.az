@@ -148,6 +148,17 @@ function safeStatusError(stage: 'TOKEN' | 'SEND', status: number): Error {
   return new Error('GMAIL_API_' + stage + '_HTTP_' + status);
 }
 
+async function safeTokenStatusError(response: Response): Promise<Error> {
+  const parsed = (await response.json().catch(() => null)) as OAuthTokenResponse | null;
+  const providerCode =
+    typeof parsed?.error === 'string' && /^[a-z][a-z0-9_]{0,39}$/i.test(parsed.error)
+      ? parsed.error.toUpperCase()
+      : 'UNKNOWN';
+  // Record only Google's machine-readable error code. Never log descriptions,
+  // request payloads, client secrets, or refresh tokens.
+  return new Error('GMAIL_API_TOKEN_HTTP_' + response.status + '_' + providerCode);
+}
+
 /**
  * HTTPS-only Gmail API delivery. Never automatically retry an ambiguous
  * send timeout/5xx: Google may have accepted the message even when the
@@ -185,7 +196,7 @@ export function createGmailApiTransport(
       } catch {
         throw new Error('GMAIL_API_TOKEN_NETWORK_TIMEOUT');
       }
-      if (!response.ok) throw safeStatusError('TOKEN', response.status);
+      if (!response.ok) throw await safeTokenStatusError(response);
       const parsed = (await response.json().catch(() => null)) as OAuthTokenResponse | null;
       if (!parsed || typeof parsed.access_token !== 'string' || parsed.access_token.length === 0) {
         throw new Error('GMAIL_API_TOKEN_RESPONSE_INVALID');
