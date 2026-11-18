@@ -5,8 +5,8 @@ import {
   createGmailApiTransport,
   encodeGmailMessage,
   getGmailApiSettings,
+  sendWithGmailSmtpFallback,
 } from '../lib/email/gmail-api.ts';
-import { sendWithGmailSmtpFallback } from '../lib/email/gmail.ts';
 
 const SETTINGS = {
   user: 'sender@example.com',
