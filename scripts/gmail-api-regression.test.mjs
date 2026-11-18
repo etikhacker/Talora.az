@@ -6,6 +6,7 @@ import {
   encodeGmailMessage,
   getGmailApiSettings,
 } from '../lib/email/gmail-api.ts';
+import { sendWithGmailSmtpFallback } from '../lib/email/gmail.ts';
 
 const SETTINGS = {
   user: 'sender@example.com',
@@ -143,4 +144,67 @@ test('sending failure, ambiguous timeout and missing confirmation never trigger 
     await assert.rejects(() => transport.send(['student@example.net'], MESSAGE), error);
     assert.equal(sends,1);
   }
+});
+
+
+test('OAuth token failures retain only Google error code, not its description', async () => {
+  const transport = createGmailApiTransport(SETTINGS, async () => Response.json({
+    error: 'invalid_grant',
+    error_description: 'private OAuth response details',
+  }, { status: 400 }));
+
+  await assert.rejects(
+    () => transport.send(['student@example.net'], MESSAGE),
+    error => {
+      assert.equal(error.message, 'GMAIL_API_TOKEN_HTTP_400_INVALID_GRANT');
+      assert.doesNotMatch(error.message, /private OAuth response details|test-refresh-token|test-client-secret/i);
+      return true;
+    }
+  );
+});
+
+test('configured SMTP fallback runs only after OAuth token acquisition fails', async () => {
+  let apiAttempts = 0;
+  let smtpAttempts = 0;
+  const result = await sendWithGmailSmtpFallback(
+    async () => {
+      apiAttempts += 1;
+      throw new Error('GMAIL_API_TOKEN_HTTP_400_INVALID_GRANT');
+    },
+    async () => {
+      smtpAttempts += 1;
+      return 'smtp-accepted';
+    },
+    true
+  );
+
+  assert.equal(result, 'smtp-accepted');
+  assert.equal(apiAttempts, 1);
+  assert.equal(smtpAttempts, 1);
+});
+
+test('SMTP fallback is not used after a Gmail send-stage or ambiguous error', async () => {
+  let smtpAttempts = 0;
+  await assert.rejects(
+    () => sendWithGmailSmtpFallback(
+      async () => { throw new Error('GMAIL_API_SEND_UNCERTAIN_TIMEOUT'); },
+      async () => { smtpAttempts += 1; },
+      true
+    ),
+    /GMAIL_API_SEND_UNCERTAIN_TIMEOUT/
+  );
+  assert.equal(smtpAttempts, 0);
+});
+
+test('SMTP fallback is skipped when app-password credentials are not configured', async () => {
+  let smtpAttempts = 0;
+  await assert.rejects(
+    () => sendWithGmailSmtpFallback(
+      async () => { throw new Error('GMAIL_API_TOKEN_HTTP_400_INVALID_GRANT'); },
+      async () => { smtpAttempts += 1; },
+      false
+    ),
+    /GMAIL_API_TOKEN_HTTP_400_INVALID_GRANT/
+  );
+  assert.equal(smtpAttempts, 0);
 });
