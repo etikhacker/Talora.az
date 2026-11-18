@@ -9,6 +9,22 @@ async function loadEmailHelpers() {
   }
 }
 
+async function loadGmailApi() {
+  try {
+    return await import('../lib/email/gmail-api.ts');
+  } catch {
+    return {};
+  }
+}
+
+async function loadGmailTransport() {
+  try {
+    return await import('../lib/email/gmail.ts');
+  } catch {
+    return {};
+  }
+}
+
 test('Gmail sending is disabled until both sender and app password are configured', async () => {
   const { getGmailSettings } = await loadEmailHelpers();
   assert.equal(typeof getGmailSettings, 'function', 'Gmail settings behavior must be implemented');
@@ -166,3 +182,4 @@ test('application HTML escapes user content, preserves the decision, and sends b
     fullName:'Student', internshipTitle:'Program', status:'accepted', applicationUrl:'javascript:alert(1)',
   }), /INVALID_APPLICATION_URL/);
 });
+

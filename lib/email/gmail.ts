@@ -1,5 +1,5 @@
 import nodemailer, { type Transporter } from 'nodemailer';
-import { createGmailApiTransport, getGmailApiSettings } from './gmail-api';
+import { createGmailApiTransport, getGmailApiSettings, sendWithGmailSmtpFallback } from './gmail-api';
 import {
   getGmailSettings,
   sendGmailBatch,
@@ -72,7 +72,15 @@ export async function sendGmailEmail(recipient: string, message: EmailMessage): 
   if (getDeliveryProvider() === 'api') {
     const settings = getGmailApiSettings(process.env);
     if (!settings) throw new Error('GMAIL_API_NOT_CONFIGURED');
-    await getApiTransport(settings).send([recipient], message);
+    const smtpSettings = getGmailSettings(process.env);
+    await sendWithGmailSmtpFallback(
+      () => getApiTransport(settings).send([recipient], message),
+      () => {
+        if (!smtpSettings) throw new Error('GMAIL_SMTP_FALLBACK_NOT_CONFIGURED');
+        return sendGmailMessage(getTransporter(smtpSettings), smtpSettings, recipient, message);
+      },
+      smtpSettings !== null
+    );
     return;
   }
 
@@ -88,7 +96,15 @@ export async function sendGmailBatchEmail(recipients: string[], message: EmailMe
   if (getDeliveryProvider() === 'api') {
     const settings = getGmailApiSettings(process.env);
     if (!settings) throw new Error('GMAIL_API_NOT_CONFIGURED');
-    await getApiTransport(settings).send(recipients, message);
+    const smtpSettings = getGmailSettings(process.env);
+    await sendWithGmailSmtpFallback(
+      () => getApiTransport(settings).send(recipients, message),
+      () => {
+        if (!smtpSettings) throw new Error('GMAIL_SMTP_FALLBACK_NOT_CONFIGURED');
+        return sendGmailBatch(getTransporter(smtpSettings), smtpSettings, recipients, message);
+      },
+      smtpSettings !== null
+    );
     return;
   }
 

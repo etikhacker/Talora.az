@@ -149,6 +149,45 @@ function safeStatusError(stage: 'TOKEN' | 'SEND', status: number): Error {
 }
 
 /**
+ * OAuth token exchange happens before Gmail API's send request. If that stage
+ * fails, no message has been submitted, so using the already-configured SMTP
+ * app-password transport is safe. Never fallback after a send-stage error:
+ * delivery may be ambiguous and a second transport could create duplicates.
+ */
+export async function sendWithGmailSmtpFallback<T>(
+  sendApi: () => Promise<T>,
+  sendSmtp: () => Promise<T>,
+  smtpAvailable: boolean
+): Promise<T> {
+  try {
+    return await sendApi();
+  } catch (error) {
+    if (
+      !smtpAvailable ||
+      !(error instanceof Error) ||
+      !error.message.startsWith('GMAIL_API_TOKEN_')
+    ) {
+      throw error;
+    }
+    console.warn('Gmail API token exchange failed; using configured SMTP fallback', {
+      code: error.message,
+    });
+    return sendSmtp();
+  }
+}
+
+async function safeTokenStatusError(response: Response): Promise<Error> {
+  const parsed = (await response.json().catch(() => null)) as OAuthTokenResponse | null;
+  const providerCode =
+    typeof parsed?.error === 'string' && /^[a-z][a-z0-9_]{0,39}$/i.test(parsed.error)
+      ? parsed.error.toUpperCase()
+      : 'UNKNOWN';
+  // Record only Google's machine-readable error code. Never log descriptions,
+  // request payloads, client secrets, or refresh tokens.
+  return new Error('GMAIL_API_TOKEN_HTTP_' + response.status + '_' + providerCode);
+}
+
+/**
  * HTTPS-only Gmail API delivery. Never automatically retry an ambiguous
  * send timeout/5xx: Google may have accepted the message even when the
  * response was lost. The caller can inspect Sent before manual resend.
@@ -185,7 +224,7 @@ export function createGmailApiTransport(
       } catch {
         throw new Error('GMAIL_API_TOKEN_NETWORK_TIMEOUT');
       }
-      if (!response.ok) throw safeStatusError('TOKEN', response.status);
+      if (!response.ok) throw await safeTokenStatusError(response);
       const parsed = (await response.json().catch(() => null)) as OAuthTokenResponse | null;
       if (!parsed || typeof parsed.access_token !== 'string' || parsed.access_token.length === 0) {
         throw new Error('GMAIL_API_TOKEN_RESPONSE_INVALID');
