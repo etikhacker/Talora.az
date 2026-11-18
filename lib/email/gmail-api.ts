@@ -148,6 +148,34 @@ function safeStatusError(stage: 'TOKEN' | 'SEND', status: number): Error {
   return new Error('GMAIL_API_' + stage + '_HTTP_' + status);
 }
 
+/**
+ * OAuth token exchange happens before Gmail API's send request. If that stage
+ * fails, no message has been submitted, so using the already-configured SMTP
+ * app-password transport is safe. Never fallback after a send-stage error:
+ * delivery may be ambiguous and a second transport could create duplicates.
+ */
+export async function sendWithGmailSmtpFallback<T>(
+  sendApi: () => Promise<T>,
+  sendSmtp: () => Promise<T>,
+  smtpAvailable: boolean
+): Promise<T> {
+  try {
+    return await sendApi();
+  } catch (error) {
+    if (
+      !smtpAvailable ||
+      !(error instanceof Error) ||
+      !error.message.startsWith('GMAIL_API_TOKEN_')
+    ) {
+      throw error;
+    }
+    console.warn('Gmail API token exchange failed; using configured SMTP fallback', {
+      code: error.message,
+    });
+    return sendSmtp();
+  }
+}
+
 async function safeTokenStatusError(response: Response): Promise<Error> {
   const parsed = (await response.json().catch(() => null)) as OAuthTokenResponse | null;
   const providerCode =
